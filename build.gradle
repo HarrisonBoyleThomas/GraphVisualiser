@@ -2,8 +2,24 @@ apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = 'NAMEGOES HERE'
 dependencies {
-  
+    testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("org.testfx:testfx-core:4.0.16-alpha")
+    testImplementation("org.testfx:testfx-junit5:4.0.16-alpha")
 }
 repositories {
   mavenCentral()
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    if (project.hasProperty('excludeTests')) {
+        exclude project.property('excludeTests')
+    }
 }
