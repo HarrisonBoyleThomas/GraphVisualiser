@@ -3,6 +3,9 @@ package model;
 /**
 *    A GraphEdge represents an edge between two nodes
 *    An edge must have an assigned length
+*
+*    @Author Harrison Boyle-Thomas
+*    @Date 30/10/2020
 **/
 class GraphEdge extends GraphComponent{
 	

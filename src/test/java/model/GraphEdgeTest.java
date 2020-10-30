@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
 *    Test that Graph Edges work
+*
+*    @Author Harrison Boyle-Thomas
+*    @Date 30/10/2020
 **/
 public class GraphEdgeTest{
 	

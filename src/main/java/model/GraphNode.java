@@ -5,6 +5,11 @@ import java.util.ArrayList;
 /**
 *    A GraphNode is a node in a graph. It can have connections to other nodes
 *    through the GraphEdge class. Nodes can have an int value assigned to it
+*    Edges are all directed. To have an undirected edge between nodes, create
+*    two directed edges from either edge
+
+*    @Author Harrison Boyle-Thomas
+*    @Date 30/10/2020
 **/
 class GraphNode extends GraphComponent{
 	private int value;

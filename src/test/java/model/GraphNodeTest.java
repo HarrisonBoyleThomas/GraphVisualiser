@@ -7,7 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
+/**
+*    Test that GraphNodes work
+*    @Author Harrison Boyle-Thomas
+*    @Date 30/10/2020
+**/
 public class GraphNodeTest{
 	
 	GraphNode nodeA;
