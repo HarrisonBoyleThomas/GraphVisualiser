@@ -49,27 +49,6 @@ class GraphEdge extends GraphComponent{
 	}
 	
 	/**
-	*    @return true if the nodes for this edge are both not null
-	**/
-	public boolean isValid(){
-	    return !(nodeA == null || nodeB == null);
-	}
-	
-	/**
-	*    If the edge is invalid, remove all links to nodes to allow the edge to be garbage collected
-	**/
-	public void cascadeValidity(){
-		if(!isValid()){
-			if(nodeA != null){
-				nodeA.removeEdge(this, false);
-			}
-			if(nodeB != null){
-				nodeB.removeEdge(this, false);
-			}
-		}
-	}
-	
-	/**
 	*    Only 1 edge is allowed between nodes
 	*    @Return true if the endpoints of the edge are the same, false otherwise
 	**/

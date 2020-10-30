@@ -15,6 +15,11 @@ class GraphNode extends GraphComponent{
 		edges = new ArrayList<>();
 	}
 	
+	public GraphNode(int valueIn){
+		value = setValue(valueIn);
+		edges = new ArrayList<>();
+	}
+	
 	
 	/**
 	*    update the value of the node to the new value
@@ -37,20 +42,22 @@ class GraphNode extends GraphComponent{
 	*    add an edge between the supplied graph node. If bidirectional, 
 	*    add an edge from the suppied graph node to this graph node
 	*    Ensures only 1 edge from A to B exists at a time
+	*    @return the created edge, or null if params invalid or an edge already exists
 	**/
 	public GraphEdge addEdge(GraphNode other, boolean biDirectional){
 		if (other == null){
 			return null;
 		}
+		if(biDirectional){
+			other.addEdge(this, false);
+		}
 		GraphEdge newEdge = new GraphEdge(this, other, 0);
 		//if there is not already an edge between nodes, add the edge
 		if(!edges.contains(newEdge)){
 		    edges.add(newEdge);
+			return newEdge;
 		}
-		if(biDirectional){
-			other.addEdge(this, false);
-		}
-		return newEdge;
+		return null;
 	}
 	
 	/**
@@ -78,7 +85,7 @@ class GraphNode extends GraphComponent{
 				toRemove.removeEdge(this, false);
 			}
 		}
-		return edges.remove(toRemove);
+		return edges.remove(edge);
 	}
 	
 	/**
@@ -107,7 +114,7 @@ class GraphNode extends GraphComponent{
 	*    @param name of the edge to find
 	*    @return an edge from this node that has the given name, or null if not found
 	**/
-	public GraphEdge getEdge(String name){
+	public GraphEdge getEdgeByName(String name){
 	    for(GraphEdge edge : edges){
 			if(edge.getName().equals(name)){
 				return edge;
@@ -115,4 +122,14 @@ class GraphNode extends GraphComponent{
 		}
 		return null;
     }
+	
+	/**
+	*    Removes all references to this node within the graph model
+	**/
+	public void delete(){
+		for(GraphEdge edge : edges){
+			edge.nodeB.removeEdge(this, false);
+		}
+		edges.clear();
+	}
 }
