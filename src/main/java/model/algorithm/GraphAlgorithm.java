@@ -6,6 +6,14 @@ import model.GraphComponentState;
 
 import java.util.ArrayList;
 
+/**
+*    An algorithm to be run on a graph
+*    Include a step() method that allows the algorithm to run
+*    across multiple frames
+*    
+*    @Author: Harrison Boyle-Thomas
+*    @Date: 02/11/2020
+**/
 abstract class GraphAlgorithm{
 	protected boolean finished;
 	
