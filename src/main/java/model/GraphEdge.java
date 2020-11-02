@@ -7,7 +7,7 @@ package model;
 *    @Author Harrison Boyle-Thomas
 *    @Date 30/10/2020
 **/
-class GraphEdge extends GraphComponent{
+public class GraphEdge extends GraphComponent{
 	
 	public final GraphNode nodeA;
 	public final GraphNode nodeB;

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 *    @Author Harrison Boyle-Thomas
 *    @Date 30/10/2020
 **/
-class GraphNode extends GraphComponent{
+public class GraphNode extends GraphComponent{
 	private int value;
 	private ArrayList<GraphEdge> edges;
 	
@@ -128,6 +128,17 @@ class GraphNode extends GraphComponent{
 		return null;
     }
 	
+	/**
+	*    @return a list of nodes this node has edges within
+	**/
+    public ArrayList<GraphNode> getConnectedNodes(){
+		ArrayList<GraphNode> output = new ArrayList<>();
+	    for(GraphEdge edge: edges){
+			output.add(edge.nodeB);
+		}
+		return output;
+	}
+			
 	/**
 	*    Removes all references to this node within the graph model
 	**/
