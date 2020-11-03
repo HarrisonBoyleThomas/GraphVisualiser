@@ -1,6 +1,10 @@
-apply plugin: 'java'
-apply plugin: 'application'
-mainClassName = 'NAMEGOES HERE'
+plugins{
+    id  'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+application {
+    mainClassName = 'GraphVisualiser'
+}
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("org.testfx:testfx-core:4.0.16-alpha")
@@ -8,6 +12,11 @@ dependencies {
 }
 repositories {
   mavenCentral()
+}
+
+javafx {
+    version = '11.0.2'
+    modules = ["javafx.controls", "javafx.fxml"]
 }
 
 test {
