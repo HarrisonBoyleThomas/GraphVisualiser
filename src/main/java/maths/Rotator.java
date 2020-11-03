@@ -1,5 +1,7 @@
 package maths;
 
+import java.lang.Math;
+
 /**
 *    Rotators represent 3D rotation
 *   
@@ -27,9 +29,21 @@ public class Rotator{
 	*    Create a rotator with the given roll pitch and yaw values
 	**/
 	public Rotator(int rollIn,int pitchIn, int yawIn){
-		roll = rollIn % 360;
-		pitch = pitchIn % 360;
-		yaw = yawIn % 360;
+		int newRoll = rollIn % 360;
+		if(newRoll < 0){
+			newRoll = 360 + newRoll;
+		}
+		roll = newRoll;
+		int newPitch = pitchIn % 360;
+		if(newPitch < 0){
+			newPitch = 360 + newPitch;
+		}
+		pitch = newPitch;
+		int newYaw = yawIn % 360;
+		if(newYaw < 0){
+			newYaw = 360 + newYaw;
+		}
+		yaw = newYaw;
 	}
 	
 	/**
@@ -58,7 +72,7 @@ public class Rotator{
 	}
 
 	public Rotator addRoll(int amount){
-		return new Rotator((roll + amount)%360, pitch, yaw);
+		return new Rotator(roll + amount, pitch, yaw);
 	}
 	
 
@@ -67,7 +81,7 @@ public class Rotator{
 	}
 	
 	public Rotator addPitch(int amount){
-		return new Rotator(roll, (pitch + amount)%360, yaw);
+		return new Rotator(roll, pitch + amount, yaw);
 	}
 	
 	public static Rotator addPitch(Rotator rot, int amount){
@@ -75,7 +89,7 @@ public class Rotator{
 	}
 	
 	public Rotator addYaw(int amount){
-		return new Rotator(roll, pitch, (yaw + amount) %360);
+		return new Rotator(roll, pitch, yaw + amount);
 	}
 	
 	public static Rotator addYaw(Rotator rot, int amount){
@@ -84,7 +98,7 @@ public class Rotator{
 	
 	
 	public Rotator subtractRoll(int amount){
-		return new Rotator((roll - amount)%360, pitch, yaw);
+		return new Rotator(roll - amount, pitch, yaw);
 	}
 	
 	public static Rotator subtractRoll(Rotator rot, int amount){
@@ -92,7 +106,7 @@ public class Rotator{
 	}
 	
 	public Rotator subtractPitch(int amount){
-		return new Rotator(roll, (pitch - amount)%360, yaw);
+		return new Rotator(roll, pitch - amount, yaw);
 	}
 	
 	public static Rotator subtractPitch(Rotator rot, int amount){
@@ -100,7 +114,7 @@ public class Rotator{
 	}
 	
 	public Rotator subtractYaw(int amount){
-		return new Rotator(roll, pitch, (yaw - amount) %360);
+		return new Rotator(roll, pitch, yaw - amount);
 	}
 	
 	public static Rotator subtractYaw(Rotator rot, int amount){
@@ -126,6 +140,20 @@ public class Rotator{
 	public static Rotator delta (Rotator r1, Rotator r2){
 		return r1.delta(r2);
 	}
+	
+	@Override
+	public boolean equals(Object otherObject){
+		if(otherObject instanceof Rotator){
+		    Rotator rotator = (Rotator) otherObject;
+			return (roll == rotator.roll && pitch == rotator.pitch && yaw == rotator.yaw);
+		}
+		return false;
+	}
+	
+	@Override
+    public String toString() { 
+        return "(" + roll + "," + pitch + "," + yaw + ")"; 
+    } 
 }
 	
 	

@@ -2,6 +2,7 @@ package maths;
 
 import java.lang.ArithmeticException;
 import java.lang.NullPointerException;
+import java.lang.Math;
 
 /**
 *    A vector represents a point in 3D space
@@ -119,10 +120,7 @@ public class Vector{
 	*    @Return a Vector of the result
 	**/
 	public static Vector multiply(Vector v, int multiplier){
-		if(v == null){
-			throw new NullPointerException("The given vector is null");
-		}
-		return new Vector(v.x * multiplier, v.y * multiplier, v.z * multiplier);
+		return v.multiply(multiplier);
 	}
 	
 	/**
@@ -141,13 +139,7 @@ public class Vector{
 	*    @Return a Vector of the result
 	**/
 	public static Vector divide(Vector v, int dividend){
-		if(v == null){
-			throw new NullPointerException("The given vector is null");
-		}
-		if(dividend == 0){
-			throw new ArithmeticException("Attempt to divide vector by zero");
-		}
-		return new Vector(v.x / dividend, v.y / dividend, v.z / dividend);
+		return v.divide(dividend);
 	}
 	
 	/**
@@ -162,32 +154,39 @@ public class Vector{
 	*    @Return the length of the given vector
 	*    If the given vector is the difference between two vectors, this will return the
 	*    distance between them. If the given vector is a vector in world space, 
-	*    the return length will be equivalent to function distance From Origin
+	*    the return length will be equivalent to it's distance from the origin
 	**/
 	public static float length(Vector v){
-		return (float) Math.pow(Math.pow(v.x,2) + Math.pow(v.y,2) + Math.pow(v.z,2),0.5);
+		return (float) Math.sqrt(Math.pow(v.x,2) + Math.pow(v.y,2) + Math.pow(v.z,2));
 	}
 	
-	/**
-	*    @Return the distance of the vector from the world origin
-	**/
-	public float distanceFromOrigin(){
-		return distance(this, new Vector());
+	public float length(){
+		return (float) Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
 	}
 	
-	/**
-	*    @Return the distance from origin for the given vector
-	**/
-	public static float distanceFromOrigin(Vector v){
-		return v.distanceFromOrigin();
-	}
 	
 	public Vector normalise(){
-		return new Vector((int) (x / distanceFromOrigin()), (int) (y / distanceFromOrigin()), (int) (z / distanceFromOrigin()));
+		return new Vector((int) (x / length()), (int) (y / length()), (int) (z / length()));
 	}
 	
 	public static Vector normalise(Vector v){
 		return v.normalise();
 	}
+	
+	@Override
+	public boolean equals(Object otherObject){
+		if(otherObject instanceof Vector){
+		    Vector vector = (Vector) otherObject;
+			return (x == vector.x && y == vector.y && z == vector.z);
+		}
+		return false;
+	}
+	
+	@Override
+    public String toString() { 
+        return "(" + x + "," + y + "," + z + ")"; 
+    } 
+	
+	
 		
 }
