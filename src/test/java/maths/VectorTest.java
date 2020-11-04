@@ -143,37 +143,37 @@ public class VectorTest{
 	public void distanceTest(){
 		Vector v1 = new Vector(1, 2, 3);
 		
-		assertEquals((float) Math.sqrt(1 + 4 + 9), Vector.distance(v1, new Vector()));
-		assertEquals((float) Math.sqrt(1 + 4 + 9), Vector.distance(new Vector(), v1));
+		assertEquals(Math.sqrt(1 + 4 + 9), Vector.distance(v1, new Vector()));
+		assertEquals(Math.sqrt(1 + 4 + 9), Vector.distance(new Vector(), v1));
 		
 		
 		Vector v2 = new Vector(5, 6, 7);
-		assertEquals((float) Math.sqrt(16 + 16 + 16), Vector.distance(v1, v2));
-		assertEquals((float) Math.sqrt(16 + 16 + 16), Vector.distance(v2, v1));
+		assertEquals(Math.sqrt(16 + 16 + 16), Vector.distance(v1, v2));
+		assertEquals(Math.sqrt(16 + 16 + 16), Vector.distance(v2, v1));
 		
 		
 		Vector v3 = new Vector(-1, -2, -3);
-		assertEquals((float) Math.sqrt(1 + 4 + 9) * 2, Vector.distance(v1, v3));
-		assertEquals((float) Math.sqrt(1 + 4 + 9) * 2, Vector.distance(v3, v1));
+		assertEquals(Math.sqrt(1 + 4 + 9) * 2, Vector.distance(v1, v3));
+		assertEquals(Math.sqrt(1 + 4 + 9) * 2, Vector.distance(v3, v1));
 		
-		assertEquals((float) Math.sqrt(36 + 64 + 100), Vector.distance(v2, v3));
-		assertEquals((float) Math.sqrt(36 + 64 + 100), Vector.distance(v3, v2));
+		assertEquals(Math.sqrt(36 + 64 + 100), Vector.distance(v2, v3));
+		assertEquals(Math.sqrt(36 + 64 + 100), Vector.distance(v3, v2));
 	}
 	
 	@Test
 	public void lengthTest(){
 		Vector v1 = new Vector(1, 2, 3);
 		
-		assertEquals((float) Math.sqrt(1 + 4 + 9), v1.length());
-		assertEquals((float) Math.sqrt(1 + 4 + 9), Vector.length(v1));
+		assertEquals(Math.sqrt(1 + 4 + 9), v1.length());
+		assertEquals(Math.sqrt(1 + 4 + 9), Vector.length(v1));
 		
 		Vector v2 = new Vector(-1, -2, -3);
-		assertEquals((float) Math.sqrt(1 + 4 + 9), v2.length());
-		assertEquals((float) Math.sqrt(1 + 4 + 9), Vector.length(v2));
+		assertEquals(Math.sqrt(1 + 4 + 9), v2.length());
+		assertEquals(Math.sqrt(1 + 4 + 9), Vector.length(v2));
 		
 		Vector v3 = new Vector(7, 3, 8);
-		assertEquals((float) Math.sqrt(122), v3.length());
-		assertEquals((float) Math.sqrt(122), Vector.length(v3));
+		assertEquals(Math.sqrt(122), v3.length());
+		assertEquals(Math.sqrt(122), Vector.length(v3));
 	}
 	
 	@Test
@@ -189,6 +189,10 @@ public class VectorTest{
 		Vector v3 = new Vector(0, 0, 3);
 		assertEquals(new Vector(0, 0, 1), v3.normalise());
 		assertEquals(new Vector(0, 0, 1), Vector.normalise(v3));
+		
+		Vector v4 = new Vector(20, 20, 0);
+		assertEquals(new Vector(20 / Math.sqrt(800), 20 / Math.sqrt(800), 0), v4.normalise());
+		assertEquals(new Vector(20 / Math.sqrt(800), 20/Math.sqrt(800), 0), Vector.normalise(v4));
 	}	
 }
 		

@@ -12,14 +12,14 @@ import java.lang.Math;
 *    @Date 03/11/2020
 **/
 public class Vector{
-	public final int x;
-	public final int y;
-	public final int z;
+	public final double x;
+	public final double y;
+	public final double z;
 	
 	/**
 	*    create a 3D vector
 	**/
-	public Vector(int xIn, int yIn, int zIn){
+	public Vector(double xIn, double yIn, double zIn){
 		x = xIn;
 		y = yIn;
 		z = zIn;
@@ -28,7 +28,7 @@ public class Vector{
 	/**
 	*    create a 2D vector
 	**/
-	public Vector(int xIn,int yIn){
+	public Vector(double xIn,double yIn){
 		x = xIn;
 		y = yIn;
 		z = 0;
@@ -90,14 +90,14 @@ public class Vector{
 	/**
 	*    @Return the dot product between the current vector and the supplied vector
 	**/
-	public int dot(Vector other){
+	public double dot(Vector other){
 		return (x * other.x) + (y * other.y) + (z * other.z);
 	}
 
     /**
 	*    @Return the dot product of the two given vectors
 	**/
-    public static int dot(Vector v1, Vector v2){
+    public static double dot(Vector v1, Vector v2){
 		if(v1 == null){
 			throw new NullPointerException("Vector 1 is null");
 		}
@@ -145,7 +145,7 @@ public class Vector{
 	/**
 	*    @Return the euclidian distance between two given vectors
 	**/
-	public static float distance(Vector v1, Vector v2){
+	public static double distance(Vector v1, Vector v2){
 		Vector diff = subtract(v1, v2);
 		return length(diff);
 	}
@@ -156,17 +156,17 @@ public class Vector{
 	*    distance between them. If the given vector is a vector in world space, 
 	*    the return length will be equivalent to it's distance from the origin
 	**/
-	public static float length(Vector v){
-		return (float) Math.sqrt(Math.pow(v.x,2) + Math.pow(v.y,2) + Math.pow(v.z,2));
+	public static double length(Vector v){
+		return Math.sqrt(Math.pow(v.x,2) + Math.pow(v.y,2) + Math.pow(v.z,2));
 	}
 	
-	public float length(){
-		return (float) Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
+	public double length(){
+		return Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
 	}
 	
 	
 	public Vector normalise(){
-		return new Vector((int) (x / length()), (int) (y / length()), (int) (z / length()));
+		return new Vector((x / length()), (y / length()), (z / length()));
 	}
 	
 	public static Vector normalise(Vector v){
