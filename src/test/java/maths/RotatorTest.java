@@ -173,4 +173,12 @@ public class RotatorTest{
 		assertEquals(new Rotator(-180, -180, -180), r4.delta(r3));
 		assertEquals(new Rotator(-180, -180, -180), Rotator.delta(r4, r3));
 	}
+	
+	
+	@Test
+	public void oppositeTest(){
+		Rotator r1 = new Rotator(0, 0, 0);
+		assertEquals(new Rotator(180, 180, 180), r1.opposite());
+		assertEquals(new Rotator(180, 180, 180), Rotator.opposite(r1));
+	}
 }

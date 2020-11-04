@@ -165,7 +165,14 @@ public class Vector{
 	}
 	
 	
+	/**
+	*    @Return a normalised vector
+	*    @Return null for (0,0,0)
+	**/
 	public Vector normalise(){
+		if(x == 0 && y == 0 && z == 0){
+			return null;
+		}
 		return new Vector((x / length()), (y / length()), (z / length()));
 	}
 	

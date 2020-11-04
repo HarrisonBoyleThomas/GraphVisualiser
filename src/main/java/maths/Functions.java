@@ -6,6 +6,10 @@ import java.lang.Math;
 *    Given two vectors, find the roll, pitch, and yaw angles from v1 to v2
 **/
 public class Functions{
+	/**
+	*    Find the rotation needed to rotate from v1 to v2
+	*    with respect to the default rotation
+	**/
     public static Rotator getRotationBetweenVectors(Vector v1, Vector v2){
 	    
 	    //roll angle
@@ -23,25 +27,37 @@ public class Functions{
     	
     	Vector diff = Vector.normalise(Vector.subtract(v2, v1));
     	
-    	int rollAngle = (int) Math.toDegrees(Math.atan2(new Double(diff.y), new Double(diff.z)));
+    	double rollAngle = Math.toDegrees(Math.atan2(diff.y, diff.z));
     	
-    	int pitchAngle = (int) Math.toDegrees(Math.atan2(new Double(diff.z), new Double(diff.x)));
+    	double pitchAngle = Math.toDegrees(Math.atan2(diff.z, diff.x));
     	
-    	int yawAngle = (int) Math.toDegrees(Math.atan2(new Double(diff.y), new Double(diff.x)));
+    	double yawAngle = Math.toDegrees(Math.atan2(diff.y, diff.x));
     	
-    	return new Rotator(rollAngle, pitchAngle, yawAngle);
+    	return new Rotator(0, pitchAngle, yawAngle);
     }
 	
+	/**
+	*    Extracts the direction cosines, and returns the angle
+	*    needed to rotate from v1 to v2
+	**/
 	public static Rotator findLookAtRotation(Vector v1, Vector v2){
 		Vector diff = Vector.subtract(v2, v1);
 		
 		double length = diff.length();
-		int alpha = (int) Math.acos(diff.x / length);
 		
-		int beta = (int) Math.acos(diff.y / length);
+		if(length == 0){
+			return new Rotator();
+		}
+		double roll = Math.acos(diff.x / length)*180/Math.PI;
 		
-		int gamma = (int) Math.acos(diff.z / length);
+		double pitch = Math.acos(diff.y / length)*180/Math.PI;
 		
-		return new Rotator();
+		double yaw = Math.acos(diff.z / length)*180/Math.PI;
+		
+		return new Rotator(roll, pitch, yaw);
+	}
+	
+	public static Vector getUnitVectorFromRotation(Rotator r){
+		return new Vector(Math.cos(r.roll), Math.cos(r.pitch), Math.cos(r.yaw));
 	}
 }

@@ -141,6 +141,14 @@ public class Rotator{
 		return r1.delta(r2);
 	}
 	
+	public Rotator opposite(){
+		return new Rotator(roll + 180, pitch + 180, yaw + 180);
+	}
+	
+	public static Rotator opposite(Rotator r1){
+		return r1.opposite();
+	}
+	
 	@Override
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof Rotator){
