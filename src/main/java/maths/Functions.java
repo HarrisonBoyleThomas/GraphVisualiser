@@ -31,4 +31,17 @@ public class Functions{
     	
     	return new Rotator(rollAngle, pitchAngle, yawAngle);
     }
+	
+	public static Rotator findLookAtRotation(Vector v1, Vector v2){
+		Vector diff = Vector.subtract(v2, v1);
+		
+		double length = diff.length();
+		int alpha = (int) Math.acos(diff.x / length);
+		
+		int beta = (int) Math.acos(diff.y / length);
+		
+		int gamma = (int) Math.acos(diff.z / length);
+		
+		return new Rotator();
+	}
 }
