@@ -181,4 +181,19 @@ public class RotatorTest{
 		assertEquals(new Rotator(180, 180, 180), r1.opposite());
 		assertEquals(new Rotator(180, 180, 180), Rotator.opposite(r1));
 	}
+	
+	@Test
+	public void antiRotatorTest(){
+		Rotator r1 = new Rotator(90, 0, 0);
+		assertEquals(new Rotator(270, 0, 0), r1.antiRotator());
+		assertEquals(new Rotator(270, 0, 0), Rotator.antiRotator(r1));
+		
+		Rotator r2 = new Rotator(0, 90, 0);
+		assertEquals(new Rotator(0, 270, 0), r2.antiRotator());
+		assertEquals(new Rotator(0, 270, 0), Rotator.antiRotator(r2));
+		
+		Rotator r3 = new Rotator(0, 0, 90);
+		assertEquals(new Rotator(0, 0, 270), r3.antiRotator());
+		assertEquals(new Rotator(0, 0, 270), Rotator.antiRotator(r3));
+	}
 }

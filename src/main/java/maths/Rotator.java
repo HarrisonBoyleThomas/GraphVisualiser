@@ -15,6 +15,11 @@ import java.lang.Math;
 *    Roll rotates around the x axis
 *    Pitch rotates around the y axis
 *    Yaw rotates around the z axis
+*    
+*    Angles are conventionally clockwise
+*    For example, (0, 0, 270) means rotate 270 degrees clockwise about the Z axis
+*    Many maths functions take anti-clockwise inputs, so
+*    must be converted before use
 *
 *    @Author Harrison Boyle-Thomas
 *    @Date 03/11/2020
@@ -141,12 +146,35 @@ public class Rotator{
 		return r1.delta(r2);
 	}
 	
+	/**
+	*    Return a Rotator that is in the opposite direction
+	**/
 	public Rotator opposite(){
 		return new Rotator(roll + 180, pitch + 180, yaw + 180);
 	}
 	
+	/**
+	*    Return the opposite rotation to the given Rotator
+	**/
 	public static Rotator opposite(Rotator r1){
 		return r1.opposite();
+	}
+	
+	/**
+	*    Return the Rotator that is rotated in opposite direction
+	*    For example, given a rotator (90, 0, 0) clockwise
+	*    calling antiClockwise will return (270, 0, 0)
+	*    90 clockwise -> 90 anti clockwise = 270 clockwise
+	**/
+	public Rotator antiClockwise(){
+		return new Rotator(360-roll, 360-pitch, 360-yaw);
+	}
+	
+	/**
+	*    @Return the anti rotator for the given Rotator
+	**/
+	public static Rotator antiClockwise(Rotator r){
+		return r.antiClockwise();
 	}
 	
 	@Override
