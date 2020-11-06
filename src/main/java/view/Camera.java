@@ -14,11 +14,16 @@ public class Camera{
 	//Sensitivity in rotating in 3D space
 	private double rSensitivity = 10;
 	
+	private int fieldOfViewAngle = 74;
+	//The relative position of the display to the camera
+	private Vector displayPosition;
+	
 	public Camera(Rotator initialRotation, Rotator initialLocation){
 		rotation = initialRotation;
 		defaultRotation = initialRotation;
 		location = initialLocation;
 		defaultLocation = initialLocation;
+		displayPosition = new Vector(1, 0, 0);
 	}
 	
 	public Camera(){
@@ -26,6 +31,7 @@ public class Camera{
 		resetRotation();
 		reLocation = new Vector();
 		setDefaultLocation();
+		displayPosition = new Vector(1, 0, 0);
 	}
 	
 	public Rotator resetRotation(){
@@ -55,6 +61,23 @@ public class Camera{
 	**/
 	public double getRotationSensitivity(){
 		return rSensitivity;
+	}
+	
+	public int setfieldOfViewAngle(int fovIn){
+		if(fovIn < 45){
+			fieldOfViewAngle = 45;
+		}
+		else if(fovIn > 179){
+			fieldOfViewAngle = 180;
+		}
+		else{
+			fieldOfViewAngle = fovIn;
+		}
+		return fieldOfViewAngle;
+	}
+	
+	public int getfieldOfViewAngle(){
+		return fieldOfViewAngle;
 	}
 	
 	/**
@@ -178,5 +201,52 @@ public class Camera{
 	public Rotator yaw(double inputAxis){
 		rotation = rotation.addYaw(rSensitivity * inputAxis);
 		return rotation;
+	}
+	
+	public Vector getRelativePosition(Vector target){
+		Vector diff = Vector.subtract(target, location);
+		return Functions.rotateVector(diff, rotation.antiRotator());
+	}
+	
+	/**
+	*    Project the given 3D point
+	*    to 2D screen-space by using an orthographic
+	*    projection
+	*    The scale is calculated by calculating the percentage of
+	*    look at rotation by fov angle
+	*
+	*    @Return a Vector of (x, y, 0) of the position on screen
+	**/
+	public Vector projectOrthographic(Vector target, int width, int height){
+		Vector relativePosition = getRelativePosition(target);
+		Rotator lookAtRotation = Functions.getRotationBetweenVectors(new Vector(1, 0, 0), relativePosition);
+		
+		double xScale = 0.0;
+		double yScale = 0.0;
+		if(lookAtRotation.yaw <= 180.0){	
+		    xScale = lookAtRotation.yaw / fieldOfViewAngle;
+		}
+		else{
+			xScale = -((360 - lookAtRotation.yaw) / fieldOfViewAngle);
+		}
+		
+		if(lookAtRotation.pitch <= 180){
+			yScale = lookAtRotation.pitch / fieldOfViewAngle;
+		}
+		else{
+			yScale = -((360 - lookAtRotation.pitch) / fieldOfViewAngle);
+		}
+		
+		int x = width * xScale;
+		int y = height * yScale;
+		
+		return new Vector(x, y, 0);
+	}
+	
+	public Vector projectPerspective(Vector target, int width, int height){
+		double aspectRatio = width / height;
+		int nearClip = 1;
+		int farClip = 100000;
+		return null;
 	}
 }
