@@ -26,9 +26,9 @@ import java.lang.Math;
 **/
 public class Rotator{
 	
-	final double roll;
-	final double pitch;
-	final double yaw;
+	public final double roll;
+	public final double pitch;
+	public final double yaw;
 	
 	/**
 	*    Create a rotator with the given roll pitch and yaw values

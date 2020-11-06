@@ -183,17 +183,17 @@ public class RotatorTest{
 	}
 	
 	@Test
-	public void antiRotatorTest(){
+	public void antiClockwiseTest(){
 		Rotator r1 = new Rotator(90, 0, 0);
-		assertEquals(new Rotator(270, 0, 0), r1.antiRotator());
-		assertEquals(new Rotator(270, 0, 0), Rotator.antiRotator(r1));
+		assertEquals(new Rotator(270, 0, 0), r1.antiClockwise());
+		assertEquals(new Rotator(270, 0, 0), Rotator.antiClockwise(r1));
 		
 		Rotator r2 = new Rotator(0, 90, 0);
-		assertEquals(new Rotator(0, 270, 0), r2.antiRotator());
-		assertEquals(new Rotator(0, 270, 0), Rotator.antiRotator(r2));
+		assertEquals(new Rotator(0, 270, 0), r2.antiClockwise());
+		assertEquals(new Rotator(0, 270, 0), Rotator.antiClockwise(r2));
 		
 		Rotator r3 = new Rotator(0, 0, 90);
-		assertEquals(new Rotator(0, 0, 270), r3.antiRotator());
-		assertEquals(new Rotator(0, 0, 270), Rotator.antiRotator(r3));
+		assertEquals(new Rotator(0, 0, 270), r3.antiClockwise());
+		assertEquals(new Rotator(0, 0, 270), Rotator.antiClockwise(r3));
 	}
 }

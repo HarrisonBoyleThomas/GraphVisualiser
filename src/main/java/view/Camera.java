@@ -1,11 +1,13 @@
 package viewport;
 
-import maths.*;
+import maths.Functions;
+import maths.Vector;
+import maths.Rotator;
 
-public class Camera{
+public class Camera extends Actor{
 	
 	private Rotator rotation;
-	private Rotator defaultRotation
+	private Rotator defaultRotation;
 	
 	private Vector defaultLocation;
 	
@@ -18,7 +20,7 @@ public class Camera{
 	//The relative position of the display to the camera
 	private Vector displayPosition;
 	
-	public Camera(Rotator initialRotation, Rotator initialLocation){
+	public Camera(Rotator initialRotation, Vector initialLocation){
 		rotation = initialRotation;
 		defaultRotation = initialRotation;
 		location = initialLocation;
@@ -29,8 +31,8 @@ public class Camera{
 	public Camera(){
 		defaultRotation = new Rotator();
 		resetRotation();
-		reLocation = new Vector();
-		setDefaultLocation();
+		defaultLocation = new Vector();
+		resetLocation();
 		displayPosition = new Vector(1, 0, 0);
 	}
 	
@@ -39,7 +41,7 @@ public class Camera{
 		return rotation;
 	}
 	
-	public Rotator resetLocation(){
+	public Vector resetLocation(){
 		location = defaultLocation;
 		return location;
 	}
@@ -205,7 +207,7 @@ public class Camera{
 	
 	public Vector getRelativePosition(Vector target){
 		Vector diff = Vector.subtract(target, location);
-		return Functions.rotateVector(diff, rotation.antiRotator());
+		return Functions.rotateVector(new Vector(), diff, rotation.antiClockwise());
 	}
 	
 	/**
@@ -214,12 +216,19 @@ public class Camera{
 	*    projection
 	*    The scale is calculated by calculating the percentage of
 	*    look at rotation by fov angle
+	*    Points that lie along the same unit vector will share a screen position
 	*
-	*    @Return a Vector of (x, y, 0) of the position on screen
+	*    @Return a Vector of (x, y, 0) of the position in 2D space, with origin (0,0) at the center of the screen
+	*
+	*    The screens bounds are the width and height, so a 3D coordinate is on screen
+	*    If it is within -w/2 to 2/2 and -h/2 to h/2
+	*    @Param target a location in 3D space
+	*    @Param width and height of the screen
+	*    The output must be translated to the renderer's screen space to be rendered correctly
 	**/
 	public Vector projectOrthographic(Vector target, int width, int height){
 		Vector relativePosition = getRelativePosition(target);
-		Rotator lookAtRotation = Functions.getRotationBetweenVectors(new Vector(1, 0, 0), relativePosition);
+		Rotator lookAtRotation = Functions.getRotationBetweenVectors(new Vector(0, 0, 0), relativePosition);
 		
 		double xScale = 0.0;
 		double yScale = 0.0;
@@ -237,16 +246,44 @@ public class Camera{
 			yScale = -((360 - lookAtRotation.pitch) / fieldOfViewAngle);
 		}
 		
-		int x = width * xScale;
-		int y = height * yScale;
+		int x = (int) (width * xScale / 2);
+		int y = (int) (height * yScale / 2);
 		
 		return new Vector(x, y, 0);
 	}
+	
 	
 	public Vector projectPerspective(Vector target, int width, int height){
 		double aspectRatio = width / height;
 		int nearClip = 1;
 		int farClip = 100000;
 		return null;
+	}
+	
+	/**
+	*    Convert the given 2D vector to a JavaFX renderer coordinate
+	*    @Param v a 2D screen space vector
+	*    @Param width and height of the screen
+	*    @Return a Vector with a JavaFX coordinate
+	**/
+	public Vector convert2DAxis(Vector v, int width, int height){
+		int halfWidth = width/2;
+		int halfHeight = height/2;
+		
+		int x = (int) (v.x + halfWidth);
+		int y = (int) (-(v.y) + halfHeight);
+		return new Vector(x, y, 0);
+	}
+	
+	/**
+	*    Projects a given coordinate to
+	*    JavaFX screen space
+	*    @Param target = a location in 3D space
+	*    @Param width and height of the screen
+	*    
+	*    @Return a Vector representing the screen-space position of an orthographic projection
+	**/
+	public Vector project(Vector target, int width, int height){
+		return convert2DAxis(projectOrthographic(target, width, height), width, height);
 	}
 }

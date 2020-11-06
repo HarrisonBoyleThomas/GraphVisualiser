@@ -111,7 +111,7 @@ public class Vector{
 	*    Scales the current vector by the given multiplier
 	*    @Return a Vector of the result
 	**/
-	public Vector multiply(int multiplier){
+	public Vector multiply(double multiplier){
 		return new Vector(x * multiplier, y * multiplier, z * multiplier);
 	}
 	
@@ -119,7 +119,7 @@ public class Vector{
 	*    Scales the given vector by the given multiplier
 	*    @Return a Vector of the result
 	**/
-	public static Vector multiply(Vector v, int multiplier){
+	public static Vector multiply(Vector v, double multiplier){
 		return v.multiply(multiplier);
 	}
 	

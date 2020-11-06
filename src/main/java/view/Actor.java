@@ -2,6 +2,7 @@ package viewport;
 
 import maths.Vector;
 import maths.Rotator;
+import maths.Functions;
 
 public abstract class Actor{
     protected Vector location;
