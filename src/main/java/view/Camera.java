@@ -187,6 +187,8 @@ public class Camera extends Actor{
 		Vector magnitude = new Vector(0, 0, xSensitivity);
 		magnitude = magnitude.multiply(inputAxis);
 		
+		magnitude = Functions.rotateVector(new Vector(), magnitude, rotation);
+		
 		return addLocation(magnitude);
 	}
 	
