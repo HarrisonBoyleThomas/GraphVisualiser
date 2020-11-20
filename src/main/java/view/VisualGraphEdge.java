@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 
 import javafx.scene.Group;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color; 
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -132,19 +132,20 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*	 @Override
 	**/
 	public void updateRenderLocation(Vector newLocation){
-		renderLocation = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
+		renderLocation = VisualGraphNode.getNode(edge.nodeA).getCenterLocation();
 	}
 	
 	/**
 	*    Draw a line from nodeA to nodeB, and add it to the VGE's icon
 	**/
 	public void updateIcon(){
+		Vector nodeALoc = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
 		Vector nodeBLoc = VisualGraphNode.getNode(edge.nodeB).getRenderLocation();
-		Line line = new Line((int) renderLocation.x, (int) renderLocation.y, (int)nodeBLoc.x, (int) nodeBLoc.y);
+		Vector difference = nodeBLoc.subtract(nodeALoc);
+		Line line = new Line(0, 0, (int) difference.x, (int) difference.y);
 		
 		
-		StackPane pane = new StackPane();
-		Circle background = new Circle(26);
+		Pane pane = new Pane();
 		line.setStroke(Color.BLACK);
 		if(edge.getState() == GraphComponentState.UNVISITED){
 			line.setStroke(Color.BLACK);

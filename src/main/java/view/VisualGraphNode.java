@@ -90,7 +90,9 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static void updateNodes(Camera camera, int width, int height){
 		for(VisualGraphNode icon : icons){
+			System.out.println(camera);
 			icon.updateRenderLocation(camera.project(icon.getLocation(), width, height));
+			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
 			icon.updateIcon();
 		}
 	}
@@ -98,11 +100,13 @@ public class VisualGraphNode extends VisualGraphComponent{
 	/**
 	*    @Return a copy of the icons
 	**/
-	public static ArrayList<VisualGraphNode> getIcons(){
+	public static ArrayList<VisualGraphNode> getNodes(){
 		return new ArrayList<VisualGraphNode>(icons);
 	}
 	
-	
+	/**
+	*    @Return the node the VGN represents
+	**/
 	public GraphNode getNode(){
 		return node;
 	}
@@ -112,7 +116,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public void updateIcon(){
 		StackPane pane = new StackPane();
-		Circle background = new Circle(26);
+		Circle background = new Circle(26 * renderScale);
 		background.setStroke(Color.BLACK);
 		background.setStrokeWidth(3);
 		if(node.getState() == GraphComponentState.UNVISITED){
@@ -137,6 +141,16 @@ public class VisualGraphNode extends VisualGraphComponent{
 		icon = new Group();
 		icon.getChildren().add(pane);
 	}
+	
+	
+	/**
+	*    @Return A Vector representing the render location of the middle of the node
+	**/
+	public Vector getCenterLocation(){
+		return new Vector(renderLocation.x + (26.0 * renderScale), renderLocation.y + (26.0 * renderScale), 0);
+	}
+	
+	
 	
 	/**
 	*    @Return true if the other icon represents the same node, false otherwise

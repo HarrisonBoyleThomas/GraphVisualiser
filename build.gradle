@@ -3,7 +3,7 @@ plugins{
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 application {
-    mainClassName = 'GraphVisualiser'
+    mainClassName = "viewport.Viewport"
 }
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")

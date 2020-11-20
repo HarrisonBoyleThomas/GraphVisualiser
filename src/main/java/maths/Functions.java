@@ -21,6 +21,10 @@ public class Functions{
     public static Rotator getRotationBetweenVectors(Vector v1, Vector v2){
 	    
     	Vector diff = Vector.normalise(Vector.subtract(v2, v1));
+		
+		if(diff == null){
+			return new Rotator(0, 0, 180);
+		}
     	
 		//Roll cannot be extracted
     	//double rollAngle = Math.toDegrees(Math.atan2(diff.y, diff.z));
@@ -103,5 +107,15 @@ public class Functions{
 	
 	public static Vector getUnitVectorFromRotation(Rotator r){
 		return new Vector(Math.cos(r.roll), Math.cos(r.pitch), Math.cos(r.yaw));
+	}
+	
+	public static double clamp(double value, double min, double max){
+		if(value < min){
+			return min;
+		}
+		if(value > max){
+			return max;
+		}
+		return value;
 	}
 }

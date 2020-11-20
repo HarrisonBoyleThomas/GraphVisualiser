@@ -4,6 +4,7 @@ import maths.Functions;
 import maths.Vector;
 import maths.Rotator;
 
+
 public class Camera extends Actor{
 	
 	private Rotator rotation;
@@ -19,6 +20,9 @@ public class Camera extends Actor{
 	private int fieldOfViewAngle = 74;
 	//The relative position of the display to the camera
 	private Vector displayPosition;
+	
+	//Nodes beyond this distance are not rendered
+	private double maxDrawDistance = 1000;
 	
 	public Camera(Rotator initialRotation, Vector initialLocation){
 		rotation = initialRotation;
@@ -49,6 +53,15 @@ public class Camera extends Actor{
 	public void reset(){
 		resetRotation();
 		resetLocation();
+	}
+	
+	public double setMaxDrawDistance(double distanceIn){
+		maxDrawDistance = distanceIn;
+		return maxDrawDistance;
+	}
+	
+	public double getMaxDrawDistance(){
+		return maxDrawDistance;
 	}
 	
 	/**
@@ -245,7 +258,6 @@ public class Camera extends Actor{
 		else{
 			yScale = -((360 - lookAtRotation.pitch) / fieldOfViewAngle);
 		}
-		
 		int x = (int) (width * xScale / 2);
 		int y = (int) (height * yScale / 2);
 		
@@ -285,5 +297,9 @@ public class Camera extends Actor{
 	**/
 	public Vector project(Vector target, int width, int height){
 		return convert2DAxis(projectOrthographic(target, width, height), width, height);
+	}
+	
+	public String toString(){
+		return "Camera: location= " + location + " rotation= " + rotation;
 	}
 }

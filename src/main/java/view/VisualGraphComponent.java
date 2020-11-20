@@ -21,8 +21,15 @@ public abstract class VisualGraphComponent extends Actor{
 	//where the VGC is meant to be rendered on-screen. A 2D vector
 	protected Vector renderLocation;
 	
+	//The scale of the VGC due to distance from the camera
+	protected double renderScale;
+	
 	public Vector getRenderLocation(){
 		return renderLocation;
+	}
+	
+	public Group getIcon(){
+		return icon;
 	}
 	
 	/**
@@ -42,6 +49,10 @@ public abstract class VisualGraphComponent extends Actor{
 	**/
 	public void updateRenderLocation(Vector newLocation){
 		renderLocation = newLocation;
+	}
+	
+	public void updateRenderScale(double scaleIn){
+		renderScale = Functions.clamp(scaleIn, 0.3, 3.0);
 	}
 	
 	/**

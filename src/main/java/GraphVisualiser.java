@@ -4,6 +4,7 @@ import javafx.stage.Stage;
 
 import menu.*;
 
+
 public class GraphVisualiser extends Application{
 	public static void main(String[] args){
 		launch(args);
