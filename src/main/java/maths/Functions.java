@@ -106,7 +106,14 @@ public class Functions{
 	
 	
 	public static Vector getUnitVectorFromRotation(Rotator r){
-		return new Vector(Math.cos(r.roll), Math.cos(r.pitch), Math.cos(r.yaw));
+		double roll = Math.toRadians(r.roll);
+		double pitch = Math.toRadians(r.pitch);
+		double yaw = Math.toRadians(r.yaw);
+		return new Vector(Math.cos(yaw) * Math.cos(pitch), Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch));
+	}
+	
+	public static Rotator getRotatorFromUnitVector(Vector v){
+		return new Rotator(Math.acos(v.x) * 180 / Math.PI, Math.acos(v.y) * 180 / Math.PI, Math.acos(v.z) );
 	}
 	
 	public static double clamp(double value, double min, double max){
