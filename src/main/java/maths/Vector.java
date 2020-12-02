@@ -192,7 +192,15 @@ public class Vector{
 	@Override
     public String toString() { 
         return "(" + x + "," + y + "," + z + ")"; 
-    } 
+    }
+	
+	public String toStringNeat(){
+		String strX = "" + Functions.round(x, 2);
+		String strY = "" + Functions.round(y, 2);
+		String strZ = "" + Functions.round(z, 2);
+		
+		return "(" + String.format("%1$10s", strX) + "," + String.format("%1$10s", strY) + "," + String.format("%1$10s", strZ) +")";
+	}
 	
 	
 		

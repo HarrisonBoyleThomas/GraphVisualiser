@@ -177,6 +177,15 @@ public class Rotator{
 		return r.antiClockwise();
 	}
 	
+	public static Rotator reverseOrder(Rotator r){
+		return new Rotator(r.yaw, r.pitch, r.roll);
+	}
+	
+	public Rotator reverseOrder(){
+		return new Rotator(yaw, pitch, roll);
+	}
+	
+	
 	@Override
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof Rotator){
@@ -189,7 +198,14 @@ public class Rotator{
 	@Override
     public String toString() { 
         return "(" + roll + "," + pitch + "," + yaw + ")"; 
-    } 
+    }
+	
+	public String toStringNeat(){
+		String strR = String.format("%1$5s", "" + Functions.round(roll, 1)).substring(0, 4);
+		String strP = "" + String.format("%1$5s", Functions.round(pitch, 1)).substring(0, 4);
+		String strY = "" + String.format("%1$5s", Functions.round(yaw, 1)).substring(0, 4);
+		return "(" + strR + "," + strP + "," + strY + ")";
+	}
 }
 	
 	

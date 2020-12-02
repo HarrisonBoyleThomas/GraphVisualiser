@@ -40,6 +40,7 @@ public class Camera extends Actor{
 		displayPosition = new Vector(1, 0, 0);
 	}
 	
+	
 	public Rotator resetRotation(){
 		rotation = defaultRotation;
 		return rotation;
@@ -153,11 +154,12 @@ public class Camera extends Actor{
 	**/
 	public Vector moveForward(double inputAxis){
 		Vector magnitude = new Vector(xSensitivity, 0, 0);
+		double length = magnitude.length();
 		magnitude = magnitude.multiply(inputAxis);
 		
 		magnitude = Functions.rotateVector(new Vector(), magnitude, rotation);
 		
-		return addLocation(magnitude);
+		return addLocation(magnitude.multiply(length));
 	}
 	
 	/**
@@ -169,11 +171,12 @@ public class Camera extends Actor{
 	**/
 	public Vector moveSideways(double inputAxis){
 		Vector magnitude = new Vector(0, xSensitivity, 0);
+		double length = magnitude.length();
 		magnitude = magnitude.multiply(inputAxis);
 		
 		magnitude = Functions.rotateVector(new Vector(), magnitude, rotation);
 		
-		return addLocation(magnitude);
+		return addLocation(magnitude.multiply(length));
 	}
 	
 	/**
@@ -300,6 +303,15 @@ public class Camera extends Actor{
 	public Vector project(Vector target, int width, int height){
 		return convert2DAxis(projectOrthographic(target, width, height), width, height);
 	}
+	
+	/**
+	*    @Return true if the given actor is in front of the camera
+	**/
+	public boolean isInFront(Actor target){
+		Vector relative = getRelativePosition(target.getLocation());
+		return relative.x > 0;
+	}
+	
 	
 	public String toString(){
 		return "Camera: location= " + location + " rotation= " + rotation;

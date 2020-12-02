@@ -32,6 +32,8 @@ public class Viewport extends Application{
 	
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
 	
+	private ViewportDetails viewportDetails = new ViewportDetails();
+	
 	public static void main(String[] args){
 		launch(args);
 	}
@@ -48,9 +50,11 @@ public class Viewport extends Application{
 		Group root = new Group();
 		
 		for(VisualGraphEdge edge : edges){
-			root.getChildren().add(edge.getIcon());
-			edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
-			edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
+			if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
+	    		root.getChildren().add(edge.getIcon());
+	    		edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
+	    		edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
+			}
 		}
 		for(VisualGraphNode node : nodes){
 			root.getChildren().add(node.getIcon());
@@ -58,6 +62,13 @@ public class Viewport extends Application{
 			node.getIcon().setLayoutY((int) node.getRenderLocation().y);
 		}
 		sp.getChildren().add(root);
+		
+		viewportDetails.update(this);
+		sp.getChildren().add(viewportDetails);
+	}
+	
+	public Camera getCamera(){
+		return camera;
 	}
 	
 	/**
