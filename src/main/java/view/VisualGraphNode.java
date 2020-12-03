@@ -90,7 +90,6 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static void updateNodes(Camera camera, int width, int height){
 		for(VisualGraphNode icon : icons){
-			System.out.println(camera);
 			icon.updateRenderLocation(camera.project(icon.getLocation(), width, height));
 			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
 			icon.updateIcon();

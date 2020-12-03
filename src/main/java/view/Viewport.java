@@ -158,19 +158,19 @@ public class Viewport extends Application{
 		boolean moved = false;
 		for(KeyCode k : heldDownKeys){
 	    	if(k == KeyCode.UP){
-		    	camera.pitch(-0.1);
+		    	camera.pitchRelative(-0.1);
 				moved = true;
 		    }
 			if(k == KeyCode.DOWN){
-				camera.pitch(0.1);
+				camera.pitchRelative(0.1);
 				moved = true;
 			}
 			if(k == KeyCode.LEFT){
-				camera.yaw(-0.1);
+				camera.yawRelative(-0.1);
 				moved = true;
 			}
 			if(k == KeyCode.RIGHT){
-			    camera.yaw(0.1);
+			    camera.yawRelative(0.1);
 				moved = true;
 	    	}
 			if(k == KeyCode.W){

@@ -41,6 +41,22 @@ public class Functions{
     	return new Rotator(0, pitchAngle, yawAngle).antiClockwise();
     }
 	
+	public static Rotator getRotationBetweenVectorsInverse(Vector v1, Vector v2){
+		Vector diff = Vector.normalise(Vector.subtract(v2, v1));
+		
+		if(diff == null){
+			return new Rotator(0, 0, 180);
+		}
+		
+		double pitchAngle = Math.toDegrees(Math.atan2(diff.z, diff.x));
+		
+		Vector pitchedVector = rotateVector(new Vector(), diff, new Rotator(0, pitchAngle, 0));
+		
+		double yawAngle = Math.toDegrees(Math.atan2(pitchedVector.y, pitchedVector.x));
+		
+		return new Rotator(0, pitchAngle, yawAngle).antiClockwise();
+	}
+	
 	/**
 	*    Rotate a given vector about the given origin clockwise by the given rotator
 	**/
@@ -71,6 +87,32 @@ public class Functions{
 		
 	}
 	
+	public static Vector rotateVectorInverse(Vector origin, Vector v, Rotator r){
+		Rotator opposite = r.antiClockwise();
+		
+		Vector diff = v.subtract(origin);
+		
+		double roll = Math.toRadians(opposite.roll);
+		double x = v.x;
+		double y = round((diff.y * Math.cos(roll)) - (diff.z * Math.sin(roll)), 3);
+		double z = round((diff.y * Math.sin(roll)) - (diff.z * Math.cos(roll)), 3);
+		Vector xVector = new Vector(x, y, z);
+		
+		double pitch = Math.toRadians(opposite.pitch);
+        x = round((xVector.x * Math.cos(pitch)) + (xVector.z * Math.sin(pitch)), 3);
+		y = xVector.y;
+		z = round((-xVector.x * Math.sin(pitch)) + (xVector.z * Math.cos(pitch)), 3);
+		Vector yxVector = new Vector(x, y, z);
+		
+		double yaw = Math.toRadians(opposite.yaw);
+		x = round((yxVector.x * Math.cos(yaw)) - (yxVector.y * Math.sin(yaw)), 3);
+		y = round((yxVector.x * Math.sin(yaw)) + (yxVector.y * Math.cos(yaw)), 3);
+	    z = yxVector.z;
+		Vector zyxVector = new Vector(x, y, z);
+		return origin.add(zyxVector);
+		
+	}
+	
 	
 	/**
 	*    Rounds the given value the given number of decimal places
@@ -95,13 +137,22 @@ public class Functions{
 		if(length == 0){
 			return new Rotator();
 		}
-		double roll = Math.acos(diff.x / length)*180/Math.PI;
 		
-		double pitch = Math.acos(diff.y / length)*180/Math.PI;
 		
-		double yaw = Math.acos(diff.z / length)*180/Math.PI;
+		double yaw = Math.toDegrees(Math.atan2(diff.z, diff.x));
 		
-		return new Rotator(roll, pitch, yaw);
+		double adj = Math.sqrt(Math.pow(diff.x, 2) + Math.pow(diff.z, 2));
+		
+		double pitch = Math.atan2(diff.y, adj);
+		
+		return new Rotator(0, pitch, yaw);
+	}
+	
+	public static Vector findVectorFromRotation(Rotator r){
+		double z = Math.sin(Math.toRadians(r.yaw));
+		double x = Math.cos(Math.toRadians(r.yaw));
+		double y = Math.sin(Math.toRadians(r.pitch));
+		return new Vector(x, y, z);
 	}
 	
 	

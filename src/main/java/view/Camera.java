@@ -153,13 +153,10 @@ public class Camera extends Actor{
 	*    @Return the new location of the camera
 	**/
 	public Vector moveForward(double inputAxis){
-		Vector magnitude = new Vector(xSensitivity, 0, 0);
-		double length = magnitude.length();
-		magnitude = magnitude.multiply(inputAxis);
+		Vector magnitude = getForwardVector();
+		magnitude = magnitude.multiply(inputAxis * xSensitivity);
 		
-		magnitude = Functions.rotateVector(new Vector(), magnitude, rotation);
-		
-		return addLocation(magnitude.multiply(length));
+		return addLocation(magnitude);
 	}
 	
 	/**
@@ -170,13 +167,10 @@ public class Camera extends Actor{
 	*    @Return the new location of the camera
 	**/
 	public Vector moveSideways(double inputAxis){
-		Vector magnitude = new Vector(0, xSensitivity, 0);
-		double length = magnitude.length();
-		magnitude = magnitude.multiply(inputAxis);
+		Vector magnitude = getRightVector();
+		magnitude = magnitude.multiply(inputAxis * xSensitivity);
 		
-		magnitude = Functions.rotateVector(new Vector(), magnitude, rotation);
-		
-		return addLocation(magnitude.multiply(length));
+		return addLocation(magnitude);
 	}
 	
 	/**
@@ -187,10 +181,8 @@ public class Camera extends Actor{
 	*    @Return the new location of the camera
 	**/
 	public Vector moveUpwards(double inputAxis){
-		Vector magnitude = new Vector(0, 0, xSensitivity);
-		magnitude = magnitude.multiply(inputAxis);
-		
-		magnitude = Functions.rotateVector(new Vector(), magnitude, rotation);
+		Vector magnitude = getUpVector();
+		magnitude = magnitude.multiply(inputAxis * xSensitivity);
 		
 		return addLocation(magnitude);
 	}
@@ -206,20 +198,49 @@ public class Camera extends Actor{
 	}
 	
 	/**
-	*    Rotate the camera about the y axis
+	*    Rotate the camera about the y axis of the world
 	*    @Return the new rotation
 	**/
 	public Rotator pitch(double inputAxis){
 		rotation = rotation.addPitch(rSensitivity * inputAxis);
 		return rotation;
 	}
-	
 	/**
-	*    Rotate the camera about the z axis
+	*    Rotate the camera about the z axis of the world
 	*    @Return the new rotation
 	**/
 	public Rotator yaw(double inputAxis){
 		rotation = rotation.addYaw(rSensitivity * inputAxis);
+		return rotation;
+	}
+	
+	/**
+	*    Rotate the camera about the relative y axis of the camera
+	*    @Return the new rotation
+	**/
+	public Rotator pitchRelative(double inputAxis){
+		double mult = inputAxis * rSensitivity;
+		Vector forward = getForwardVector();
+		Rotator delta = new Rotator(0, mult * Math.cos(Math.toRadians(rotation.roll)), mult * Math.sin(Math.toRadians(rotation.roll)));
+		Vector pitchVector = Functions.rotateVectorInverse(new Vector(), forward, delta).normalise();
+		Rotator newRotation = Functions.getRotationBetweenVectors(new Vector(), pitchVector);
+		rotation = new Rotator(rotation.roll, newRotation.pitch, newRotation.yaw);
+		//rotation = rotation.addPitch(rSensitivity * inputAxis);
+		return rotation;
+	}
+	
+	/**
+	*    Rotate the camera about the relative z axis of the camera
+	*    @Return the new rotation
+	**/
+	public Rotator yawRelative(double inputAxis){
+		double mult = inputAxis * rSensitivity;
+		Vector forward = getForwardVector();
+		Rotator delta = new Rotator(0, mult * Math.sin(Math.toRadians(rotation.roll)), mult * Math.cos(Math.toRadians(rotation.roll)));
+		Vector yawVector = Functions.rotateVectorInverse(new Vector(), forward, delta).normalise();
+		Rotator newRotation = Functions.getRotationBetweenVectors(new Vector(), yawVector);
+		rotation = new Rotator(rotation.roll, newRotation.pitch, newRotation.yaw);
+		//rotation = rotation.addYaw(rSensitivity * inputAxis);
 		return rotation;
 	}
 	
@@ -310,6 +331,30 @@ public class Camera extends Actor{
 	public boolean isInFront(Actor target){
 		Vector relative = getRelativePosition(target.getLocation());
 		return relative.x > 0;
+	}
+	
+	/**
+	*    @Return a unit vector representing the direction of the camera
+	**/
+	public Vector getForwardVector(){
+		Vector front = new Vector(1, 0, 0);
+		return Functions.rotateVectorInverse(new Vector(), front, rotation).normalise();
+	}
+	
+	/**
+	*    @Return a unit vector representing the sideways direction of the camera(right side)
+	**/
+	public Vector getRightVector(){
+		Vector right = new Vector(0, 1, 0);
+		return Functions.rotateVectorInverse(new Vector(), right, rotation).normalise();
+	}
+	
+	/**
+	*    @Return a unit vector representing the upwards direction of the camera(above)
+	**/
+	public Vector getUpVector(){
+		Vector up = new Vector(0, 0, 1);
+		return Functions.rotateVectorInverse(new Vector(), up, rotation).normalise();
 	}
 	
 	

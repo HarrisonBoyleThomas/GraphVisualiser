@@ -181,10 +181,6 @@ public class Rotator{
 		return new Rotator(r.yaw, r.pitch, r.roll);
 	}
 	
-	public Rotator reverseOrder(){
-		return new Rotator(yaw, pitch, roll);
-	}
-	
 	
 	@Override
 	public boolean equals(Object otherObject){
