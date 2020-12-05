@@ -14,7 +14,9 @@ import java.util.ArrayList;
 *    @Author Harrison Boyle-Thomas
 *    @Date 02.11.2020
 **/
-class DijkstraShortestPath extends GraphAlgorithm{
+public class DijkstraShortestPath extends GraphAlgorithm{
+	
+	
 	
 	//the node to find the distance from
 	private final GraphNode startNode;
@@ -52,6 +54,7 @@ class DijkstraShortestPath extends GraphAlgorithm{
 	*                   unexpected nodes to it's lists, which can impact performance
 	**/
 	public DijkstraShortestPath(GraphNode initialStateIn, ArrayList<GraphNode> nodesIn){
+		name = "Dijkstra shortest path (array)";
 		startNode = initialStateIn;
 		initialise(nodesIn);
 	}
@@ -112,6 +115,9 @@ class DijkstraShortestPath extends GraphAlgorithm{
 	*    Initialise variables
 	**/
 	public void initialise(ArrayList<GraphNode> nodesIn){
+		if(nodesIn == null){
+			return;
+		}
 		distances = new HashMap<>();
 		predecessors = new HashMap<>();
 		nodes = nodesIn;

@@ -15,7 +15,7 @@ public class ViewportDetails extends VBox{
 	public void update(Viewport viewport){
 		getChildren().clear();
 		
-		Label algorithm = new Label("Algorithm: Dijkstra");
+		Label algorithm = new Label("Algorithm: " + viewport.getAlgorithm());
 		getChildren().add(algorithm);
 		
 		cameraDetails.update(viewport.getCamera());

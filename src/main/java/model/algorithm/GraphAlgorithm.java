@@ -14,10 +14,12 @@ import java.util.ArrayList;
 *    @Author: Harrison Boyle-Thomas
 *    @Date: 02/11/2020
 **/
-abstract class GraphAlgorithm{
+public abstract class GraphAlgorithm{
 	protected boolean finished;
 	
 	protected ArrayList<GraphNode> nodes;
+	
+	protected String name;
 	
 	public GraphAlgorithm(){
 		finished = false;
@@ -55,6 +57,10 @@ abstract class GraphAlgorithm{
 		for(GraphNode node : nodes){
 			node.setState(stateIn);
 		}
+	}
+	
+	public String toString(){
+		return name;
 	}
 }
 		

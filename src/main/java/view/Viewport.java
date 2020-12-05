@@ -7,6 +7,7 @@ import maths.Functions;
 import model.GraphNode;
 import model.GraphEdge;
 import model.GraphComponentState;
+import model.algorithm.GraphAlgorithm;
 
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ import javafx.event.EventHandler;
 
 import javafx.animation.AnimationTimer;
 
-public class Viewport extends Application{
+public class Viewport extends Pane{
 	private Camera camera;
-	private Pane sp;
+	GraphAlgorithm algorithm;
 	
 	private int width = 500;
 	private int height = 500;
@@ -34,12 +35,16 @@ public class Viewport extends Application{
 	
 	private ViewportDetails viewportDetails = new ViewportDetails();
 	
-	public static void main(String[] args){
-		launch(args);
+	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
+		camera = cameraIn;
+		algorithm = algorithmIn;
+		createCube();
+		draw();
 	}
 	
+	
 	public void draw(){
-		sp.getChildren().clear();
+		getChildren().clear();
 		
 		VisualGraphNode.updateNodes(camera, width, height);
 		VisualGraphEdge.updateEdges();
@@ -61,10 +66,10 @@ public class Viewport extends Application{
 			node.getIcon().setLayoutX((int) node.getRenderLocation().x);
 			node.getIcon().setLayoutY((int) node.getRenderLocation().y);
 		}
-		sp.getChildren().add(root);
+		getChildren().add(root);
 		
 		viewportDetails.update(this);
-		sp.getChildren().add(viewportDetails);
+		getChildren().add(viewportDetails);
 	}
 	
 	public Camera getCamera(){
@@ -119,112 +124,9 @@ public class Viewport extends Application{
 			VisualGraphEdge.create(e);
 		}
 	}
-		
 	
-	public void start(Stage primaryStage) throws Exception{
-		camera = new Camera();
-		
-		sp = new Pane();
-		
-		createCube();
-		draw();
-		
-		
-		
-		
-		primaryStage.setTitle("Viewport");
-		Scene scene = new Scene(sp, width, height);
-		addEvents(scene);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-		
-		
-		//Mainloop
-		new AnimationTimer() {
-			public void handle(long currentNanoTime) {
-				handleMovementInput();
-			    try{
-				    Thread.sleep(1);
-			    }
-			    catch(InterruptedException  error){
-			        
-			    }
-			}
-		}.start();
-		
-	}
-	
-	private void handleMovementInput(){
-		boolean moved = false;
-		for(KeyCode k : heldDownKeys){
-	    	if(k == KeyCode.UP){
-		    	camera.pitchRelative(-0.1);
-				moved = true;
-		    }
-			if(k == KeyCode.DOWN){
-				camera.pitchRelative(0.1);
-				moved = true;
-			}
-			if(k == KeyCode.LEFT){
-				camera.yawRelative(-0.1);
-				moved = true;
-			}
-			if(k == KeyCode.RIGHT){
-			    camera.yawRelative(0.1);
-				moved = true;
-	    	}
-			if(k == KeyCode.W){
-				camera.moveForward(0.1);
-				moved = true;
-			}
-			if(k == KeyCode.S){
-				camera.moveForward(-0.1);
-				moved = true;
-			}
-			if(k == KeyCode.A){
-				camera.moveSideways(0.1);
-				moved = true;
-			}
-			if(k == KeyCode.D){
-				camera.moveSideways(-0.1);
-				moved = true;
-			}
-			if(k == KeyCode.Q){
-				camera.moveUpwards(-0.1);
-				moved = true;
-			}
-			if(k == KeyCode.Z){
-				camera.moveUpwards(0.1);
-				moved = true;
-			}
-			if(k == KeyCode.COMMA){
-				camera.roll(-0.1);
-				moved = true;
-			}
-			if(k == KeyCode.PERIOD){
-				camera.roll(0.1);
-				moved = true;
-			}
-		}
-		if(moved){
-			draw();
-		}
+	public GraphAlgorithm getAlgorithm(){
+		return algorithm;
 	}
 		
-	private void addEvents(Scene scene){
-		//Pitch sensor
-		scene.setOnKeyPressed(new EventHandler<KeyEvent> (){
-			public void handle(KeyEvent e){
-				if(!heldDownKeys.contains(e.getCode())){
-					heldDownKeys.add(e.getCode());
-				}
-			}
-		});
-		
-		scene.setOnKeyReleased(new EventHandler<KeyEvent> () {
-			public void handle(KeyEvent e){
-				heldDownKeys.remove(e.getCode());
-			}
-		});
-	}
 }
