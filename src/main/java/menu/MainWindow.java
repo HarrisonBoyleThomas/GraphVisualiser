@@ -2,7 +2,10 @@ package menu;
 
 import viewport.Viewport;
 import viewport.Camera;
+import viewport.VisualGraphNode;
+import viewport.VisualGraphEdge;
 import model.algorithm.*;
+import model.GraphNode;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -20,7 +23,19 @@ public class MainWindow extends BorderPane{
 	public MainWindow(){
 		GridPane viewSection = new GridPane();
 		setCenter(viewSection);
-		addViewport(new Viewport(camera, new DijkstraShortestPath(null, null)));
+		DijkstraShortestPath dsp = new DijkstraShortestPath(null, null);
+		Viewport v = new Viewport(camera, new DijkstraShortestPath(null, null));
+		v.createCube();
+		//addViewport(v);
+		ArrayList<GraphNode> nodes = new ArrayList<>();
+		for(VisualGraphNode n : VisualGraphNode.getNodes()){
+			nodes.add(n.getNode());
+		}
+		dsp.setStartNode(nodes.get(0));
+		dsp.initialise(nodes);
+		v = new Viewport(camera, dsp);
+		addViewport(v);
+		
 	}
 	
 	public boolean addViewport(Viewport viewport){
@@ -31,6 +46,7 @@ public class MainWindow extends BorderPane{
 		}
 		else if(noOfViewports == 1){
 			view.add(viewport, 0, 1);
+			System.out.println("second viewport created");
 		}
 		else if(noOfViewports == 2){
 			view.add(viewport, 1, 0);
@@ -100,13 +116,26 @@ public class MainWindow extends BorderPane{
 				camera.roll(0.1);
 				moved = true;
 			}
+			if(k == KeyCode.ENTER){
+				moved = true;
+			}
 		}
 		if(moved){
+			VisualGraphNode.updateNodes(camera, 500,500);
+		    VisualGraphEdge.updateEdges();
 			GridPane view = (GridPane) getCenter();
 			for(Node n : view.getChildren()){
+				VisualGraphNode.updateNodes(camera, 500,500);
 			    Viewport v = (Viewport) n;
 				v.draw();
 			}
+		}
+	}
+	
+	public void stepAlgorithms(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			((Viewport) n).getAlgorithm().step();
 		}
 	}
 }

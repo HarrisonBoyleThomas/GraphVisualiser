@@ -36,9 +36,11 @@ public class Viewport extends Pane{
 	private ViewportDetails viewportDetails = new ViewportDetails();
 	
 	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
+		setMinSize(width, height);
+		setMaxSize(width, height);
+		setStyle("-fx-background-color: #ffffff");
 		camera = cameraIn;
 		algorithm = algorithmIn;
-		createCube();
 		draw();
 	}
 	
@@ -46,22 +48,23 @@ public class Viewport extends Pane{
 	public void draw(){
 		getChildren().clear();
 		
-		VisualGraphNode.updateNodes(camera, width, height);
-		VisualGraphEdge.updateEdges();
-		
 		ArrayList<VisualGraphNode> nodes = VisualGraphNode.getNodes();
 		ArrayList<VisualGraphEdge> edges = VisualGraphEdge.getEdges();
 		
 		Group root = new Group();
 		
-		for(VisualGraphEdge edge : edges){
+		for(VisualGraphEdge e : edges){
+			VisualGraphEdge edge = new VisualGraphEdge(e);
 			if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
+				edge.updateIcon(algorithm);
 	    		root.getChildren().add(edge.getIcon());
 	    		edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
 	    		edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
 			}
 		}
-		for(VisualGraphNode node : nodes){
+		for(VisualGraphNode n : nodes){
+			VisualGraphNode node = new VisualGraphNode(n);
+			node.updateIcon(algorithm);
 			root.getChildren().add(node.getIcon());
 			node.getIcon().setLayoutX((int) node.getRenderLocation().x);
 			node.getIcon().setLayoutY((int) node.getRenderLocation().y);
@@ -79,7 +82,7 @@ public class Viewport extends Pane{
 	/**
 	*    Creates a cube graph
 	**/
-	private void createCube(){
+	public void createCube(){
 		ArrayList<GraphNode> nodes = new ArrayList<>();
 		for(int i = 1; i <= 8; i++){
 			GraphNode node = new GraphNode(i);
@@ -121,8 +124,13 @@ public class Viewport extends Pane{
 		VisualGraphNode.create(new Vector(30, -10, -10), nodes.get(7));
 		
 		for(GraphEdge e : edges){
+			e.setName("1");
+			e.setLength(1);
 			VisualGraphEdge.create(e);
 		}
+		
+		VisualGraphNode.updateNodes(camera, 500,500);
+		VisualGraphEdge.updateEdges();
 	}
 	
 	public GraphAlgorithm getAlgorithm(){

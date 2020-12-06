@@ -19,7 +19,7 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 	
 	
 	//the node to find the distance from
-	private final GraphNode startNode;
+	private GraphNode startNode;
 	
 	//maps nodes to their distances from the start node
 	private HashMap<GraphNode, Integer> distances;
@@ -68,6 +68,9 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 	*    @Return A String describing what DSP did in the current cycle
 	**/
 	public String step(){
+		if(finished){
+			return "";
+		}
 		String outputString = "";
 		
 		if(nextStates.isEmpty()){
@@ -76,16 +79,16 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		}
 		else{
 			if(currentNodeEdges.size() == 0){
-				currentNode.setState(GraphComponentState.VISITED);
+				nodeStates.put(currentNode, GraphComponentState.VISITED);
 				currentNode = nextStates.remove(0);
-				currentNode.setState(GraphComponentState.CURRENT);
+				nodeStates.put(currentNode, GraphComponentState.CURRENT);
 				
 				currentNodeEdges = new ArrayList<>(currentNode.getEdges());
 				outputString = "All edges from the current state have been considered. Choosing new state";
 			}
 			else{
 				GraphEdge edge = currentNodeEdges.remove(0);
-				edge.setState(GraphComponentState.VISITED);
+				edgeStates.put(edge, GraphComponentState.VISITED);
 				//If the current node does not exist in the list of expected nodes,
 				//add the node to the distance list
 				if(distances.get(currentNode) == null){
@@ -102,13 +105,18 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 				if(!visitedNodes.contains(edge.nodeB)){
 					visitedNodes.add(edge.nodeB);
 					nextStates.add(edge.nodeB);
-					edge.nodeB.setState(GraphComponentState.IN_OPEN_LIST);
+					nodeStates.put(edge.nodeB, GraphComponentState.IN_OPEN_LIST);
 					outputString += "New state discovered- adding to open list";
 				}
 			}
 		}
+		stepCount++;
 		return outputString;
 					
+	}
+	
+	public void setStartNode(GraphNode startNodeIn){
+		startNode = startNodeIn;
 	}
 	
 	/**
@@ -133,11 +141,12 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 			    distances.put(node, -1);
 			}
 			predecessors.put(node, startNode);
+			nodeStates.put(node, GraphComponentState.UNVISITED);
 		}
 		
 		//current node is initially the start node
 		currentNode = startNode;
-		currentNode.setState(GraphComponentState.CURRENT);
+		nodeStates.put(currentNode, GraphComponentState.CURRENT);
 		
 		//nodes initially in the open list are nodes connected to the start node
 		nextStates = currentNode.getConnectedNodes();
@@ -228,7 +237,32 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		return output;
 	}
 			
-			
+	public String[] getDetails(){
+		String start = "Not set";
+		if(startNode != null){
+			start = startNode.getName();
+		}
+		
+		String current = "Not set";
+		if(currentNode != null){
+			current = currentNode.getName();
+		}
+		String state = "";
+		if(stepCount == 0){
+			state = "Not started";
+		}
+		else{
+	    	if(finished){
+    			state = "Finished";
+    		}
+    		else{
+    			state = "Not finished";
+    		}
+		}
+		
+		
+        return new String[]{"StartNode: " + start, "CurrentNode: " + current, "State: " + state, "Step number: " + stepCount, "Predecessors: " + predecessors, "Distances:      " + distances};
+	}		
 		
 			
 		

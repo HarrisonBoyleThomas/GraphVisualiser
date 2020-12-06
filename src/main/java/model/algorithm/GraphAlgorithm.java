@@ -5,6 +5,7 @@ import model.GraphNode;
 import model.GraphComponentState; 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
 *    An algorithm to be run on a graph
@@ -20,6 +21,12 @@ public abstract class GraphAlgorithm{
 	protected ArrayList<GraphNode> nodes;
 	
 	protected String name;
+	
+	protected HashMap<GraphNode, GraphComponentState> nodeStates = new HashMap<>();
+	
+	protected HashMap<GraphEdge, GraphComponentState> edgeStates = new HashMap<>();
+	
+	protected int stepCount;
 	
 	public GraphAlgorithm(){
 		finished = false;
@@ -55,12 +62,26 @@ public abstract class GraphAlgorithm{
 	**/
 	public void setStateForAllNodes(GraphComponentState stateIn){
 		for(GraphNode node : nodes){
-			node.setState(stateIn);
+			nodeStates.put(node, stateIn);
 		}
+	}
+	
+	public GraphComponentState getNodeState(GraphNode node){
+		return nodeStates.get(node);
+	}
+	
+	public GraphComponentState getEdgeState(GraphEdge edge){
+		return edgeStates.get(edge);
+	}
+	
+	public boolean getFinished(){
+		return finished;
 	}
 	
 	public String toString(){
 		return name;
 	}
+	
+	public abstract String[] getDetails();
 }
 		

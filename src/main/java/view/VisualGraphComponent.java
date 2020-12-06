@@ -3,6 +3,7 @@ package viewport;
 import maths.Vector;
 import maths.Rotator;
 import maths.Functions;
+import model.algorithm.GraphAlgorithm;
 
 import javafx.scene.Group;
 
@@ -58,5 +59,5 @@ public abstract class VisualGraphComponent extends Actor{
 	/**
 	*    Update the visual appearance of the icon
 	**/
-	public abstract void updateIcon();
+	public abstract void updateIcon(GraphAlgorithm algorithm);
 }

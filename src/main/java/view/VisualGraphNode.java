@@ -7,6 +7,7 @@ import maths.Functions;
 import model.GraphNode;
 import model.GraphEdge;
 import model.GraphComponentState;
+import model.algorithm.*;
 
 
 import java.util.ArrayList;
@@ -40,6 +41,19 @@ public class VisualGraphNode extends VisualGraphComponent{
 	private VisualGraphNode(Vector locationIn, GraphNode nodeIn){
 		location = locationIn;
 		node = nodeIn;
+	}
+	
+	/**
+	*    Copy constructor
+	*    Copies of the "concrete" VGNs created by the create() function are supplied
+	*    to each viewport
+	**/
+	public VisualGraphNode(VisualGraphNode toCopy){
+		location = toCopy.getLocation();
+		node = toCopy.getNode();
+		renderLocation = toCopy.getRenderLocation();
+		renderScale = toCopy.renderScale;
+		icon = toCopy.getIcon();
 	}
 	
 	/**
@@ -92,7 +106,6 @@ public class VisualGraphNode extends VisualGraphComponent{
 		for(VisualGraphNode icon : icons){
 			icon.updateRenderLocation(camera.project(icon.getLocation(), width, height));
 			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
-			icon.updateIcon();
 		}
 	}
 	
@@ -101,6 +114,14 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static ArrayList<VisualGraphNode> getNodes(){
 		return new ArrayList<VisualGraphNode>(icons);
+	}
+	
+	public static ArrayList<VisualGraphNode> copyNodes(){
+		ArrayList<VisualGraphNode> output = new ArrayList<>();
+		for(VisualGraphNode node : icons){
+			output.add(new VisualGraphNode(node));
+		}
+		return output;
 	}
 	
 	/**
@@ -113,22 +134,22 @@ public class VisualGraphNode extends VisualGraphComponent{
 	/**
 	*    Update the visual representation of the node
 	**/
-	public void updateIcon(){
+	public void updateIcon(GraphAlgorithm algorithm){
 		StackPane pane = new StackPane();
 		Circle background = new Circle(26 * renderScale);
 		background.setStroke(Color.BLACK);
 		background.setStrokeWidth(3);
-		if(node.getState() == GraphComponentState.UNVISITED){
+		if(algorithm.getNodeState(node) == GraphComponentState.UNVISITED){
 			background.setFill(Color.WHITE);
 		}
-		else if(node.getState() == GraphComponentState.VISITED){
-			background.setFill(Color.GREEN);
+		else if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
+			background.setFill(Color.LIME);
 		}
-		else if(node.getState() == GraphComponentState.IN_OPEN_LIST){
+		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
 			background.setFill(Color.RED);
 		}
-		else if(node.getState() == GraphComponentState.CURRENT){
-			background.setFill(Color.BLUE);
+		else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
+			background.setFill(Color.CYAN);
 		}
 		else{
 			background.setFill(Color.WHITE);

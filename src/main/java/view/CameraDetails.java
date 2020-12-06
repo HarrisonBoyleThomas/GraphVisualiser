@@ -22,6 +22,5 @@ public class CameraDetails extends VBox{
 		
 		Label rotation = new Label("    Rotation: " + camera.getRotation().toStringNeat());
 		getChildren().add(rotation);
-
 	}
 }

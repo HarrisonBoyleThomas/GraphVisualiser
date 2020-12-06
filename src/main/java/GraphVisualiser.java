@@ -62,6 +62,9 @@ public class GraphVisualiser extends Application{
 		//Pitch sensor
 		scene.setOnKeyPressed(new EventHandler<KeyEvent> (){
 			public void handle(KeyEvent e){
+				if(e.getCode() == KeyCode.ENTER){
+					mainWindow.stepAlgorithms();
+				}
 				if(!heldDownKeys.contains(e.getCode())){
 					heldDownKeys.add(e.getCode());
 				}
@@ -73,6 +76,7 @@ public class GraphVisualiser extends Application{
 				heldDownKeys.remove(e.getCode());
 			}
 		});
+		
 	}
 	
 }

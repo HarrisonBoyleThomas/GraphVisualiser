@@ -7,6 +7,7 @@ import maths.Functions;
 import model.GraphNode;
 import model.GraphEdge;
 import model.GraphComponentState;
+import model.algorithm.*;
 
 
 import java.util.ArrayList;
@@ -17,7 +18,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color; 
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 
 /**
 *    A VGE represents a graph edge by storing a reference to an edge
@@ -38,6 +45,13 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	private VisualGraphEdge(GraphEdge edgeIn){
 		edge = edgeIn;
 		location = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
+	}
+	
+	public VisualGraphEdge(VisualGraphEdge toCopy){
+		edge = toCopy.getEdge();
+		renderLocation = toCopy.getRenderLocation();
+		renderScale = toCopy.renderScale;
+		icon = toCopy.getIcon();
 	}
 	
 	/**
@@ -99,7 +113,6 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	public static void updateEdges(){
 		for(VisualGraphEdge e : edges){
 			e.updateRenderLocation(new Vector());
-			e.updateIcon();
 		}
 	}
 	
@@ -108,6 +121,14 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	**/
 	public static ArrayList<VisualGraphEdge> getEdges(){
 		return new ArrayList<VisualGraphEdge>(edges);
+	}
+	
+	public static ArrayList<VisualGraphEdge> copyEdges(){
+		ArrayList<VisualGraphEdge> output = new ArrayList<>();
+		for(VisualGraphEdge edge : edges){
+			output.add(new VisualGraphEdge(edge));
+		}
+		return output;
 	}
 	
 	/**
@@ -138,36 +159,63 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	/**
 	*    Draw a line from nodeA to nodeB, and add it to the VGE's icon
 	**/
-	public void updateIcon(){
+	public void updateIcon(GraphAlgorithm algorithm){
 		Vector nodeALoc = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
 		Vector nodeBLoc = VisualGraphNode.getNode(edge.nodeB).getRenderLocation();
 		Vector difference = nodeBLoc.subtract(nodeALoc);
+		double gradient = -(difference.x / difference.y);
 		Line line = new Line(0, 0, (int) difference.x, (int) difference.y);
+		Polygon arrow = new Polygon();
+		double lineAngle = Math.atan2(difference.y, difference.x);
+		double lineLength = 0.8*difference.length();
+		arrow.getPoints().addAll(new Double[]{
+			difference.x, difference.y,
+			Math.cos(lineAngle+0.05)*lineLength, Math.sin(lineAngle+0.05)*lineLength,
+			Math.cos(lineAngle-0.05)*lineLength, Math.sin(lineAngle-0.05)*lineLength
+		});
+		
+		line.setStrokeWidth(4);
 		
 		
 		Pane pane = new Pane();
+		Color fillColour = Color.BLACK;
 		line.setStroke(Color.BLACK);
-		if(edge.getState() == GraphComponentState.UNVISITED){
-			line.setStroke(Color.BLACK);
-		}
-		else if(edge.getState() == GraphComponentState.VISITED){
-			line.setStroke(Color.GREEN);
-		}
-		else if(edge.getState() == GraphComponentState.IN_OPEN_LIST){
-			line.setStroke(Color.RED);
-		}
-		else if(edge.getState() == GraphComponentState.CURRENT){
-			line.setStroke(Color.BLUE);
+		if(algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED){
+			if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
+				fillColour = Color.LIME;
+			}
+			else if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.IN_OPEN_LIST){
+				fillColour = Color.RED;
+			}
+			else{
+				fillColour = Color.BLACK;
+			}
 		}
 		else{
-			line.setStroke(Color.BLACK);
+			fillColour = Color.BLACK;
 		}
+		line.setStroke(fillColour);
+		arrow.setStroke(fillColour);
+		arrow.setFill(fillColour);
+		
 		pane.getChildren().add(line);
-		Text label = new Text(edge.getName());
-		//pane.getChildren().add(label);
+		pane.getChildren().add(arrow);
+		Label label = new Label(edge.getName());
+		Vector midpoint = getCenter(nodeALoc, nodeBLoc);
+		label.setLayoutX((int) (Math.cos(lineAngle+0.174533)*lineLength*0.625));
+        label.setLayoutY((int) (Math.sin(lineAngle+0.174533)*lineLength*0.625));
+		
+		BackgroundFill bg = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY);
+		
+        label.setBackground(new Background(bg));		
+		pane.getChildren().add(label);
 		
 		icon = new Group();
 		icon.getChildren().add(pane);
+	}
+	
+	private Vector getCenter(Vector a, Vector b){
+		return Vector.multiply(b.subtract(a), 0.5);
 	}
 	
 	/**

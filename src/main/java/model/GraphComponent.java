@@ -53,4 +53,8 @@ abstract class GraphComponent{
 		name = nameIn;
 		return name;
 	}
+	
+	public String toString(){
+		return name;
+	}
 }

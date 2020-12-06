@@ -8,15 +8,17 @@ import javafx.scene.control.Label;
 
 public class ViewportDetails extends VBox{
 	CameraDetails cameraDetails;
+	AlgorithmDetails algorithmDetails;
 	public ViewportDetails(){
 		cameraDetails = new CameraDetails();
+		algorithmDetails = new AlgorithmDetails();
 	}
 	
 	public void update(Viewport viewport){
 		getChildren().clear();
 		
-		Label algorithm = new Label("Algorithm: " + viewport.getAlgorithm());
-		getChildren().add(algorithm);
+		algorithmDetails.update(viewport.getAlgorithm());
+		getChildren().add(algorithmDetails);
 		
 		cameraDetails.update(viewport.getCamera());
 		getChildren().add(cameraDetails);
