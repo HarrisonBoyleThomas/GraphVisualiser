@@ -15,8 +15,6 @@ import java.util.ArrayList;
 
 
 public class GraphVisualiser extends Application{
-	private MainWindow mainWindow;
-	
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
 	
 	public static void main(String[] args){
@@ -26,7 +24,7 @@ public class GraphVisualiser extends Application{
 	public void start(Stage primaryStage) throws Exception{
 		primaryStage.setTitle("Graph visualiser");
 		
-		Scene scene = new Scene(makeMainWindow(), 1000, 700);
+		Scene scene = new Scene(MainWindow.get(), 1000, 700);
 		addEvents(scene);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -47,14 +45,10 @@ public class GraphVisualiser extends Application{
 		
 	}
 	
-	private MainWindow makeMainWindow(){
-		mainWindow = new MainWindow();
-		return mainWindow;
-	}
 	
 	
 	private void handleMovementInput(){
-		mainWindow.handleMovementInput(heldDownKeys);
+		MainWindow.get().handleMovementInput(heldDownKeys);
 	}
 	
 	
@@ -63,7 +57,7 @@ public class GraphVisualiser extends Application{
 		scene.setOnKeyPressed(new EventHandler<KeyEvent> (){
 			public void handle(KeyEvent e){
 				if(e.getCode() == KeyCode.ENTER){
-					mainWindow.stepAlgorithms();
+					MainWindow.get().stepAlgorithms();
 				}
 				if(!heldDownKeys.contains(e.getCode())){
 					heldDownKeys.add(e.getCode());

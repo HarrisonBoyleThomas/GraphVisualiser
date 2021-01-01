@@ -26,6 +26,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 
+import javafx.scene.input.MouseEvent;
+
 /**
 *    A VGE represents a graph edge by storing a reference to an edge
 *    and existing in 3D space for the renderer to draw
@@ -45,6 +47,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	private VisualGraphEdge(GraphEdge edgeIn){
 		edge = edgeIn;
 		location = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
+		addEvents();
 	}
 	
 	public VisualGraphEdge(VisualGraphEdge toCopy){
@@ -52,6 +55,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		renderLocation = toCopy.getRenderLocation();
 		renderScale = toCopy.renderScale;
 		icon = toCopy.getIcon();
+		clickEvent = toCopy.clickEvent;
 	}
 	
 	/**
@@ -212,6 +216,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		
 		icon = new Group();
 		icon.getChildren().add(pane);
+		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
 	}
 	
 	private Vector getCenter(Vector a, Vector b){

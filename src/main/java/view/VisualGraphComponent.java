@@ -5,7 +5,12 @@ import maths.Rotator;
 import maths.Functions;
 import model.algorithm.GraphAlgorithm;
 
+import menu.MainWindow;
+
 import javafx.scene.Group;
+
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 /**
 *    A VGC stores the common features of a graph component that can be drawn on a JavaFX canvas
@@ -24,6 +29,8 @@ public abstract class VisualGraphComponent extends Actor{
 	
 	//The scale of the VGC due to distance from the camera
 	protected double renderScale;
+	
+	protected EventHandler<MouseEvent> clickEvent;
 	
 	public Vector getRenderLocation(){
 		return renderLocation;
@@ -60,4 +67,18 @@ public abstract class VisualGraphComponent extends Actor{
 	*    Update the visual appearance of the icon
 	**/
 	public abstract void updateIcon(GraphAlgorithm algorithm);
+	
+	protected void addEvents(){
+		clickEvent = new EventHandler<MouseEvent>() { 
+            @Override 
+            public void handle(MouseEvent e) { 
+                handleClick(); 
+            } 
+        };
+	}
+    
+    protected void handleClick(){
+		MainWindow.get().addClickedComponent(this);
+	}
+		
 }

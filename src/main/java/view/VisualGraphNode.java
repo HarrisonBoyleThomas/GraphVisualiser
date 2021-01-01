@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+import javafx.scene.input.MouseEvent;
+
 /**
 *    A VGN represents a graph node by storing a reference to a node
 *    and existing in 3D space for the renderer to draw
@@ -41,6 +43,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	private VisualGraphNode(Vector locationIn, GraphNode nodeIn){
 		location = locationIn;
 		node = nodeIn;
+		addEvents();
 	}
 	
 	/**
@@ -54,6 +57,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		renderLocation = toCopy.getRenderLocation();
 		renderScale = toCopy.renderScale;
 		icon = toCopy.getIcon();
+		clickEvent = toCopy.clickEvent;
 	}
 	
 	/**
@@ -160,6 +164,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		
 		icon = new Group();
 		icon.getChildren().add(pane);
+		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
 	}
 	
 	
@@ -169,7 +174,6 @@ public class VisualGraphNode extends VisualGraphComponent{
 	public Vector getCenterLocation(){
 		return new Vector(renderLocation.x + (26.0 * renderScale), renderLocation.y + (26.0 * renderScale), 0);
 	}
-	
 	
 	
 	/**

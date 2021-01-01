@@ -79,59 +79,6 @@ public class Viewport extends Pane{
 		return camera;
 	}
 	
-	/**
-	*    Creates a cube graph
-	**/
-	public void createCube(){
-		ArrayList<GraphNode> nodes = new ArrayList<>();
-		for(int i = 1; i <= 8; i++){
-			GraphNode node = new GraphNode(i);
-			node.setName("" + i);
-			nodes.add(node);
-		}
-		
-		ArrayList<GraphEdge> edges = new ArrayList<>();
-		for(int i = 0; i < 4; i++){
-			if(i < 3){
-    			edges.add(nodes.get(i).addEdge(nodes.get(i+1), false));
-			}
-			else{
-				edges.add(nodes.get(3).addEdge(nodes.get(0), false));
-			}
-		}
-		
-		for(int i = 4; i < 8; i++){
-			if(i < 7){
-    			edges.add(nodes.get(i).addEdge(nodes.get(i+1), false));
-			}
-			else{
-				edges.add(nodes.get(7).addEdge(nodes.get(4), false));
-			}
-		}
-		
-		for(int i = 0; i < 4; i++){
-    		edges.add(nodes.get(i).addEdge(nodes.get(i+4), false));
-		}
-		
-		VisualGraphNode.create(new Vector(10, 10, -10), nodes.get(0));
-		VisualGraphNode.create(new Vector(10, 10, 10), nodes.get(1));
-		VisualGraphNode.create(new Vector(10, -10, 10), nodes.get(2));
-		VisualGraphNode.create(new Vector(10, -10, -10), nodes.get(3));
-	
-		VisualGraphNode.create(new Vector(30, 10, -10), nodes.get(4));
-		VisualGraphNode.create(new Vector(30, 10, 10), nodes.get(5));
-		VisualGraphNode.create(new Vector(30, -10, 10), nodes.get(6));
-		VisualGraphNode.create(new Vector(30, -10, -10), nodes.get(7));
-		
-		for(GraphEdge e : edges){
-			e.setName("1");
-			e.setLength(1);
-			VisualGraphEdge.create(e);
-		}
-		
-		VisualGraphNode.updateNodes(camera, 500,500);
-		VisualGraphEdge.updateEdges();
-	}
 	
 	public GraphAlgorithm getAlgorithm(){
 		return algorithm;
