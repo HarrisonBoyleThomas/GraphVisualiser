@@ -23,7 +23,7 @@ public abstract class Actor{
 		return location;
 	}
 	
-	protected Vector setLocation(Vector locationIn){
+	public Vector setLocation(Vector locationIn){
 		location = locationIn;
 		return location;
 	}

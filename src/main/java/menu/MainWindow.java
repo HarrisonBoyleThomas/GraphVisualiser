@@ -153,7 +153,7 @@ public class MainWindow extends BorderPane{
 		}
 	}
 	
-	private void updateViewport(){
+	protected void updateViewport(){
 		VisualGraphNode.updateNodes(camera, 500,500);
 		VisualGraphEdge.updateEdges();
 		GridPane view = (GridPane) getCenter();
