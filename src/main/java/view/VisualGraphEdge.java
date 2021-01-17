@@ -11,6 +11,7 @@ import model.algorithm.*;
 
 
 import java.util.ArrayList;
+import java.lang.NullPointerException;
 
 
 import javafx.scene.Group;
@@ -25,6 +26,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 import javafx.scene.input.MouseEvent;
 
@@ -73,6 +75,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    @Return true if an edge was deleted
 	**/
 	public static boolean delete(VisualGraphEdge toRemove){
+		toRemove.getEdge().nodeA.removeEdge(toRemove.getEdge(), false);
 		return edges.remove(toRemove);
 	}
 	
@@ -85,6 +88,22 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		return delete(e);
 	}
 	
+	public static void delete(ArrayList<GraphEdge> toDelete){
+		for(GraphEdge e : toDelete){
+			delete(e);
+		}
+	}
+	
+	public static void delete(GraphNode node){
+		ArrayList<GraphEdge> toDelete = new ArrayList<>();
+		for(VisualGraphEdge e : edges){
+			if(e.getEdge().nodeA.equals(node) || e.getEdge().nodeB.equals(node)){
+				toDelete.add(e.getEdge());
+			}
+		}
+		delete(toDelete);
+	}
+				
 	/**
 	*    @Return the VGE that represents the given edge
 	*    @Return null if the given edge does not have a visual representation
@@ -92,6 +111,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	public static VisualGraphEdge getEdge(GraphEdge edgeToFind){
 		for(VisualGraphEdge e : edges){
 			if(e.getEdge().equals(edgeToFind)){
+				System.out.println("found edge");
 				return e;
 			}
 		}
@@ -111,13 +131,31 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		return null;
 	}
 	
+	public static ArrayList<VisualGraphEdge> getEdges(GraphNode node){
+		ArrayList<VisualGraphEdge> found = new ArrayList<>();
+		for(VisualGraphEdge e : edges){
+			if(e.getEdge().nodeA.equals(node) || e.getEdge().nodeB.equals(node)){
+				found.add(e);
+			}
+		}
+		return found;
+	}
+	
 	/**
 	*    Update the positions of all icons
 	**/
 	public static void updateEdges(){
+		ArrayList<VisualGraphEdge> invalid = new ArrayList<>();
 		for(VisualGraphEdge e : edges){
-			e.updateRenderLocation(new Vector());
+			if(e.getEdge().nodeA == null || e.getEdge().nodeB == null){
+				System.out.println("invalid found");
+				invalid.add(e);
+			}
+			else{
+			    e.updateRenderLocation(new Vector());
+			}
 		}
+		edges.removeAll(invalid);
 	}
 	
 	/**
@@ -217,6 +255,8 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
+		Tooltip tooltip = new Tooltip("Click to edit edge");
+		Tooltip.install(icon, tooltip);
 	}
 	
 	private Vector getCenter(Vector a, Vector b){
@@ -229,7 +269,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof VisualGraphEdge){
 		    VisualGraphEdge other = (VisualGraphEdge) otherObject;
-			return edge.equals(other);
+			return edge.equals(other.getEdge());
 		}
 		return false;
 	}

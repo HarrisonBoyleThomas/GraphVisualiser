@@ -71,7 +71,8 @@ public abstract class VisualGraphComponent extends Actor{
 	protected void addEvents(){
 		clickEvent = new EventHandler<MouseEvent>() { 
             @Override 
-            public void handle(MouseEvent e) { 
+            public void handle(MouseEvent e) {
+                e.consume();				
                 handleClick(); 
             } 
         };

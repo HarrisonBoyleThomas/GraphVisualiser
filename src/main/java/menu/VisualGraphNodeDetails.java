@@ -5,10 +5,14 @@ import maths.Vector;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
 import javafx.scene.control.Tooltip;
+
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
 
@@ -36,6 +40,11 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		getChildren().add(new NodeDetails(node.getNode()));
 		
 		addLocationSection();
+		
+		addDeleteButton();
+		
+		getChildren().add(new EmptyDetails());
+		
 		
 		
 	}
@@ -141,5 +150,17 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		
 		
 		getChildren().add(locationSection);
+	}
+	
+	public void addDeleteButton(){
+		Tooltip tooltip = new Tooltip("Delete the selected node");
+		Button delete = new Button("DELETE NODE");
+		Tooltip.install(delete, tooltip);
+		getChildren().add(delete);
+		delete.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                MainWindow.get().deleteNode(node);
+            }
+        });
 	}
 }

@@ -62,6 +62,8 @@ public class GraphVisualiser extends Application{
 				if(!heldDownKeys.contains(e.getCode())){
 					heldDownKeys.add(e.getCode());
 				}
+				//Prevent focus traversal
+				e.consume();
 			}
 		});
 		

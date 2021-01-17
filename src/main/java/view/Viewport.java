@@ -9,6 +9,8 @@ import model.GraphEdge;
 import model.GraphComponentState;
 import model.algorithm.GraphAlgorithm;
 
+import menu.MainWindow;
+
 
 import java.util.ArrayList;
 
@@ -17,10 +19,12 @@ import javafx.scene.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 import javafx.animation.AnimationTimer;
 
@@ -42,6 +46,11 @@ public class Viewport extends Pane{
 		camera = cameraIn;
 		algorithm = algorithmIn;
 		draw();
+		setOnMouseClicked(e -> {requestFocus(); MainWindow.get().addClickedComponent(null);});
+		
+		//set the clipping rectangle to hide VGCs that are off screen
+		Rectangle clip = new Rectangle(width, height);
+        setClip(clip);
 	}
 	
 	

@@ -89,6 +89,7 @@ public class MainWindow extends BorderPane{
 	
 	public void handleMovementInput(ArrayList<KeyCode> keys){
 		boolean moved = false;
+		multiSelect = false;
 		for(KeyCode k : keys){
 	    	if(k == KeyCode.UP){
 		    	camera.pitchRelative(-0.1);
@@ -143,9 +144,6 @@ public class MainWindow extends BorderPane{
 			}
 			if(k == KeyCode.CONTROL){
 				multiSelect = true;
-			}
-			else{
-				multiSelect = false;
 			}
 		}
 		if(moved){
@@ -229,10 +227,11 @@ public class MainWindow extends BorderPane{
 	
 	
 	public void addClickedComponent(VisualGraphComponent c){
-		if(!multiSelect){
+		if(!multiSelect || c == null){
 			clickedNodes.clear();
 			clickedEdges.clear();
 		}
+		System.out.println(multiSelect);
 		if(c instanceof VisualGraphNode){
 			System.out.println("vgn clicked");
 			clickedNodes.add((VisualGraphNode) c);
@@ -249,9 +248,20 @@ public class MainWindow extends BorderPane{
 			if(clickedNodes.size() == 1){
 				setLeft(new VisualGraphNodeDetails(clickedNodes.get(0)));
 			}
+			if(clickedNodes.size() == 2){
+				setLeft(new DoubleNodeSelectedDetails(clickedNodes.get(0), clickedNodes.get(1)));
+			}
 		}
 		else{
-			setLeft(new EmptyDetails());
+			if(clickedEdges.size() > 0){
+			    if(clickedEdges.size() == 1){
+				    setLeft(new VisualGraphEdgeDetails(clickedEdges.get(0)));
+			    }
+				
+		    }
+	    	else{
+				setLeft(new EmptyDetails());
+		    }
 		}
 	}
 	
@@ -260,6 +270,36 @@ public class MainWindow extends BorderPane{
 		node.setName("New node");
 		Vector spawnLocation = camera.getLocation().add(camera.getForwardVector().multiply(10));
 		VisualGraphNode vgn = VisualGraphNode.create(spawnLocation, node);
+		updateViewport();
+	}
+	
+	public void createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
+        GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
+        edge.setName("New edge");
+        VisualGraphEdge.create(edge);
+        updateDetailsPanel();
+        updateViewport();		
+	}
+	
+	public void deleteNode(VisualGraphNode toDelete){
+		VisualGraphNode.delete(toDelete);
+		clickedNodes.clear();
+		clickedEdges.clear();
+		updateDetailsPanel();
+		updateViewport();
+	}
+	
+	public void deleteEdge(VisualGraphEdge toDelete){
+		VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
+		clickedEdges.clear();
+		updateDetailsPanel();
+		updateViewport();
+	}
+	
+	public void deleteEdge(GraphEdge toDelete){
+		VisualGraphEdge.delete(toDelete);
+		clickedEdges.clear();
+		updateDetailsPanel();
 		updateViewport();
 	}
 	

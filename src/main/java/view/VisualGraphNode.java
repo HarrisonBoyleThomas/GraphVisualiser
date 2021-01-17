@@ -18,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color; 
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.scene.control.Tooltip;
 
 import javafx.scene.input.MouseEvent;
 
@@ -78,6 +79,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	*    given node must further be deleted
 	**/
 	public static boolean delete(VisualGraphNode toDelete){
+		VisualGraphEdge.delete(toDelete.getNode());
 	    return icons.remove(toDelete);
 	}
 	
@@ -95,8 +97,8 @@ public class VisualGraphNode extends VisualGraphComponent{
 	public static VisualGraphNode getNode(GraphNode node){
 		for(VisualGraphNode icon : icons){
 			if(icon.getNode().equals(node)){
-				VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
-				VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
+				//VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
+				//VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
 				return icon;
 			}
 		}
@@ -165,6 +167,8 @@ public class VisualGraphNode extends VisualGraphComponent{
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
+		Tooltip tooltip = new Tooltip("Click to edit node");
+		Tooltip.install(icon, tooltip);
 	}
 	
 	
