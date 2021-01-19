@@ -59,6 +59,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		renderScale = toCopy.renderScale;
 		icon = toCopy.getIcon();
 		clickEvent = toCopy.clickEvent;
+		selected = toCopy.selected;
 	}
 	
 	/**
@@ -145,20 +146,25 @@ public class VisualGraphNode extends VisualGraphComponent{
 		Circle background = new Circle(26 * renderScale);
 		background.setStroke(Color.BLACK);
 		background.setStrokeWidth(3);
-		if(algorithm.getNodeState(node) == GraphComponentState.UNVISITED){
-			background.setFill(Color.WHITE);
-		}
-		else if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
-			background.setFill(Color.LIME);
-		}
-		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
-			background.setFill(Color.RED);
-		}
-		else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
-			background.setFill(Color.CYAN);
+		if(selected){
+			background.setFill(Color.ORANGE);
 		}
 		else{
-			background.setFill(Color.WHITE);
+    		if(algorithm.getNodeState(node) == GraphComponentState.UNVISITED){
+    			background.setFill(Color.WHITE);
+    		}
+    		else if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
+    			background.setFill(Color.LIME);
+    		}
+    		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
+    			background.setFill(Color.RED);
+	    	}
+	    	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
+	    		background.setFill(Color.CYAN);
+	    	}
+	    	else{
+	    		background.setFill(Color.WHITE);
+		    }
 		}
 		pane.getChildren().add(background);
 		Text label = new Text(node.getName());
@@ -170,7 +176,6 @@ public class VisualGraphNode extends VisualGraphComponent{
 		Tooltip tooltip = new Tooltip("Click to edit node");
 		Tooltip.install(icon, tooltip);
 	}
-	
 	
 	/**
 	*    @Return A Vector representing the render location of the middle of the node

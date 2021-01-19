@@ -32,6 +32,8 @@ public abstract class VisualGraphComponent extends Actor{
 	
 	protected EventHandler<MouseEvent> clickEvent;
 	
+	protected boolean selected;
+	
 	public Vector getRenderLocation(){
 		return renderLocation;
 	}
@@ -80,6 +82,10 @@ public abstract class VisualGraphComponent extends Actor{
     
     protected void handleClick(){
 		MainWindow.get().addClickedComponent(this);
+	}
+	
+	public void setSelected(boolean selectedIn){
+		selected = selectedIn;
 	}
 		
 }

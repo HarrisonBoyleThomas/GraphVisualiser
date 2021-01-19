@@ -58,6 +58,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		renderScale = toCopy.renderScale;
 		icon = toCopy.getIcon();
 		clickEvent = toCopy.clickEvent;
+		selected = toCopy.selected;
 	}
 	
 	/**
@@ -222,19 +223,24 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		Pane pane = new Pane();
 		Color fillColour = Color.BLACK;
 		line.setStroke(Color.BLACK);
-		if(algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED){
-			if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
-				fillColour = Color.LIME;
-			}
-			else if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.IN_OPEN_LIST){
-				fillColour = Color.RED;
-			}
-			else{
-				fillColour = Color.BLACK;
-			}
+		if(selected){
+			fillColour = Color.ORANGE;
 		}
 		else{
-			fillColour = Color.BLACK;
+    		if(algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED){
+    			if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
+    				fillColour = Color.LIME;
+    			}
+    			else if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.IN_OPEN_LIST){
+    				fillColour = Color.RED;
+    			}
+    			else{
+    				fillColour = Color.BLACK;
+    			}
+    		}
+    		else{
+    			fillColour = Color.BLACK;
+    		}
 		}
 		line.setStroke(fillColour);
 		arrow.setStroke(fillColour);
@@ -242,7 +248,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		
 		pane.getChildren().add(line);
 		pane.getChildren().add(arrow);
-		Label label = new Label(edge.getName());
+		Label label = new Label(edge.getName() + ":" + edge.getLength());
 		Vector midpoint = getCenter(nodeALoc, nodeBLoc);
 		label.setLayoutX((int) (Math.cos(lineAngle+0.174533)*lineLength*0.625));
         label.setLayoutY((int) (Math.sin(lineAngle+0.174533)*lineLength*0.625));

@@ -12,6 +12,8 @@ import model.GraphEdge;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.input.KeyCode;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 
 import maths.Vector;
@@ -30,6 +32,8 @@ public class MainWindow extends BorderPane{
 	
 	private ArrayList<VisualGraphEdge> clickedEdges = new ArrayList<>();
 	
+	private CameraDetails cameraDetails;
+	
 	public static MainWindow get(){
 		return window;
 	}
@@ -41,6 +45,7 @@ public class MainWindow extends BorderPane{
 	private boolean multiSelect;
 	
 	private MainWindow(){
+		cameraDetails = new CameraDetails(camera);
 		GridPane viewSection = new GridPane();
 		setCenter(viewSection);
 		DijkstraShortestPath dsp = new DijkstraShortestPath(null, null);
@@ -58,8 +63,14 @@ public class MainWindow extends BorderPane{
 		addViewport(v);
 		updateDetailsPanel();
 		
+		initialiseRightDetailsPanel();
+		setTop(new MenuHeader());
+		
 	}
 	
+	/**
+	*     Add a viewport to the center of the window
+	**/
 	public boolean addViewport(Viewport viewport){
 		int noOfViewports = ((GridPane) getCenter()).getChildren().size();
 		GridPane view = (GridPane) getCenter();
@@ -82,11 +93,30 @@ public class MainWindow extends BorderPane{
 		return true;
 	}
 	
+	/**
+	*    @Return a copy of all clicked nodes
+	**/
+	public ArrayList<VisualGraphNode> getClickedNodes(){
+		return new ArrayList<VisualGraphNode>(clickedNodes);
+	}
 	
+	/**
+	*    @Return a copy of all clicked e3dges
+	**/
+	public ArrayList<VisualGraphEdge> getClickedEdges(){
+		return new ArrayList<VisualGraphEdge>(clickedEdges);
+	}
+	
+	/**
+	*    @Return the camera
+	**/
 	public Camera getCamera(){
 		return camera;
 	}
 	
+	/**
+	*    Handle all movement input cpntrols that the user can enter
+	**/
 	public void handleMovementInput(ArrayList<KeyCode> keys){
 		boolean moved = false;
 		multiSelect = false;
@@ -145,12 +175,19 @@ public class MainWindow extends BorderPane{
 			if(k == KeyCode.CONTROL){
 				multiSelect = true;
 			}
+			if(k == KeyCode.DELETE){
+				deleteAllSelected();
+			}
 		}
 		if(moved){
 			updateViewport();
 		}
 	}
 	
+	
+	/**
+	*    Draws all nodes on all viewports
+	**/
 	protected void updateViewport(){
 		VisualGraphNode.updateNodes(camera, 500,500);
 		VisualGraphEdge.updateEdges();
@@ -160,6 +197,25 @@ public class MainWindow extends BorderPane{
 		    Viewport v = (Viewport) n;
 			v.draw();
 		}
+		updateCameraDetails();
+	}
+	
+	/**
+	*    Initialise the components of the right details panel
+	**/
+	private void initialiseRightDetailsPanel(){
+		ScrollPane sp = new ScrollPane();
+		VBox rightDetails = new VBox();
+		rightDetails.setMaxWidth(300);
+		rightDetails.setMinWidth(300);
+		sp.setContent(rightDetails);
+		rightDetails.getChildren().add(cameraDetails);
+		
+		setRight(sp);
+	}
+	
+	private void updateCameraDetails(){
+		cameraDetails.update();
 	}
 	
 	public void stepAlgorithms(){
@@ -224,32 +280,71 @@ public class MainWindow extends BorderPane{
 	}
 	
 	
+	/**
+	*    Set all clicked nodes to unselected, and cleat the clicked node list
+	**/
+	private void clearClickedNodes(){
+		for(VisualGraphNode n : clickedNodes){
+			n.setSelected(false);
+		}
+		clickedNodes.clear();
+	}
 	
+	/**
+	*    Set all clicked edges to unselected, and clear the clicked edge list
+	**/
+	private void clearClickedEdges(){
+		for(VisualGraphEdge e : clickedEdges){
+			e.setSelected(false);
+		}
+		clickedEdges.clear();
+	}
 	
+	/**
+	*    Add the supplied VGC to a clicked component list. This allows the user to edit a clicked component
+	**/
 	public void addClickedComponent(VisualGraphComponent c){
 		if(!multiSelect || c == null){
-			clickedNodes.clear();
-			clickedEdges.clear();
+			clearClickedNodes();
+			clearClickedEdges();
 		}
 		System.out.println(multiSelect);
 		if(c instanceof VisualGraphNode){
-			System.out.println("vgn clicked");
-			clickedNodes.add((VisualGraphNode) c);
+			if(!clickedNodes.contains((VisualGraphNode) c)){
+	    		((VisualGraphNode) c).setSelected(true);
+		    	clickedNodes.add((VisualGraphNode) c);
+			}
 		}
 		if(c instanceof VisualGraphEdge){
-			System.out.println("vge vlicked");
-			clickedEdges.add((VisualGraphEdge) c);
+			if(!clickedEdges.contains((VisualGraphEdge) c)){
+    			((VisualGraphEdge) c).setSelected(true);
+	    		System.out.println("vge vlicked");
+		    	clickedEdges.add((VisualGraphEdge) c);
+			}
 		}
 		updateDetailsPanel();
+		updateViewport();
 	}
 	
+	/**
+	*    Update the details panel to allow operations on a particular combination of selected
+	*    graph components
+	**/
 	private void updateDetailsPanel(){
 		if(clickedNodes.size() > 0){
-			if(clickedNodes.size() == 1){
-				setLeft(new VisualGraphNodeDetails(clickedNodes.get(0)));
+			if(clickedEdges.size() > 0){
+				setLeft(new MultipleSelectedDetails());
 			}
-			if(clickedNodes.size() == 2){
-				setLeft(new DoubleNodeSelectedDetails(clickedNodes.get(0), clickedNodes.get(1)));
+			else{
+    			if(clickedNodes.size() == 1){
+    				setLeft(new VisualGraphNodeDetails(clickedNodes.get(0)));
+    			}
+    			else if(clickedNodes.size() == 2){
+    				setLeft(new DoubleNodeSelectedDetails(clickedNodes.get(0), clickedNodes.get(1)));
+     			}
+    			else{
+	    			setLeft(new MultipleSelectedDetails());
+		    	}
 			}
 		}
 		else{
@@ -257,6 +352,9 @@ public class MainWindow extends BorderPane{
 			    if(clickedEdges.size() == 1){
 				    setLeft(new VisualGraphEdgeDetails(clickedEdges.get(0)));
 			    }
+				else{
+					setLeft(new MultipleSelectedDetails());
+				}
 				
 		    }
 	    	else{
@@ -265,6 +363,9 @@ public class MainWindow extends BorderPane{
 		}
 	}
 	
+	/**
+	*    Create a node 10 units infront of the camera, and update the viewport to render the new node
+	**/
 	public void createNode(){
 		GraphNode node = new GraphNode(0);
 		node.setName("New node");
@@ -273,6 +374,9 @@ public class MainWindow extends BorderPane{
 		updateViewport();
 	}
 	
+	/**
+	*    Create an edge between the two supplied nodes, and update the viewport
+	**/
 	public void createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
         GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
         edge.setName("New edge");
@@ -281,26 +385,51 @@ public class MainWindow extends BorderPane{
         updateViewport();		
 	}
 	
+	/**
+	*    Delete the given node from the model, and update the viewport
+	**/
 	public void deleteNode(VisualGraphNode toDelete){
 		VisualGraphNode.delete(toDelete);
-		clickedNodes.clear();
-		clickedEdges.clear();
+		clearClickedNodes();
+		clearClickedEdges();
 		updateDetailsPanel();
 		updateViewport();
 	}
 	
+	/**
+	*    Delete the given VGE from the model, and update the viewport
+    **/	
 	public void deleteEdge(VisualGraphEdge toDelete){
 		VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
-		clickedEdges.clear();
+		clearClickedEdges();
 		updateDetailsPanel();
 		updateViewport();
 	}
 	
+	/**
+	*    Delete the given edge from the model, and update the viewport
+	**/
 	public void deleteEdge(GraphEdge toDelete){
 		VisualGraphEdge.delete(toDelete);
-		clickedEdges.clear();
+		clearClickedEdges();
 		updateDetailsPanel();
 		updateViewport();
+	}
+	
+	/**
+	*    Delete all selected nodes and edges. This is triggerred by pressing the DEL keys
+	**/
+	private void deleteAllSelected(){
+		for(VisualGraphNode n : clickedNodes){
+			VisualGraphNode.delete(n);
+		}
+		for(VisualGraphEdge e : clickedEdges){
+			VisualGraphEdge.delete(e);
+		}
+		clearClickedNodes();
+		clearClickedEdges();
+		updateViewport();
+		updateDetailsPanel();
 	}
 	
 	
