@@ -7,6 +7,8 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 /**
 *    The MenuHeader represents the top panel menu bar of the GraphVisualiser Main Window
@@ -55,6 +57,11 @@ public class MenuHeader extends MenuBar{
 		Label r = new Label("Run");
 		Tooltip.install(r, runTooltip);
 		CustomMenuItem run = new CustomMenuItem(r);
+		run.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                MainWindow.get().createViewport();
+            }
+        });
 		
 		algorithm.getItems().add(run);
 		
@@ -71,6 +78,12 @@ public class MenuHeader extends MenuBar{
 		Label av = new Label("Add viewport");
 		Tooltip.install(av, addViewportTooltip);
 		CustomMenuItem addViewport = new CustomMenuItem(av);
+		
+		addViewport.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                MainWindow.get().createViewport();
+            }
+        });
 		
 		view.getItems().add(addViewport);
 		

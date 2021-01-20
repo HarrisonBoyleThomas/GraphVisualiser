@@ -55,8 +55,15 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 	**/
 	public DijkstraShortestPath(GraphNode initialStateIn, ArrayList<GraphNode> nodesIn){
 		name = "Dijkstra shortest path (array)";
+		description = "Dijkstra shortest path computes the shortest paths from a given start node, to all other nodes in a graph";
 		startNode = initialStateIn;
 		initialise(nodesIn);
+	}
+	
+	public DijkstraShortestPath(GraphNode initialStateIn){
+		name = "Dijkstra shortest path (array)";
+		description = "Dijkstra shortest path computes the shortest paths from a given start node, to all other nodes in a graph";
+		startNode = initialStateIn;
 	}
 	
 	/**
@@ -264,6 +271,8 @@ public class DijkstraShortestPath extends GraphAlgorithm{
         return new String[]{"StartNode: " + start, "CurrentNode: " + current, "State: " + state, "Step number: " + stepCount, "Predecessors: " + predecessors, "Distances:      " + distances};
 	}		
 		
-			
+	public boolean canRun(){
+        return (startNode != null && nodes != null);
+	}		
 		
 }

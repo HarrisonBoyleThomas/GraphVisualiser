@@ -68,10 +68,16 @@ public class MainWindow extends BorderPane{
 		
 	}
 	
+	public boolean createViewport(){
+		Viewport v = new Viewport(camera, null);
+		return addViewport(v);
+	}
+		
+	
 	/**
 	*     Add a viewport to the center of the window
 	**/
-	public boolean addViewport(Viewport viewport){
+	private boolean addViewport(Viewport viewport){
 		int noOfViewports = ((GridPane) getCenter()).getChildren().size();
 		GridPane view = (GridPane) getCenter();
 		if(noOfViewports == 0){
@@ -224,6 +230,20 @@ public class MainWindow extends BorderPane{
 			((Viewport) n).getAlgorithm().step();
 		}
 	}
+	
+	/**
+	*    @Return true if all viewports have a valid algorithm
+	**/
+	public boolean canRunAlgorithms(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+		    if(((Viewport) n).getAlgorithm() == null){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	/**
 	*    Creates a cube graph

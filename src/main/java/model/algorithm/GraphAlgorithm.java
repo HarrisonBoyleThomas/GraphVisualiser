@@ -22,6 +22,8 @@ public abstract class GraphAlgorithm{
 	
 	protected String name;
 	
+	protected String description;
+	
 	protected HashMap<GraphNode, GraphComponentState> nodeStates = new HashMap<>();
 	
 	protected HashMap<GraphEdge, GraphComponentState> edgeStates = new HashMap<>();
@@ -83,5 +85,7 @@ public abstract class GraphAlgorithm{
 	}
 	
 	public abstract String[] getDetails();
+	
+	public abstract boolean canRun();
 }
 		

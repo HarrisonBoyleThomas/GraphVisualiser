@@ -227,7 +227,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 			fillColour = Color.ORANGE;
 		}
 		else{
-    		if(algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED){
+    		if(algorithm != null && (algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED)){
     			if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
     				fillColour = Color.LIME;
     			}

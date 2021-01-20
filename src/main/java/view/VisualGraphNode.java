@@ -150,21 +150,26 @@ public class VisualGraphNode extends VisualGraphComponent{
 			background.setFill(Color.ORANGE);
 		}
 		else{
-    		if(algorithm.getNodeState(node) == GraphComponentState.UNVISITED){
-    			background.setFill(Color.WHITE);
-    		}
-    		else if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
-    			background.setFill(Color.LIME);
-    		}
-    		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
-    			background.setFill(Color.RED);
-	    	}
-	    	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
-	    		background.setFill(Color.CYAN);
-	    	}
-	    	else{
-	    		background.setFill(Color.WHITE);
-		    }
+			if(algorithm == null){
+				background.setFill(Color.WHITE);
+			}
+			else{
+        		if(algorithm.getNodeState(node) == GraphComponentState.UNVISITED){
+        			background.setFill(Color.WHITE);
+        		}
+        		else if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
+        			background.setFill(Color.LIME);
+        		}
+        		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
+        			background.setFill(Color.RED);
+	        	}
+	        	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
+	        		background.setFill(Color.CYAN);
+	        	}
+	        	else{
+	        		background.setFill(Color.WHITE);
+		        }
+			}
 		}
 		pane.getChildren().add(background);
 		Text label = new Text(node.getName());

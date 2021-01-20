@@ -53,6 +53,11 @@ public class Viewport extends Pane{
         setClip(clip);
 	}
 	
+	public void setAlgorithm(GraphAlgorithm algorithmIn){
+		algorithm = algorithmIn;
+		viewportDetails.update(this);
+	}
+	
 	
 	public void draw(){
 		getChildren().clear();
