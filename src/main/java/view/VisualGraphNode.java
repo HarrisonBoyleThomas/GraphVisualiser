@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color; 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
@@ -25,18 +25,18 @@ import javafx.scene.input.MouseEvent;
 /**
 *    A VGN represents a graph node by storing a reference to a node
 *    and existing in 3D space for the renderer to draw
-*    
+*
 *    Author: Harrison Boyle-Thomas
 *    Date: 20/11/2020
 **/
 public class VisualGraphNode extends VisualGraphComponent{
 	//List of all created icons
 	private static ArrayList<VisualGraphNode> icons = new ArrayList<>();
-	
+
 	//The node the GNI represents
 	private final GraphNode node;
-	
-	
+
+
 	/**
 	*    Create a VisualGraphNode at the given location that represents the given node
 	*    Only the create() function should be able to create GCNs
@@ -46,7 +46,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		node = nodeIn;
 		addEvents();
 	}
-	
+
 	/**
 	*    Copy constructor
 	*    Copies of the "concrete" VGNs created by the create() function are supplied
@@ -61,7 +61,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		clickEvent = toCopy.clickEvent;
 		selected = toCopy.selected;
 	}
-	
+
 	/**
 	*    Create a node at the given location that represents the given node
 	*    @Param location to spawn the node
@@ -73,17 +73,17 @@ public class VisualGraphNode extends VisualGraphComponent{
 		icons.add(newIcon);
 		return newIcon;
 	}
-	
+
 	/**
 	*    Delete the given node from the node list
-	*    To ensure the node is deleted, all references to the 
+	*    To ensure the node is deleted, all references to the
 	*    given node must further be deleted
 	**/
 	public static boolean delete(VisualGraphNode toDelete){
 		VisualGraphEdge.delete(toDelete.getNode());
 	    return icons.remove(toDelete);
 	}
-	
+
 	/**
 	*    Delete the VGN with the given node from the node list
 	**/
@@ -91,7 +91,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		VisualGraphNode iconToDelete = getNode(toDelete);
 		return delete((VisualGraphNode) iconToDelete);
 	}
-	
+
 	/**
 	*    @Return the icon that represents the given node
 	**/
@@ -105,7 +105,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		}
 		return null;
 	}
-	
+
 	/**
 	*    Update the positions of all icons
 	**/
@@ -115,14 +115,14 @@ public class VisualGraphNode extends VisualGraphComponent{
 			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
 		}
 	}
-	
+
 	/**
 	*    @Return a copy of the icons
 	**/
 	public static ArrayList<VisualGraphNode> getNodes(){
 		return new ArrayList<VisualGraphNode>(icons);
 	}
-	
+
 	public static ArrayList<VisualGraphNode> copyNodes(){
 		ArrayList<VisualGraphNode> output = new ArrayList<>();
 		for(VisualGraphNode node : icons){
@@ -130,14 +130,14 @@ public class VisualGraphNode extends VisualGraphComponent{
 		}
 		return output;
 	}
-	
+
 	/**
 	*    @Return the node the VGN represents
 	**/
 	public GraphNode getNode(){
 		return node;
 	}
-	
+
 	/**
 	*    Update the visual representation of the node
 	**/
@@ -174,22 +174,22 @@ public class VisualGraphNode extends VisualGraphComponent{
 		pane.getChildren().add(background);
 		Text label = new Text(node.getName());
 		pane.getChildren().add(label);
-		
+
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
 		Tooltip tooltip = new Tooltip("Click to edit node");
 		Tooltip.install(icon, tooltip);
 	}
-	
+
 	/**
 	*    @Return A Vector representing the render location of the middle of the node
 	**/
 	public Vector getCenterLocation(){
 		return new Vector(renderLocation.x + (26.0 * renderScale), renderLocation.y + (26.0 * renderScale), 0);
 	}
-	
-	
+
+
 	/**
 	*    @Return true if the other icon represents the same node, false otherwise
 	**/
