@@ -88,12 +88,13 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		else{
 			running = true;
 			if(currentNodeEdges.size() == 0){
+				outputString = "All edges from the current state (" + currentNode.getName() + ")";
 				nodeStates.put(currentNode, GraphComponentState.VISITED);
+				visitedNodes.add(currentNode);
 				currentNode = nextStates.remove(0);
 				nodeStates.put(currentNode, GraphComponentState.CURRENT);
-
 				currentNodeEdges = new ArrayList<>(currentNode.getEdges());
-				outputString = "All edges from the current state have been considered. Choosing new state";
+				outputString += " have been considered. Choosing new state (" + currentNode.getName() + ")";
 			}
 			else{
 				GraphEdge edge = currentNodeEdges.remove(0);
@@ -112,10 +113,9 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 					outputString = outputString + "Shorter path to " + edge.nodeB + " found from " + currentNode + ". ";
 				}
 				if(!visitedNodes.contains(edge.nodeB)){
-					visitedNodes.add(edge.nodeB);
 					nextStates.add(edge.nodeB);
 					nodeStates.put(edge.nodeB, GraphComponentState.IN_OPEN_LIST);
-					outputString += "New state discovered- adding to open list";
+					outputString += "New state discovered (" + edge.nodeB.getName() + ")- adding to open list";
 				}
 			}
 		}
@@ -178,7 +178,7 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 
 		//list of nodes visited by DSP
 		visitedNodes = new ArrayList<>();
-		visitedNodes.add(currentNode);
+		//visitedNodes.add(currentNode);
 
 		finished = false;
 		running = false;
@@ -289,7 +289,8 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 						    "State: " + state, "Step number: " + stepCount,
 						    "Predecessors: " + predecessors,
 							"Distances:      " + distances,
-						    "OpenList:  " + nextStates};
+						    "OpenList:  " + nextStates,
+						    "ClosedList:" + visitedNodes};
 	}
 
 	public boolean canRun(){

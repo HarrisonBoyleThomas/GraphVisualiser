@@ -14,18 +14,18 @@ import java.util.ArrayList;
 public class GraphNode extends GraphComponent{
 	private int value;
 	private ArrayList<GraphEdge> edges;
-	
+
 	public GraphNode(){
 		value = 0;
 		edges = new ArrayList<>();
 	}
-	
+
 	public GraphNode(int valueIn){
 		value = setValue(valueIn);
 		edges = new ArrayList<>();
 	}
-	
-	
+
+
 	/**
 	*    update the value of the node to the new value
 	*    @valueIn: the new value
@@ -35,16 +35,16 @@ public class GraphNode extends GraphComponent{
 		value = valueIn;
 		return value;
 	}
-	
+
 	/**
 	*    @return the value of the node
 	**/
 	public int getValue(){
 		return value;
 	}
-	
+
 	/**
-	*    add an edge between the supplied graph node. If bidirectional, 
+	*    add an edge between the supplied graph node. If bidirectional,
 	*    add an edge from the suppied graph node to this graph node
 	*    Ensures only 1 edge from A to B exists at a time
 	*    @return the created edge, or null if params invalid or an edge already exists
@@ -56,7 +56,7 @@ public class GraphNode extends GraphComponent{
 		if(biDirectional){
 			other.addEdge(this, false);
 		}
-		GraphEdge newEdge = new GraphEdge(this, other, 0);
+		GraphEdge newEdge = new GraphEdge(this, other, 1);
 		//if there is not already an edge between nodes, add the edge
 		if(!edges.contains(newEdge)){
 		    edges.add(newEdge);
@@ -64,7 +64,7 @@ public class GraphNode extends GraphComponent{
 		}
 		return null;
 	}
-	
+
 	/**
 	*    Remove the supplied edge from the edge list
 	*    @param toRemove: the edge to remove
@@ -79,9 +79,9 @@ public class GraphNode extends GraphComponent{
 		}
 		return edges.remove(toRemove);
 	}
-	
+
 	/**
-	*    Remove an edge from this node to the supplied node 
+	*    Remove an edge from this node to the supplied node
 	**/
 	public boolean removeEdge(GraphNode toRemove, boolean biDirectional){
 		GraphEdge edge = getEdge(toRemove);
@@ -92,15 +92,15 @@ public class GraphNode extends GraphComponent{
 		}
 		return edges.remove(edge);
 	}
-	
+
 	/**
 	*    @return the edge list
 	**/
 	public ArrayList<GraphEdge> getEdges(){
 		return edges;
 	}
-	
-	
+
+
 	/**
 	*    @param target the node to get the edge to
 	*    @return an edge from this node to the supplied node or null if no edge exists
@@ -113,8 +113,8 @@ public class GraphNode extends GraphComponent{
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	*    @param name of the edge to find
 	*    @return an edge from this node that has the given name, or null if not found
@@ -127,7 +127,7 @@ public class GraphNode extends GraphComponent{
 		}
 		return null;
     }
-	
+
 	/**
 	*    @return a list of nodes this node has edges within
 	**/
@@ -138,7 +138,7 @@ public class GraphNode extends GraphComponent{
 		}
 		return output;
 	}
-			
+
 	/**
 	*    Removes all references to this node within the graph model
 	**/

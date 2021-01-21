@@ -90,7 +90,6 @@ public class MainWindow extends BorderPane{
 		}
 		else if(noOfViewports == 1){
 			view.add(viewport, 0, 1);
-			System.out.println("second viewport created");
 		}
 		else if(noOfViewports == 2){
 			view.add(viewport, 1, 0);
@@ -205,24 +204,35 @@ public class MainWindow extends BorderPane{
 				camera.roll(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.ENTER){
-				moved = true;
-			}
 			if(k == KeyCode.CONTROL){
 				multiSelect = true;
 			}
-			if(k == KeyCode.DELETE){
-				deleteAllSelected();
-			}
-			if(k == KeyCode.F){
-				addPathBetweenSelected();
-			}
-			if(k == KeyCode.M){
-				selectAll();
+			if(k == KeyCode.ENTER){
+				moved = true;
 			}
 		}
 		if(moved){
 			updateViewport();
+		}
+	}
+
+	public void handleSingleInput(KeyCode k){
+		if(k == KeyCode.DELETE){
+			deleteAllSelected();
+		}
+		if(k == KeyCode.F){
+			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
+				addPathBetweenSelected();
+			}
+			else{
+				createNode();
+			}
+		}
+		if(k == KeyCode.M){
+			selectAll();
+		}
+		if(k == KeyCode.TAB){
+			selectNextNode();
 		}
 	}
 
@@ -300,7 +310,7 @@ public class MainWindow extends BorderPane{
 		if(state == MainWindowState.RUNNING){
     		GridPane view = (GridPane) getCenter();
     		for(Node n : view.getChildren()){
-    			((Viewport) n).getAlgorithm().step();
+    			System.out.println(((Viewport) n).getAlgorithm().step());
     		}
 			if(areAlgorithmsFinished()){
 				state = MainWindowState.EDIT;
@@ -326,7 +336,8 @@ public class MainWindow extends BorderPane{
 	public boolean canRunAlgorithms(){
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-		    if(((Viewport) n).getAlgorithm() == null || (((Viewport) n)).getAlgorithm() != null && ((Viewport) n).getAlgorithm().isFinished()){
+			GraphAlgorithm algorithm = ((Viewport) n).getAlgorithm();
+		    if(algorithm == null || (algorithm != null && (algorithm.isFinished() || ((DijkstraShortestPath) algorithm).getStartNode() == null))){
 				return false;
 			}
 		}
@@ -428,7 +439,6 @@ public class MainWindow extends BorderPane{
     			clearClickedNodes();
     			clearClickedEdges();
     		}
-    		System.out.println(multiSelect);
 	    	if(c instanceof VisualGraphNode){
 	    		if(!clickedNodes.contains((VisualGraphNode) c)){
     	    		((VisualGraphNode) c).setSelected(true);
@@ -438,7 +448,6 @@ public class MainWindow extends BorderPane{
     		if(c instanceof VisualGraphEdge){
     			if(!clickedEdges.contains((VisualGraphEdge) c)){
         			((VisualGraphEdge) c).setSelected(true);
-    	    		System.out.println("vge vlicked");
     		    	clickedEdges.add((VisualGraphEdge) c);
     			}
     		}
@@ -506,7 +515,7 @@ public class MainWindow extends BorderPane{
 	public boolean createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
 		if(state == MainWindowState.EDIT){
             GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
-            edge.setName("New edge");
+            edge.setName("");
             VisualGraphEdge.create(edge);
             updateDetailsPanel();
             updateViewport();
@@ -522,6 +531,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean deleteNode(VisualGraphNode toDelete){
 		if(state == MainWindowState.EDIT){
+			setStartNode(null);
 		    VisualGraphNode.delete(toDelete);
 		    clearClickedNodes();
 		    clearClickedEdges();
@@ -571,6 +581,7 @@ public class MainWindow extends BorderPane{
 	**/
 	private boolean deleteAllSelected(){
 		if(state == MainWindowState.EDIT){
+			setStartNode(null);
     		for(VisualGraphNode n : clickedNodes){
     			VisualGraphNode.delete(n);
     		}
@@ -599,7 +610,7 @@ public class MainWindow extends BorderPane{
 				while(destinationIndex < clickedNodes.size()){
 				    GraphEdge edge = clickedNodes.get(originIndex).getNode().addEdge(clickedNodes.get(destinationIndex).getNode(), false);
 					if(edge != null){
-					    edge.setName("New edge");
+					    edge.setName("");
 		                VisualGraphEdge.create(edge);
 					}
 					originIndex++;
@@ -631,6 +642,18 @@ public class MainWindow extends BorderPane{
 		updateDetailsPanel();
 		updateViewport();
 		multiSelect = multiSelectBefore;
+	}
+
+	private void selectNextNode(){
+		boolean multiSelectBefore = multiSelect;
+		multiSelect = false;
+		if(clickedNodes.size() == 1){
+            int index = (VisualGraphNode.getNodes().indexOf(clickedNodes.get(0)) + 1) % VisualGraphNode.getNodes().size();
+			addClickedComponent(VisualGraphNode.getNodes().get(index));
+		}
+		else{
+			addClickedComponent(VisualGraphNode.getNodes().get(0));
+		}
 	}
 
 	public void setState(MainWindowState stateIn){

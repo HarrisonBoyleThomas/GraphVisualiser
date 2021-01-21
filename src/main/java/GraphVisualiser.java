@@ -16,20 +16,20 @@ import java.util.ArrayList;
 
 public class GraphVisualiser extends Application{
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
-	
+
 	public static void main(String[] args){
 		launch(args);
 	}
-	
+
 	public void start(Stage primaryStage) throws Exception{
 		primaryStage.setTitle("Graph visualiser");
-		
+
 		Scene scene = new Scene(MainWindow.get(), 1000, 700);
 		addEvents(scene);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
+
+
 		//Mainloop
 		new AnimationTimer() {
 			public void handle(long currentNanoTime) {
@@ -38,20 +38,20 @@ public class GraphVisualiser extends Application{
 				    Thread.sleep(1);
 			    }
 			    catch(InterruptedException  error){
-			        
+
 			    }
 			}
 		}.start();
-		
+
 	}
-	
-	
-	
+
+
+
 	private void handleMovementInput(){
 		MainWindow.get().handleMovementInput(heldDownKeys);
 	}
-	
-	
+
+
 	private void addEvents(Scene scene){
 		//Pitch sensor
 		scene.setOnKeyPressed(new EventHandler<KeyEvent> (){
@@ -66,13 +66,14 @@ public class GraphVisualiser extends Application{
 				e.consume();
 			}
 		});
-		
+
 		scene.setOnKeyReleased(new EventHandler<KeyEvent> () {
 			public void handle(KeyEvent e){
 				heldDownKeys.remove(e.getCode());
+				MainWindow.get().handleSingleInput(e.getCode());
 			}
 		});
-		
+
 	}
-	
+
 }
