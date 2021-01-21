@@ -46,6 +46,9 @@ public class MainWindow extends BorderPane{
 
 	private boolean multiSelect;
 
+
+	private MainWindowState state = MainWindowState.EDIT;
+
 	private MainWindow(){
 		cameraDetails = new CameraDetails(camera);
 		GridPane viewSection = new GridPane();
@@ -101,7 +104,7 @@ public class MainWindow extends BorderPane{
 		return true;
 	}
 
-  /**
+    /**
 	*    Set the start node of all viewport algorithms to the given start node
 	**/
 	public void setStartNode(GraphNode newNode){
@@ -111,6 +114,20 @@ public class MainWindow extends BorderPane{
 		}
 		updateViewport();
     }
+
+    /**
+	*    If the algorithms have a start node, return the start node
+	*    This method will be incorrect if a non-dijkstra algorithm is implemented
+	**/
+	public GraphNode getStartNode(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof DijkstraShortestPath){
+		        return ((DijkstraShortestPath) ((Viewport) n).getAlgorithm()).getStartNode();
+			}
+		}
+		return null;
+	}
 
 	/**
 	*    @Return a copy of all clicked nodes
@@ -197,6 +214,12 @@ public class MainWindow extends BorderPane{
 			if(k == KeyCode.DELETE){
 				deleteAllSelected();
 			}
+			if(k == KeyCode.F){
+				addPathBetweenSelected();
+			}
+			if(k == KeyCode.M){
+				selectAll();
+			}
 		}
 		if(moved){
 			updateViewport();
@@ -220,6 +243,7 @@ public class MainWindow extends BorderPane{
 		updateAlgorithmDetails();
 	}
 
+
 	/**
 	*    Initialise the components of the right details panel
 	**/
@@ -240,7 +264,7 @@ public class MainWindow extends BorderPane{
 		cameraDetails.update();
 	}
 
-	private void updateAlgorithmDetails(){
+	protected void updateAlgorithmDetails(){
 		if(((ScrollPane) getRight()) == null){
 			return;
 		}
@@ -248,15 +272,52 @@ public class MainWindow extends BorderPane{
 		if(rightDetails.getChildren().size() > 1){
     		rightDetails.getChildren().remove(rightDetails.getChildren().get(1));
 		}
-		algorithmDetails = new AlgorithmSetupPanel();
+		if(state == MainWindowState.EDIT){
+		    algorithmDetails = new AlgorithmSetupPanel();
+		}
+		else{
+			algorithmDetails = new AlgorithmControlPanel();
+		}
 		rightDetails.getChildren().add(1, algorithmDetails);
 	}
 
+
+    public void initialiseAlgorithms(){
+    	ArrayList<GraphNode> nodes = new ArrayList<>();
+    	for(VisualGraphNode n : VisualGraphNode.getNodes()){
+    		nodes.add(n.getNode());
+    	}
+    	GridPane view = (GridPane) getCenter();
+    	for(Node n : view.getChildren()){
+    		((Viewport) n).getAlgorithm().initialise(nodes);
+    	}
+		updateAlgorithmDetails();
+		//Need to update viewport's algorithm details
+		updateViewport();
+	}
+
 	public void stepAlgorithms(){
+		if(state == MainWindowState.RUNNING){
+    		GridPane view = (GridPane) getCenter();
+    		for(Node n : view.getChildren()){
+    			((Viewport) n).getAlgorithm().step();
+    		}
+			if(areAlgorithmsFinished()){
+				state = MainWindowState.EDIT;
+				updateAlgorithmDetails();
+			}
+			updateViewport();
+		}
+	}
+
+	public void runAlgorithms(){
+		state = MainWindowState.RUNNING;
+		initialiseAlgorithms();
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-			((Viewport) n).getAlgorithm().step();
+			((Viewport) n).getAlgorithm().run();
 		}
+        state = MainWindowState.EDIT;
 	}
 
 	/**
@@ -265,7 +326,17 @@ public class MainWindow extends BorderPane{
 	public boolean canRunAlgorithms(){
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-		    if(((Viewport) n).getAlgorithm() == null){
+		    if(((Viewport) n).getAlgorithm() == null || (((Viewport) n)).getAlgorithm() != null && ((Viewport) n).getAlgorithm().isFinished()){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean areAlgorithmsFinished(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			if(!((Viewport) n).getAlgorithm().isFinished()){
 				return false;
 			}
 		}
@@ -352,27 +423,30 @@ public class MainWindow extends BorderPane{
 	*    Add the supplied VGC to a clicked component list. This allows the user to edit a clicked component
 	**/
 	public void addClickedComponent(VisualGraphComponent c){
-		if(!multiSelect || c == null){
-			clearClickedNodes();
-			clearClickedEdges();
+		if(state == MainWindowState.EDIT){
+    		if(!multiSelect || c == null){
+    			clearClickedNodes();
+    			clearClickedEdges();
+    		}
+    		System.out.println(multiSelect);
+	    	if(c instanceof VisualGraphNode){
+	    		if(!clickedNodes.contains((VisualGraphNode) c)){
+    	    		((VisualGraphNode) c).setSelected(true);
+    		    	clickedNodes.add((VisualGraphNode) c);
+    			}
+    		}
+    		if(c instanceof VisualGraphEdge){
+    			if(!clickedEdges.contains((VisualGraphEdge) c)){
+        			((VisualGraphEdge) c).setSelected(true);
+    	    		System.out.println("vge vlicked");
+    		    	clickedEdges.add((VisualGraphEdge) c);
+    			}
+    		}
+    		updateDetailsPanel();
+    		updateViewport();
 		}
-		System.out.println(multiSelect);
-		if(c instanceof VisualGraphNode){
-			if(!clickedNodes.contains((VisualGraphNode) c)){
-	    		((VisualGraphNode) c).setSelected(true);
-		    	clickedNodes.add((VisualGraphNode) c);
-			}
-		}
-		if(c instanceof VisualGraphEdge){
-			if(!clickedEdges.contains((VisualGraphEdge) c)){
-    			((VisualGraphEdge) c).setSelected(true);
-	    		System.out.println("vge vlicked");
-		    	clickedEdges.add((VisualGraphEdge) c);
-			}
-		}
-		updateDetailsPanel();
-		updateViewport();
 	}
+
 
 	/**
 	*    Update the details panel to allow operations on a particular combination of selected
@@ -414,70 +488,205 @@ public class MainWindow extends BorderPane{
 	/**
 	*    Create a node 10 units infront of the camera, and update the viewport to render the new node
 	**/
-	public void createNode(){
-		GraphNode node = new GraphNode(0);
-		node.setName("New node");
-		Vector spawnLocation = camera.getLocation().add(camera.getForwardVector().multiply(10));
-		VisualGraphNode vgn = VisualGraphNode.create(spawnLocation, node);
-		updateViewport();
+	public boolean createNode(){
+		if(state == MainWindowState.EDIT){
+		    GraphNode node = new GraphNode(0);
+		    node.setName("New node");
+		    Vector spawnLocation = camera.getLocation().add(camera.getForwardVector().multiply(10));
+		    VisualGraphNode vgn = VisualGraphNode.create(spawnLocation, node);
+		    updateViewport();
+			return true;
+		}
+		return false;
 	}
 
 	/**
 	*    Create an edge between the two supplied nodes, and update the viewport
 	**/
-	public void createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
-        GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
-        edge.setName("New edge");
-        VisualGraphEdge.create(edge);
-        updateDetailsPanel();
-        updateViewport();
+	public boolean createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
+		if(state == MainWindowState.EDIT){
+            GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
+            edge.setName("New edge");
+            VisualGraphEdge.create(edge);
+            updateDetailsPanel();
+            updateViewport();
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	/**
 	*    Delete the given node from the model, and update the viewport
 	**/
-	public void deleteNode(VisualGraphNode toDelete){
-		VisualGraphNode.delete(toDelete);
-		clearClickedNodes();
-		clearClickedEdges();
-		updateDetailsPanel();
-		updateViewport();
+	public boolean deleteNode(VisualGraphNode toDelete){
+		if(state == MainWindowState.EDIT){
+		    VisualGraphNode.delete(toDelete);
+		    clearClickedNodes();
+		    clearClickedEdges();
+		    updateDetailsPanel();
+		    updateViewport();
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	/**
 	*    Delete the given VGE from the model, and update the viewport
     **/
-	public void deleteEdge(VisualGraphEdge toDelete){
-		VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
-		clearClickedEdges();
-		updateDetailsPanel();
-		updateViewport();
+	public boolean deleteEdge(VisualGraphEdge toDelete){
+		if(state == MainWindowState.EDIT){
+		    VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
+		    clearClickedEdges();
+		    updateDetailsPanel();
+		    updateViewport();
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	/**
 	*    Delete the given edge from the model, and update the viewport
 	**/
-	public void deleteEdge(GraphEdge toDelete){
-		VisualGraphEdge.delete(toDelete);
-		clearClickedEdges();
-		updateDetailsPanel();
-		updateViewport();
+	public boolean deleteEdge(GraphEdge toDelete){
+		if(state == MainWindowState.EDIT){
+		    VisualGraphEdge.delete(toDelete);
+		    clearClickedEdges();
+		    updateDetailsPanel();
+		    updateViewport();
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	/**
 	*    Delete all selected nodes and edges. This is triggerred by pressing the DEL keys
 	**/
-	private void deleteAllSelected(){
-		for(VisualGraphNode n : clickedNodes){
-			VisualGraphNode.delete(n);
+	private boolean deleteAllSelected(){
+		if(state == MainWindowState.EDIT){
+    		for(VisualGraphNode n : clickedNodes){
+    			VisualGraphNode.delete(n);
+    		}
+    		for(VisualGraphEdge e : clickedEdges){
+    			VisualGraphEdge.delete(e);
+    		}
+    		clearClickedNodes();
+    		clearClickedEdges();
+    		updateViewport();
+    		updateDetailsPanel();
+			return true;
 		}
-		for(VisualGraphEdge e : clickedEdges){
-			VisualGraphEdge.delete(e);
+		else{
+			return false;
 		}
-		clearClickedNodes();
-		clearClickedEdges();
-		updateViewport();
+	}
+
+    /**
+	*    Create a path between each selected node, if only nodes are selected
+	**/
+	private boolean addPathBetweenSelected(){
+		if(state == MainWindowState.EDIT){
+			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
+				int originIndex = 0;
+				int destinationIndex = 1;
+				while(destinationIndex < clickedNodes.size()){
+				    GraphEdge edge = clickedNodes.get(originIndex).getNode().addEdge(clickedNodes.get(destinationIndex).getNode(), false);
+					if(edge != null){
+					    edge.setName("New edge");
+		                VisualGraphEdge.create(edge);
+					}
+					originIndex++;
+					destinationIndex++;
+				}
+				updateDetailsPanel();
+				updateViewport();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void selectAll(){
+		boolean multiSelectBefore = multiSelect;
+		multiSelect = true;
+		if(clickedNodes.size() == VisualGraphNode.getNodes().size() && clickedEdges.size() == VisualGraphEdge.getEdges().size()){
+			clearClickedNodes();
+			clearClickedEdges();
+		}
+		else{
+			for(VisualGraphNode n : VisualGraphNode.getNodes()){
+				addClickedComponent(n);
+			}
+			for(VisualGraphEdge e : VisualGraphEdge.getEdges()){
+				addClickedComponent(e);
+			}
+		}
 		updateDetailsPanel();
+		updateViewport();
+		multiSelect = multiSelectBefore;
+	}
+
+	public void setState(MainWindowState stateIn){
+		state = stateIn;
+	}
+
+	public MainWindowState getState(){
+		return state;
+	}
+
+    /**
+	*    begins all algorithms, which prevents the graph from being edited
+	**/
+	public boolean startAlgorithms(){
+		if(state != MainWindowState.RUNNING && canRunAlgorithms()){
+			state = MainWindowState.RUNNING;
+			clearClickedEdges();
+			clearClickedNodes();
+			initialiseAlgorithms();
+			updateAlgorithmDetails();
+			return true;
+		}
+		return false;
+	}
+
+    /**
+	*    Begins and executes all algorithms
+	**/
+	public boolean executeAlgorithms(){
+		if(canRunAlgorithms()){
+			if(state != MainWindowState.RUNNING){
+			    startAlgorithms();
+			}
+			runAlgorithms();
+			updateAlgorithmDetails();
+			updateViewport();
+			return true;
+		}
+		return false;
+	}
+
+    /**
+	*    Ends the execution of all algorithms
+	**/
+	public boolean terminateAlgorithms(){
+		if(state == MainWindowState.RUNNING){
+			GridPane view = (GridPane) getCenter();
+			for(Node n : view.getChildren()){
+				((Viewport) n).getAlgorithm().terminate();
+			}
+			updateAlgorithmDetails();
+			updateViewport();
+			state = MainWindowState.EDIT;
+			return true;
+		}
+		return false;
 	}
 
 

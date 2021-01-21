@@ -78,10 +78,6 @@ public abstract class GraphAlgorithm{
 		return edgeStates.get(edge);
 	}
 
-	public boolean getFinished(){
-		return finished;
-	}
-
 	public String toString(){
 		return name;
 	}
@@ -90,7 +86,18 @@ public abstract class GraphAlgorithm{
 		return running;
 	}
 
+	public boolean isFinished(){
+		return finished;
+	}
+
 	public abstract String[] getDetails();
 
 	public abstract boolean canRun();
+
+    /**
+	*    Ends the algorithm so no more execution steps are possible
+	**/
+	public void terminate(){
+		finished = true;
+	}
 }

@@ -137,6 +137,10 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		}
 	}
 
+	public GraphNode getStartNode(){
+		return startNode;
+	}
+
 	/**
 	*    Initialise variables
 	**/
@@ -158,7 +162,7 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 			else{
 			    distances.put(node, -1);
 			}
-			predecessors.put(node, startNode);
+			predecessors.put(node, null);
 			nodeStates.put(node, GraphComponentState.UNVISITED);
 		}
 
@@ -177,6 +181,7 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		visitedNodes.add(currentNode);
 
 		finished = false;
+		running = false;
 	}
 
 	/**
@@ -279,7 +284,12 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		}
 
 
-        return new String[]{"StartNode: " + start, "CurrentNode: " + current, "State: " + state, "Step number: " + stepCount, "Predecessors: " + predecessors, "Distances:      " + distances};
+        return new String[]{"StartNode: " + start,
+		                    "CurrentNode: " + current,
+						    "State: " + state, "Step number: " + stepCount,
+						    "Predecessors: " + predecessors,
+							"Distances:      " + distances,
+						    "OpenList:  " + nextStates};
 	}
 
 	public boolean canRun(){
