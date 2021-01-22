@@ -749,6 +749,9 @@ public class MainWindow extends BorderPane{
 
 	public void loadGraph(){
 		FileChooser dialog = new FileChooser();
+		//Restrict file search type
+		FileChooser.ExtensionFilter extensions = new FileChooser.ExtensionFilter("GRAPH files (*.graph)", "*.graph");
+        dialog.getExtensionFilters().add(extensions);
 		File selectedFile = dialog.showOpenDialog(getScene().getWindow());
 		if(selectedFile != null){
 			try{
