@@ -760,10 +760,12 @@ public class MainWindow extends BorderPane{
 				fileStream.close();
 				System.out.println("    -Successful read. Creating nodes");
 				ArrayList<GraphNode> createdNodes = new ArrayList<>();
+				//Create nodes in front of the camera, instead of their original position
+				Vector basePosition = camera.getLocation().add(camera.getForwardVector().multiply(10));
 				for(VisualGraphNode n : nodes){
 					GraphNode node = n.getNode();
 					createdNodes.add(n.getNode());
-				    VisualGraphNode vgn = VisualGraphNode.create(n.getLocation(), node);
+				    VisualGraphNode vgn = VisualGraphNode.create(n.getLocation().subtract(nodes.get(0).getLocation()).add(basePosition), node);
 				}
 				System.out.println("    -All nodes generated. Creating edges");
 				//The serialised object is an array list of only the selected nodes, however by
