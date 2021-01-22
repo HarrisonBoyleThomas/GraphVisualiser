@@ -15,6 +15,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Node;
+import javafx.stage.FileChooser;
+
+import java.io.*;
+import java.nio.file.Paths;
 
 import maths.Vector;
 import maths.Rotator;
@@ -55,15 +59,13 @@ public class MainWindow extends BorderPane{
 		setCenter(viewSection);
 		DijkstraShortestPath dsp = new DijkstraShortestPath(null, null);
 		Viewport v = new Viewport(camera, new DijkstraShortestPath(null, null));
-		createCube();
-		createNode();
 		//addViewport(v);
 		ArrayList<GraphNode> nodes = new ArrayList<>();
 		for(VisualGraphNode n : VisualGraphNode.getNodes()){
 			nodes.add(n.getNode());
 		}
-		dsp.setStartNode(nodes.get(0));
-		dsp.initialise(nodes);
+		//dsp.setStartNode(nodes.get(0));
+		//dsp.initialise(nodes);
 		v = new Viewport(camera, dsp);
 		addViewport(v);
 		updateDetailsPanel();
@@ -302,7 +304,7 @@ public class MainWindow extends BorderPane{
     		((Viewport) n).getAlgorithm().initialise(nodes);
     	}
 		updateAlgorithmDetails();
-		//Need to update viewport's algorithm details
+		//need to update viewport's algorithm details
 		updateViewport();
 	}
 
@@ -499,6 +501,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean createNode(){
 		if(state == MainWindowState.EDIT){
+			System.out.println("New node created\n");
 		    GraphNode node = new GraphNode(0);
 		    node.setName("New node");
 		    Vector spawnLocation = camera.getLocation().add(camera.getForwardVector().multiply(10));
@@ -514,6 +517,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
 		if(state == MainWindowState.EDIT){
+			System.out.println("Edge created between " + nodeA.getNode().getName() + " and " + nodeB.getNode().getName() + "\n");
             GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
             edge.setName("");
             VisualGraphEdge.create(edge);
@@ -531,6 +535,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean deleteNode(VisualGraphNode toDelete){
 		if(state == MainWindowState.EDIT){
+			System.out.println("Node " + toDelete.getNode().getName() + " deleted\n");
 			setStartNode(null);
 		    VisualGraphNode.delete(toDelete);
 		    clearClickedNodes();
@@ -549,6 +554,7 @@ public class MainWindow extends BorderPane{
     **/
 	public boolean deleteEdge(VisualGraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
+			System.out.println("Edge deleted from " + toDelete.getEdge().nodeA.getName() + " to + " + toDelete.getEdge().nodeB.getName() + "\n");
 		    VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
 		    clearClickedEdges();
 		    updateDetailsPanel();
@@ -565,6 +571,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean deleteEdge(GraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
+			System.out.println("Edge deleted from " + toDelete.nodeA.getName() + " to + " + toDelete.nodeB.getName() + "\n");
 		    VisualGraphEdge.delete(toDelete);
 		    clearClickedEdges();
 		    updateDetailsPanel();
@@ -581,6 +588,7 @@ public class MainWindow extends BorderPane{
 	**/
 	private boolean deleteAllSelected(){
 		if(state == MainWindowState.EDIT){
+			System.out.println("deleted all selected components (" + clickedNodes.size() + "nodes, " + clickedEdges.size() + "edges)\n");
 			setStartNode(null);
     		for(VisualGraphNode n : clickedNodes){
     			VisualGraphNode.delete(n);
@@ -669,6 +677,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean startAlgorithms(){
 		if(state != MainWindowState.RUNNING && canRunAlgorithms()){
+			System.out.println("Starting algorithms\n");
 			state = MainWindowState.RUNNING;
 			clearClickedEdges();
 			clearClickedNodes();
@@ -700,6 +709,7 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean terminateAlgorithms(){
 		if(state == MainWindowState.RUNNING){
+			System.out.println("Algorithms terminated!\n\n");
 			GridPane view = (GridPane) getCenter();
 			for(Node n : view.getChildren()){
 				((Viewport) n).getAlgorithm().terminate();
@@ -710,6 +720,83 @@ public class MainWindow extends BorderPane{
 			return true;
 		}
 		return false;
+	}
+
+
+	public void saveGraph(){
+        FileChooser dialog = new FileChooser();
+		String initialPath = Paths.get(".").toAbsolutePath().normalize().toString() + "/savedGraphs";
+		dialog.setInitialDirectory(new File(initialPath));
+		dialog.setInitialFileName("newGraph.graph");
+		File saveFile = dialog.showSaveDialog(getScene().getWindow());
+		if(saveFile != null){
+			try{
+    			FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
+    			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+    			objectOutputStream.writeObject(clickedNodes);
+    			objectOutputStream.close();
+    			fileOutputStream.close();
+				System.out.println("Successfully saved graph to " + saveFile + "\n");
+			}
+			catch(Exception e){
+				System.out.println("Unable to save\n");
+			}
+		}
+		else{
+			System.out.println("No file selected to save to, aborting save\n");
+		}
+	}
+
+	public void loadGraph(){
+		FileChooser dialog = new FileChooser();
+		File selectedFile = dialog.showOpenDialog(getScene().getWindow());
+		if(selectedFile != null){
+			try{
+				System.out.println("Begin load operation");
+                FileInputStream fileStream = new FileInputStream(selectedFile);
+				ObjectInputStream objectStream = new ObjectInputStream(fileStream);
+				ArrayList<VisualGraphNode> nodes = (ArrayList<VisualGraphNode>) objectStream.readObject();
+				objectStream.close();
+				fileStream.close();
+				System.out.println("    -Successful read. Creating nodes");
+				ArrayList<GraphNode> createdNodes = new ArrayList<>();
+				for(VisualGraphNode n : nodes){
+					GraphNode node = n.getNode();
+					createdNodes.add(n.getNode());
+				    VisualGraphNode vgn = VisualGraphNode.create(n.getLocation(), node);
+				}
+				System.out.println("    -All nodes generated. Creating edges");
+				//The serialised object is an array list of only the selected nodes, however by
+				//definition of serialised, this will essentially include all reachable nodes through references
+				//Only create edges for the nodes that were explicitly selected by the user. Remove the redundant edges
+				for(GraphNode n : createdNodes){
+					ArrayList<GraphEdge> invalidEdges = new ArrayList<>();
+					for(GraphEdge e : n.getEdges()){
+						if(createdNodes.contains(e.nodeB)){
+			                VisualGraphEdge.create(e);
+						}
+						else{
+							invalidEdges.add(e);
+						}
+					}
+					for(GraphEdge e : invalidEdges){
+						n.removeEdge(e, false);
+					}
+				}
+				System.out.println("    -All edges generated");
+				updateDetailsPanel();
+				updateViewport();
+				System.out.println("Successfully loaded " + selectedFile + "!");
+			}
+			catch(Exception e){
+				System.out.println("Unable to load " + selectedFile);
+				e.printStackTrace();
+			}
+		}
+		else{
+			System.out.println("No file selected to load, aborting load");
+		}
+		System.out.println("\n");
 	}
 
 

@@ -18,8 +18,15 @@ import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
 
+/**
+*    The MSD panel allows the user to view the details of multiple different
+*    graph components. This is intended to be used by MainWindow when there are
+*    multiple components selected
+*    @Author Harrison Boyle-Thomas
+*    @Date 22/01/21
+**/
 public class MultipleSelectedDetails extends DetailsPanel{
-	
+
 	public MultipleSelectedDetails(){
 		update();
 	}
@@ -30,7 +37,7 @@ public class MultipleSelectedDetails extends DetailsPanel{
 		Label title = new Label("DETAILS PANEL");
 		Tooltip.install(title, tooltip);
 		getChildren().add(title);
-		
+
 		ScrollPane nodeSection = new ScrollPane();
 		VBox nodes = new VBox();
 		Label nodeTitle = new Label("SELECTED NODES");
@@ -48,8 +55,8 @@ public class MultipleSelectedDetails extends DetailsPanel{
 		}
 		nodeSection.setContent(nodes);
 		getChildren().add(nodeSection);
-		
-		
+
+
 		ScrollPane edgeSection = new ScrollPane();
 		VBox edges = new VBox();
 		Label edgeTitle = new Label("SELECTED EDGES");
@@ -67,8 +74,8 @@ public class MultipleSelectedDetails extends DetailsPanel{
 		}
 		edgeSection.setContent(edges);
 		getChildren().add(edgeSection);
-		
+
 		getChildren().add(new EmptyDetails());
-		
+
 	}
 }

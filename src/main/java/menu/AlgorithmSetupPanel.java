@@ -18,7 +18,11 @@ import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
 
-
+/**
+*    The AlgorithmSetupPanel allows the user to set the initial parameters of Algorithms
+*    @Author Harrison Boyle-Thomas
+*    @Date 22/01/21
+**/
 public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 
 	public AlgorithmSetupPanel(){

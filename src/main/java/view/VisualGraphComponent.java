@@ -12,8 +12,6 @@ import javafx.scene.Group;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
-import java.io.*;
-
 /**
 *    A VGC stores the common features of a graph component that can be drawn on a JavaFX canvas
 *    Due to the complexity of calculating renderLocation, the render location of a VGC is stored
@@ -22,7 +20,7 @@ import java.io.*;
 *    Author: Harrison Boyle-Thomas
 *    Date: 20/11/2020
 **/
-public abstract class VisualGraphComponent extends Actor implements Serializable{
+public abstract class VisualGraphComponent extends Actor{
 	//The icon for the VGC that will be rendered at the renderLocation
 	protected transient Group icon;
 

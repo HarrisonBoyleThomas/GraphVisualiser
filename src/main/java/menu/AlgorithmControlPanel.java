@@ -17,7 +17,11 @@ import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
 
-
+/**
+*    The AlgorithmControlPanel allows users to handle the execution of running AlgorithmSetupPanel
+*    @Author Harrison Boyle-Thomas
+*    @Date 22/01/21
+**/
 public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 
 	public AlgorithmControlPanel(){

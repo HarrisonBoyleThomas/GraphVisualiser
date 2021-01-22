@@ -19,17 +19,22 @@ import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
 
-
+/**
+*    The DNSD panel allows the user to edit the details of two supplied nodes
+*    This is intended to be used by MainWindow when the clickedNode list contains
+*    two nodes
+*    @Author Harrison Boyle-Thomas
+*    @Date 22/01/21
+**/
 public class DoubleNodeSelectedDetails extends DetailsPanel{
 	VisualGraphNode nodeA;
 	VisualGraphNode nodeB;
 	public DoubleNodeSelectedDetails(VisualGraphNode nodeAIn, VisualGraphNode nodeBIn){
-		System.out.println("make new menu");
 		nodeA = nodeAIn;
 		nodeB = nodeBIn;
 		update();
 	}
-	
+
 	public void update(){
 		if(nodeA == null || nodeB == null){
 			return;
@@ -39,17 +44,17 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		Label title = new Label("DETAILS PANEL");
 		Tooltip.install(title, tooltip);
 		getChildren().add(title);
-		
-		
+
+
 		addCreateEdgeButtons();
-		
+
 		addDeleteButton();
-		
+
 		getChildren().add(new EmptyDetails());
-		
-		
+
+
 	}
-	
+
 	private GraphEdge canAddEdge(GraphNode start, GraphNode end){
 		for(GraphEdge e : start.getEdges()){
 			if(e.nodeB.equals(end)){
@@ -58,7 +63,7 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		}
 		return null;
 	}
-	
+
 	private void addCreateEdgeButtons(){
 		Tooltip createTooltip = new Tooltip("Click to create an edge between the two edges");
 		Tooltip deleteTooltip = new Tooltip("Click to delete the edge between the two edges");
@@ -84,7 +89,7 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 	    	});
 	    	Tooltip.install(aToB, deleteTooltip);
 		}
-			
+
 		Button bToA;
 		GraphEdge targetEdgeTwo = canAddEdge(nodeB.getNode(), nodeA.getNode());
 		if(targetEdgeTwo == null){
@@ -110,10 +115,10 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		getChildren().add(aToB);
 		getChildren().add(bToA);
 	}
-		
-		
-	
-	
+
+
+
+
 	public void addDeleteButton(){
 		Tooltip tooltip = new Tooltip("Delete the selected node");
 		Button delete = new Button("DELETE NODE");

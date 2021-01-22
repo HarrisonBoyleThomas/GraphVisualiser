@@ -17,14 +17,19 @@ import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
 
-
+/**
+*    The CameraDetails simply writes properties of the camera, such as location and
+*    rotation on screen for the user to see
+*    @Author Harrison Boyle-Thomas
+*    @Date 2020
+**/
 public class CameraDetails extends DetailsPanel{
 	Camera camera;
 	public CameraDetails(Camera cameraIn){
 		camera = cameraIn;
 		update();
 	}
-	
+
 	public void update(){
 		if(camera == null){
 			return;
@@ -34,10 +39,10 @@ public class CameraDetails extends DetailsPanel{
 		Label title = new Label("CAMERA DETAILS");
 		Tooltip.install(title, tooltip);
 		getChildren().add(title);
-		
+
 		Label position = new Label("    Position: " + camera.getLocation().toStringNeat());
 		getChildren().add(position);
-		
+
 		Label rotation = new Label("    Rotation: " + camera.getRotation().toStringNeat());
 		getChildren().add(rotation);
 	}
