@@ -4,18 +4,20 @@ import java.lang.ArithmeticException;
 import java.lang.NullPointerException;
 import java.lang.Math;
 
+import java.io.*;
+
 /**
 *    A vector represents a point in 3D space
 *    A 2D vector is conventionally represented by z = 0
-*    
+*
 *    @Author Harrison Boyle-Thomas
 *    @Date 03/11/2020
 **/
-public class Vector{
+public class Vector implements Serializable{
 	public final double x;
 	public final double y;
 	public final double z;
-	
+
 	/**
 	*    create a 3D vector
 	**/
@@ -24,7 +26,7 @@ public class Vector{
 		y = yIn;
 		z = zIn;
 	}
-	
+
 	/**
 	*    create a 2D vector
 	**/
@@ -33,7 +35,7 @@ public class Vector{
 		y = yIn;
 		z = 0;
 	}
-	
+
 	/**
 	*     Create a default vector at the world origin (0,0,0)
 	**/
@@ -42,7 +44,7 @@ public class Vector{
 		y = 0;
 		z = 0;
 	}
-	
+
 	/**
 	*    Add the given vector to the current vector
 	*    @Return a new Vector of the result
@@ -50,7 +52,7 @@ public class Vector{
 	public Vector add(Vector other){
 		return new Vector(x + other.x, y + other.y, z + other.z);
 	}
-	
+
 	/**
 	*    Add the two supplied vectors together
 	*    @Return a new Vector of the result
@@ -64,7 +66,7 @@ public class Vector{
 		}
 		return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 	}
-	
+
 	/**
 	*    Subtract the given vector from the current vector
 	*    @Return a new Vector of the result
@@ -72,7 +74,7 @@ public class Vector{
 	public Vector subtract(Vector other){
 		return new Vector(x - other.x, y - other.y, z - other.z);
 	}
-	
+
 	/**
 	*    Subtract vector v2 from vector v1
 	*    @Return a new Vector of the result
@@ -86,7 +88,7 @@ public class Vector{
 		}
 		return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 	}
-	
+
 	/**
 	*    @Return the dot product between the current vector and the supplied vector
 	**/
@@ -106,7 +108,7 @@ public class Vector{
 		}
         return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	}
-	
+
 	/**
 	*    Scales the current vector by the given multiplier
 	*    @Return a Vector of the result
@@ -114,7 +116,7 @@ public class Vector{
 	public Vector multiply(double multiplier){
 		return new Vector(x * multiplier, y * multiplier, z * multiplier);
 	}
-	
+
 	/**
 	*    Scales the given vector by the given multiplier
 	*    @Return a Vector of the result
@@ -122,7 +124,7 @@ public class Vector{
 	public static Vector multiply(Vector v, double multiplier){
 		return v.multiply(multiplier);
 	}
-	
+
 	/**
 	*    Divide the current vector by the given dividend
 	*    @Return a Vector of the result
@@ -133,7 +135,7 @@ public class Vector{
 		}
 		return new Vector(x / dividend, y / dividend, z / dividend);
 	}
-	
+
 	/**
 	*    Divide the given vector by the given dividend
 	*    @Return a Vector of the result
@@ -141,7 +143,7 @@ public class Vector{
 	public static Vector divide(Vector v, int dividend){
 		return v.divide(dividend);
 	}
-	
+
 	/**
 	*    @Return the euclidian distance between two given vectors
 	**/
@@ -149,22 +151,22 @@ public class Vector{
 		Vector diff = subtract(v1, v2);
 		return length(diff);
 	}
-	
+
 	/**
 	*    @Return the length of the given vector
 	*    If the given vector is the difference between two vectors, this will return the
-	*    distance between them. If the given vector is a vector in world space, 
+	*    distance between them. If the given vector is a vector in world space,
 	*    the return length will be equivalent to it's distance from the origin
 	**/
 	public static double length(Vector v){
 		return Math.sqrt(Math.pow(v.x,2) + Math.pow(v.y,2) + Math.pow(v.z,2));
 	}
-	
+
 	public double length(){
 		return Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
 	}
-	
-	
+
+
 	/**
 	*    @Return a normalised vector
 	*    @Return null for (0,0,0)
@@ -175,11 +177,11 @@ public class Vector{
 		}
 		return new Vector((x / length()), (y / length()), (z / length()));
 	}
-	
+
 	public static Vector normalise(Vector v){
 		return v.normalise();
 	}
-	
+
 	@Override
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof Vector){
@@ -188,20 +190,20 @@ public class Vector{
 		}
 		return false;
 	}
-	
+
 	@Override
-    public String toString() { 
-        return "(" + x + "," + y + "," + z + ")"; 
+    public String toString() {
+        return "(" + x + "," + y + "," + z + ")";
     }
-	
+
 	public String toStringNeat(){
 		String strX = "" + Functions.round(x, 2);
 		String strY = "" + Functions.round(y, 2);
 		String strZ = "" + Functions.round(z, 2);
-		
+
 		return "(" + String.format("%1$10s", strX) + "," + String.format("%1$10s", strY) + "," + String.format("%1$10s", strZ) +")";
 	}
-	
-	
-		
+
+
+
 }

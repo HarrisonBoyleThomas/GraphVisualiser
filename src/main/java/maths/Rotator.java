@@ -2,10 +2,12 @@ package maths;
 
 import java.lang.Math;
 
+import java.io.*;
+
 /**
 *    Rotators represent 3D rotation
-*   
-*    z 
+*
+*    z
 *    |    /y
 *    |   /
 *    |  /
@@ -15,7 +17,7 @@ import java.lang.Math;
 *    Roll rotates around the x axis
 *    Pitch rotates around the y axis
 *    Yaw rotates around the z axis
-*    
+*
 *    Angles are conventionally clockwise
 *    For example, (0, 0, 270) means rotate 270 degrees clockwise about the Z axis
 *    Many maths functions take anti-clockwise inputs, so
@@ -24,12 +26,12 @@ import java.lang.Math;
 *    @Author Harrison Boyle-Thomas
 *    @Date 03/11/2020
 **/
-public class Rotator{
-	
+public class Rotator implements Serializable{
+
 	public final double roll;
 	public final double pitch;
 	public final double yaw;
-	
+
 	/**
 	*    Create a rotator with the given roll pitch and yaw values
 	**/
@@ -50,7 +52,7 @@ public class Rotator{
 		}
 		yaw = newYaw;
 	}
-	
+
 	/**
 	*    Create a default rotator with an orientation of 0
 	**/
@@ -59,19 +61,19 @@ public class Rotator{
 		pitch = 0;
 		yaw = 0;
 	}
-	
+
 	public Rotator add(Rotator other){
 		return new Rotator(roll + other.roll, pitch + other.pitch, yaw + other.yaw);
 	}
-	
+
 	public static Rotator add(Rotator r1, Rotator r2){
 		return r1.add(r2);
 	}
-	
+
 	public Rotator subtract(Rotator other){
 		return new Rotator(roll - other.roll, pitch - other.pitch, yaw - other.yaw);
 	}
-	
+
 	public static Rotator subtract(Rotator r1, Rotator r2){
 		return r1.subtract(r2);
 	}
@@ -79,54 +81,54 @@ public class Rotator{
 	public Rotator addRoll(double amount){
 		return new Rotator(roll + amount, pitch, yaw);
 	}
-	
+
 
 	public static Rotator addRoll(Rotator rot, double amount){
 		return rot.addRoll(amount);
 	}
-	
+
 	public Rotator addPitch(double amount){
 		return new Rotator(roll, pitch + amount, yaw);
 	}
-	
+
 	public static Rotator addPitch(Rotator rot, double amount){
 		return rot.addPitch(amount);
 	}
-	
+
 	public Rotator addYaw(double amount){
 		return new Rotator(roll, pitch, yaw + amount);
 	}
-	
+
 	public static Rotator addYaw(Rotator rot, double amount){
 		return rot.addYaw(amount);
 	}
-	
-	
+
+
 	public Rotator subtractRoll(double amount){
 		return new Rotator(roll - amount, pitch, yaw);
 	}
-	
+
 	public static Rotator subtractRoll(Rotator rot, double amount){
 		return rot.subtractRoll(amount);
 	}
-	
+
 	public Rotator subtractPitch(double amount){
 		return new Rotator(roll, pitch - amount, yaw);
 	}
-	
+
 	public static Rotator subtractPitch(Rotator rot, double amount){
 		return rot.subtractPitch(amount);
 	}
-	
+
 	public Rotator subtractYaw(double amount){
 		return new Rotator(roll, pitch, yaw - amount);
 	}
-	
+
 	public static Rotator subtractYaw(Rotator rot, double amount){
 		return rot.subtractYaw(amount);
 	}
-	
-	
+
+
 	/**
 	*    @Return a new Rotator that represents the difference in
 	*    rotation from the current vector and the given vector
@@ -138,28 +140,28 @@ public class Rotator{
 	public Rotator delta(Rotator other){
 		return new Rotator(other.roll - roll, other.pitch - pitch, other.yaw - yaw);
 	}
-	
+
 	/**
 	*    @Return a Rotator representing the difference between the given rotators
 	**/
 	public static Rotator delta (Rotator r1, Rotator r2){
 		return r1.delta(r2);
 	}
-	
+
 	/**
 	*    Return a Rotator that is in the opposite direction
 	**/
 	public Rotator opposite(){
 		return new Rotator(roll + 180, pitch + 180, yaw + 180);
 	}
-	
+
 	/**
 	*    Return the opposite rotation to the given Rotator
 	**/
 	public static Rotator opposite(Rotator r1){
 		return r1.opposite();
 	}
-	
+
 	/**
 	*    Return the Rotator that is rotated in opposite direction
 	*    For example, given a rotator (90, 0, 0) clockwise
@@ -169,19 +171,19 @@ public class Rotator{
 	public Rotator antiClockwise(){
 		return new Rotator(360-roll, 360-pitch, 360-yaw);
 	}
-	
+
 	/**
 	*    @Return the anti rotator for the given Rotator
 	**/
 	public static Rotator antiClockwise(Rotator r){
 		return r.antiClockwise();
 	}
-	
+
 	public static Rotator reverseOrder(Rotator r){
 		return new Rotator(r.yaw, r.pitch, r.roll);
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof Rotator){
@@ -190,12 +192,12 @@ public class Rotator{
 		}
 		return false;
 	}
-	
+
 	@Override
-    public String toString() { 
-        return "(" + roll + "," + pitch + "," + yaw + ")"; 
+    public String toString() {
+        return "(" + roll + "," + pitch + "," + yaw + ")";
     }
-	
+
 	public String toStringNeat(){
 		String strR = String.format("%1$5s", "" + Functions.round(roll, 1)).substring(0, 4);
 		String strP = "" + String.format("%1$5s", Functions.round(pitch, 1)).substring(0, 4);
@@ -203,7 +205,3 @@ public class Rotator{
 		return "(" + strR + "," + strP + "," + strY + ")";
 	}
 }
-	
-	
-	
-	

@@ -1,25 +1,27 @@
 package model;
 
+import java.io.*;
+
 /**
 *    A GraphComponent represents a part of a graph
 *    All GraphComponents have a name and an algorithm state
 **/
-abstract class GraphComponent{
+abstract class GraphComponent implements Serializable{
 	private GraphComponentState state;
 	private String name;
-	
+
 	public GraphComponent(){
 		initialiseState();
 		name = "";
 	}
-	
+
 	/**
 	*    @return the state of the component
 	**/
 	public GraphComponentState getState(){
 		return state;
 	}
-	
+
 	/**
 	*    update the state of the component
 	*    @param stateIn: the new state
@@ -29,21 +31,21 @@ abstract class GraphComponent{
 		state = stateIn;
 		return state;
 	}
-	
+
 	/**
 	*    set the state to unvisited
 	**/
 	public void initialiseState(){
 		state = GraphComponentState.UNVISITED;
 	}
-	
+
 	/**
 	*    @return the name of the component
 	**/
 	public String getName(){
 		return name;
 	}
-	
+
 	/**
 	*    update the name of the component
 	*    @param nameIn the new name of the component
@@ -53,7 +55,7 @@ abstract class GraphComponent{
 		name = nameIn;
 		return name;
 	}
-	
+
 	public String toString(){
 		return name;
 	}
