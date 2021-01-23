@@ -242,7 +242,7 @@ public class MainWindow extends BorderPane{
 	/**
 	*    Draws all nodes on all viewports
 	**/
-	protected void updateViewport(){
+	public void updateViewport(){
 		VisualGraphNode.updateNodes(camera, 500,500);
 		VisualGraphEdge.updateEdges();
 		GridPane view = (GridPane) getCenter();

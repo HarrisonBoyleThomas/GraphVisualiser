@@ -20,6 +20,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.input.*;
+import java.awt.Point;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
@@ -51,6 +53,77 @@ public class Viewport extends Pane{
 		//set the clipping rectangle to hide VGCs that are off screen
 		Rectangle clip = new Rectangle(width, height);
         setClip(clip);
+		addDragAndDropEvents();
+	}
+
+	private void addDragAndDropEvents(){
+		System.out.println("Drop events added");
+
+		setOnDragOver(new EventHandler <DragEvent>() {
+            public void handle(DragEvent e) {
+                /* data is dragged over the target */
+                System.out.println("onDragOver");
+
+                e.acceptTransferModes(TransferMode.MOVE);
+				System.out.println(e.getTransferMode());
+
+                e.consume();
+            }
+        });
+
+		setOnDragEntered(new EventHandler <DragEvent>() {
+            public void handle(DragEvent e) {
+                /* the drag-and-drop gesture entered the target */
+                System.out.println("onDragEntered");
+                /* show to the user that it is an actual gesture target */
+
+                e.consume();
+            }
+        });
+
+		setOnDragExited(new EventHandler <DragEvent>() {
+            public void handle(DragEvent e) {
+                e.consume();
+            }
+        });
+
+		setOnDragDropped(new EventHandler <DragEvent>() {
+            public void handle(DragEvent e) {
+                /* data dropped */
+                System.out.println("onDragDropped");
+				Object o = e.getDragboard().getContent(VisualGraphNode.FORMAT);
+				System.out.println(o);
+				if(o instanceof VisualGraphNode){
+					VisualGraphNode vgn = (VisualGraphNode) o;
+					Point mouse =java.awt.MouseInfo.getPointerInfo().getLocation();
+					Vector mousePosition = new Vector(mouse.x, mouse.y, 0);
+					if(MainWindow.get().getClickedNodes().size() > 0){
+    					Vector difference = mousePosition.subtract(MainWindow.get().getClickedNodes().get(0).getRenderLocation());
+						System.out.println(mousePosition);
+    					double xChange = difference.x / width;
+    					double yChange = difference.y / height;
+    					System.out.println("xchange = " + xChange);
+    					double deltaYaw = xChange*180;
+    					double deltaPitch = yChange*180;
+    					for(VisualGraphNode node : MainWindow.get().getClickedNodes()){
+    		    			System.out.println("ex: " + (VisualGraphNode.getNodes().get(0).getNode() == vgn.getNode()));
+    			    		System.out.println(vgn.getNode());
+    				    	node.setLocation(Functions.rotateVector(camera.getLocation(), node.getLocation(), new Rotator(0, deltaPitch, deltaYaw)));
+	    				}
+					}
+					e.setDropCompleted(true);
+				    MainWindow.get().updateViewport();
+				}
+				else{
+					e.setDropCompleted(false);
+				}
+				//clear the clipboard
+				ClipboardContent clipboard = new ClipboardContent();
+				e.getDragboard().setContent(clipboard);
+                e.consume();
+            }
+        });
+
 	}
 
 	public void setAlgorithm(GraphAlgorithm algorithmIn){

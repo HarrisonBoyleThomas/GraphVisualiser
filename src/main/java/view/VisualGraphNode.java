@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.*;
+import javafx.event.EventHandler;
 
 import javafx.scene.input.MouseEvent;
 
@@ -35,6 +37,8 @@ public class VisualGraphNode extends VisualGraphComponent{
 
 	//The node the GNI represents
 	private final GraphNode node;
+
+	public static final DataFormat FORMAT = new DataFormat("VisualGraphNode");
 
 
 	/**
@@ -97,7 +101,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static VisualGraphNode getNode(GraphNode node){
 		for(VisualGraphNode icon : icons){
-			if(icon.getNode().equals(node)){
+			if(icon.getNode() == node){
 				//VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
 				//VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
 				return icon;
@@ -180,6 +184,41 @@ public class VisualGraphNode extends VisualGraphComponent{
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
 		Tooltip tooltip = new Tooltip("Click to edit node");
 		Tooltip.install(icon, tooltip);
+		addDragEvents();
+	}
+
+	private void addDragEvents(){
+		icon.setOnDragDetected(new EventHandler <MouseEvent>() {
+            public void handle(MouseEvent event) {
+                /* drag was detected, start drag-and-drop gesture*/
+                System.out.println("onDragDetected");
+
+                /* allow any transfer mode */
+                Dragboard db = icon.startDragAndDrop(TransferMode.MOVE);
+
+                /* put a string on dragboard */
+                ClipboardContent content = new ClipboardContent();
+                //For soime strange reason, this reference a nested class instance
+				content.put(FORMAT, VisualGraphNode.this);
+                db.setContent(content);
+				db.setDragView(icon.getChildren().get(0).snapshot(null, null));
+
+                event.consume();
+            }
+        });
+
+
+		icon.setOnDragDone(new EventHandler <DragEvent>() {
+            public void handle(DragEvent event) {
+                System.out.println("onDragDone");
+
+                event.consume();
+            }
+        });
+	}
+
+	public void updatePosition(){
+
 	}
 
 	/**
