@@ -58,7 +58,7 @@ public class MainWindow extends BorderPane{
 		GridPane viewSection = new GridPane();
 		setCenter(viewSection);
 		DijkstraShortestPath dsp = new DijkstraShortestPath(null, null);
-		Viewport v = new Viewport(camera, new DijkstraShortestPath(null, null));
+		Viewport v = new Viewport(camera, dsp);
 		//addViewport(v);
 		ArrayList<GraphNode> nodes = new ArrayList<>();
 		for(VisualGraphNode n : VisualGraphNode.getNodes()){
@@ -66,7 +66,6 @@ public class MainWindow extends BorderPane{
 		}
 		//dsp.setStartNode(nodes.get(0));
 		//dsp.initialise(nodes);
-		v = new Viewport(camera, dsp);
 		addViewport(v);
 		updateDetailsPanel();
 
@@ -446,16 +445,37 @@ public class MainWindow extends BorderPane{
     	    		((VisualGraphNode) c).setSelected(true);
     		    	clickedNodes.add((VisualGraphNode) c);
     			}
+				else{
+					//Add the newest element to the front of the list
+					clickedNodes.remove(((VisualGraphNode) c));
+					clickedNodes.add(0, ((VisualGraphNode) c));
+				}
     		}
     		if(c instanceof VisualGraphEdge){
     			if(!clickedEdges.contains((VisualGraphEdge) c)){
         			((VisualGraphEdge) c).setSelected(true);
     		    	clickedEdges.add((VisualGraphEdge) c);
     			}
+				else{
+					//ADd the newest element to the front of the list
+					clickedEdges.remove((VisualGraphEdge) c);
+					clickedEdges.add((VisualGraphEdge) c);
+				}
     		}
     		updateDetailsPanel();
     		updateViewport();
 		}
+	}
+
+    /**
+	*    Add the supplied VGC to a clicked component list. This allows the user to edit a clicked component.
+	*    @param overrideMultiselect = allows the user to simulate holding hte multiselect key while adding the component
+	**/
+	public void addClickedComponent(VisualGraphComponent c, boolean overrideMultiselect){
+		boolean multiSelectBefore = multiSelect;
+		multiSelect = true;
+		addClickedComponent(c);
+		multiSelect = multiSelectBefore;
 	}
 
 

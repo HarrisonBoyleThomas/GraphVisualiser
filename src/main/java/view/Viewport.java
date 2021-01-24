@@ -48,7 +48,7 @@ public class Viewport extends Pane{
 		camera = cameraIn;
 		algorithm = algorithmIn;
 		draw();
-		setOnMouseClicked(e -> {requestFocus(); MainWindow.get().addClickedComponent(null);});
+		setOnMouseClicked(e -> {requestFocus(); MainWindow.get().addClickedComponent(null, false);});
 
 		//set the clipping rectangle to hide VGCs that are off screen
 		Rectangle clip = new Rectangle(width, height);
@@ -57,15 +57,11 @@ public class Viewport extends Pane{
 	}
 
 	private void addDragAndDropEvents(){
-		System.out.println("Drop events added");
-
 		setOnDragOver(new EventHandler <DragEvent>() {
             public void handle(DragEvent e) {
-                /* data is dragged over the target */
-                System.out.println("onDragOver");
-
-                e.acceptTransferModes(TransferMode.MOVE);
-				System.out.println(e.getTransferMode());
+                if(e.getDragboard().getContent(VisualGraphNode.FORMAT) != null){
+                    e.acceptTransferModes(TransferMode.MOVE);
+				}
 
                 e.consume();
             }
@@ -73,10 +69,9 @@ public class Viewport extends Pane{
 
 		setOnDragEntered(new EventHandler <DragEvent>() {
             public void handle(DragEvent e) {
-                /* the drag-and-drop gesture entered the target */
-                System.out.println("onDragEntered");
-                /* show to the user that it is an actual gesture target */
+				if(e.getDragboard().getContent(VisualGraphNode.FORMAT) != null){
 
+				}
                 e.consume();
             }
         });
@@ -87,39 +82,42 @@ public class Viewport extends Pane{
             }
         });
 
+		/**
+		*    Move the most recently selected node such that it's new location is mapped to approximately
+		*    the same renderLocation. Move all other nodes by simple translation, so the graph's 3D
+		*    structure is preserved
+		**/
 		setOnDragDropped(new EventHandler <DragEvent>() {
             public void handle(DragEvent e) {
-                /* data dropped */
-                System.out.println("onDragDropped");
 				Object o = e.getDragboard().getContent(VisualGraphNode.FORMAT);
-				System.out.println(o);
+				boolean success = false;
 				if(o instanceof VisualGraphNode){
-					VisualGraphNode vgn = (VisualGraphNode) o;
+					//The vgn from the drahboard(a copy) can't be used because extracting the "original" from the
+					//"real" VGN list is impossible, so assume the most recently added VGC is the original node
 					Point mouse =java.awt.MouseInfo.getPointerInfo().getLocation();
-					Vector mousePosition = new Vector(mouse.x, mouse.y, 0);
+					Vector mousePosition = new Vector(e.getX(), e.getY(), 0);
 					if(MainWindow.get().getClickedNodes().size() > 0){
-    					Vector difference = mousePosition.subtract(MainWindow.get().getClickedNodes().get(0).getRenderLocation());
-						System.out.println(mousePosition);
-    					double xChange = difference.x / width;
-    					double yChange = difference.y / height;
-    					System.out.println("xchange = " + xChange);
+						System.out.println("Move selected subgraph (" + MainWindow.get().getClickedNodes().size() + " nodes) about "+ MainWindow.get().getClickedNodes().get(0).getNode().getName());
+    					Vector differenceFromMouse = mousePosition.subtract(MainWindow.get().getClickedNodes().get(0).getRenderLocation());
+    					double xChange = differenceFromMouse.x / width;
+    					double yChange = differenceFromMouse.y / height;
     					double deltaYaw = xChange*180;
     					double deltaPitch = yChange*180;
-    					for(VisualGraphNode node : MainWindow.get().getClickedNodes()){
-    		    			System.out.println("ex: " + (VisualGraphNode.getNodes().get(0).getNode() == vgn.getNode()));
-    			    		System.out.println(vgn.getNode());
-    				    	node.setLocation(Functions.rotateVector(camera.getLocation(), node.getLocation(), new Rotator(0, deltaPitch, deltaYaw)));
+						Vector originalPosition = MainWindow.get().getClickedNodes().get(0).getLocation();
+						//Move the dragged node by rotating about the camera to keep pit's erspective render location
+						MainWindow.get().getClickedNodes().get(0).setLocation(Functions.rotateVector(camera.getLocation(), MainWindow.get().getClickedNodes().get(0).getLocation(), new Rotator(0, deltaPitch, deltaYaw)));
+                        //Translate all other nodes to preserve their position
+						for(VisualGraphNode node : MainWindow.get().getClickedNodes()){
+							if(node != MainWindow.get().getClickedNodes().get(0)){
+			    				Vector relative = Vector.subtract(MainWindow.get().getClickedNodes().get(0).getLocation(), originalPosition);
+							    node.setLocation(node.getLocation().add(relative));
+							}
 	    				}
+						success = true;
 					}
-					e.setDropCompleted(true);
 				    MainWindow.get().updateViewport();
 				}
-				else{
-					e.setDropCompleted(false);
-				}
-				//clear the clipboard
-				ClipboardContent clipboard = new ClipboardContent();
-				e.getDragboard().setContent(clipboard);
+				e.setDropCompleted(success);
                 e.consume();
             }
         });

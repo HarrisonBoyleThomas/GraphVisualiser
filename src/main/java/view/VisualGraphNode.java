@@ -9,6 +9,8 @@ import model.GraphEdge;
 import model.GraphComponentState;
 import model.algorithm.*;
 
+import menu.MainWindow;
+
 
 import java.util.ArrayList;
 
@@ -190,18 +192,12 @@ public class VisualGraphNode extends VisualGraphComponent{
 	private void addDragEvents(){
 		icon.setOnDragDetected(new EventHandler <MouseEvent>() {
             public void handle(MouseEvent event) {
-                /* drag was detected, start drag-and-drop gesture*/
-                System.out.println("onDragDetected");
-
-                /* allow any transfer mode */
                 Dragboard db = icon.startDragAndDrop(TransferMode.MOVE);
-
-                /* put a string on dragboard */
                 ClipboardContent content = new ClipboardContent();
-                //For soime strange reason, this reference a nested class instance
 				content.put(FORMAT, VisualGraphNode.this);
                 db.setContent(content);
-				db.setDragView(icon.getChildren().get(0).snapshot(null, null));
+				db.setDragView(icon.snapshot(null, null));
+				MainWindow.get().addClickedComponent(VisualGraphNode.getNode(getNode()), true);
 
                 event.consume();
             }
@@ -210,7 +206,6 @@ public class VisualGraphNode extends VisualGraphComponent{
 
 		icon.setOnDragDone(new EventHandler <DragEvent>() {
             public void handle(DragEvent event) {
-                System.out.println("onDragDone");
 
                 event.consume();
             }
