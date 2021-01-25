@@ -28,7 +28,7 @@ public abstract class GraphAlgorithm{
 
 	protected HashMap<GraphEdge, GraphComponentState> edgeStates = new HashMap<>();
 
-	protected int stepCount;
+	protected int stepCount = 1;
 
 	protected boolean running = false;
 

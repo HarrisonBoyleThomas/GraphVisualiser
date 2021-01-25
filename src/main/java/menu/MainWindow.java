@@ -57,7 +57,7 @@ public class MainWindow extends BorderPane{
 		cameraDetails = new CameraDetails(camera);
 		GridPane viewSection = new GridPane();
 		setCenter(viewSection);
-		DijkstraShortestPath dsp = new DijkstraShortestPath(null, null);
+		ArrayBasedDijkstra dsp = new ArrayBasedDijkstra(null, null);
 		Viewport v = new Viewport(camera, dsp);
 		//addViewport(v);
 		ArrayList<GraphNode> nodes = new ArrayList<>();
@@ -110,20 +110,20 @@ public class MainWindow extends BorderPane{
 	public void setStartNode(GraphNode newNode){
 	    GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-		    ((DijkstraShortestPath) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+		    ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
 		}
 		updateViewport();
     }
 
     /**
 	*    If the algorithms have a start node, return the start node
-	*    This method will be incorrect if a non-dijkstra algorithm is implemented
+	*    This method will be incorrect if a non-shortest path algorithm is implemented
 	**/
 	public GraphNode getStartNode(){
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof DijkstraShortestPath){
-		        return ((DijkstraShortestPath) ((Viewport) n).getAlgorithm()).getStartNode();
+			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof ShortestPathAlgorithm){
+		        return ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
 			}
 		}
 		return null;
@@ -338,7 +338,7 @@ public class MainWindow extends BorderPane{
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
 			GraphAlgorithm algorithm = ((Viewport) n).getAlgorithm();
-		    if(algorithm == null || (algorithm != null && (algorithm.isFinished() || ((DijkstraShortestPath) algorithm).getStartNode() == null))){
+		    if(algorithm == null || (algorithm != null && (algorithm.isFinished() || ((ShortestPathAlgorithm) algorithm).getStartNode() == null))){
 				return false;
 			}
 		}

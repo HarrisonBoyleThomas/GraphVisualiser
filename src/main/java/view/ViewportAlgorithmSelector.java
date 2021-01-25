@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ViewportAlgorithmSelector extends ComboBox{
-	private static Class[] algorithmList = {DijkstraShortestPath.class};
+	private static Class[] algorithmList = {ArrayBasedDijkstra.class,
+	                                        HeapBasedDijkstra.class};
 
 	private Viewport viewport;
 

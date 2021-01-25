@@ -5,34 +5,24 @@ import model.GraphNode;
 import model.GraphComponentState;
 
 import java.util.HashMap;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 
 
 /**
 *    The DSP algorithm finds the shortest path from a given start node to all other nodes in the graph
 *    This implementation can be run through "steps" between frames
+*    To improve performance, this implementation uses a searching strategy to prune unreachable nodes, whereas
+*    the original implementation explores all supplied nodes. In essence, this is the same, but the GraphVisualiser
+*    allows many unconnected subgraphs to exist, so without pruning DSP may unnecessarily run on unreachable nodes
 *    @Author Harrison Boyle-Thomas
 *    @Date 02.11.2020
 **/
-public class DijkstraShortestPath extends GraphAlgorithm{
+public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 
-
-
-	//the node to find the distance from
-	private GraphNode startNode;
-
-	//maps nodes to their distances from the start node
-	private HashMap<GraphNode, Integer> distances;
-
-	//maps nodes to their predecessor along the route for their current shortest path
-	//e.g: A->B->C->D, the predecessor for D is C, predecessor for C is B, and so on
-	private HashMap<GraphNode, GraphNode> predecessors;
-
-	//the current node the algorithm is expanding
-	protected GraphNode currentNode;
 
 	//The open list of nodes discovered by the algorithm
-	protected ArrayList<GraphNode> nextStates;
+	protected AbstractCollection<GraphNode> nextStates;
 
 	//A list of edges from the current node
 	//used to find new nodes
@@ -54,14 +44,14 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 	*                   unexpected nodes to it's lists, which can impact performance
 	**/
 	public DijkstraShortestPath(GraphNode initialStateIn, ArrayList<GraphNode> nodesIn){
-		name = "Dijkstra shortest path (array)";
+		name = "Dijkstra shortest path";
 		description = "Dijkstra shortest path computes the shortest paths from a given start node, to all other nodes in a graph";
 		startNode = initialStateIn;
 		initialise(nodesIn);
 	}
 
 	public DijkstraShortestPath(GraphNode initialStateIn){
-		name = "Dijkstra shortest path (array)";
+		name = "Dijkstra shortest path";
 		description = "Dijkstra shortest path computes the shortest paths from a given start node, to all other nodes in a graph";
 		startNode = initialStateIn;
 	}
@@ -80,18 +70,25 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		}
 		String outputString = "";
 
-		if(nextStates.isEmpty()){
+       //stop when there is nothing else to explore
+		if(nextStates.isEmpty() && currentNodeEdges.isEmpty()){
 			finished = true;
 			outputString = "Dijkstra has finished";
 			running = false;
+			visitedNodes.add(currentNode);
 		}
 		else{
 			running = true;
 			if(currentNodeEdges.size() == 0){
-				outputString = "All edges from the current state (" + currentNode.getName() + ")";
-				nodeStates.put(currentNode, GraphComponentState.VISITED);
-				visitedNodes.add(currentNode);
-				currentNode = nextStates.remove(0);
+				if(currentNode != null){
+				    outputString = "All edges from the current state (" + currentNode.getName() + ")";
+				    nodeStates.put(currentNode, GraphComponentState.VISITED);
+				    visitedNodes.add(currentNode);
+				}
+				else{
+					outputString = "Selecting initial node: " + getNextNode() + " ";
+				}
+				currentNode = removeMinimum();
 				nodeStates.put(currentNode, GraphComponentState.CURRENT);
 				currentNodeEdges = new ArrayList<>(currentNode.getEdges());
 				outputString += " have been considered. Choosing new state (" + currentNode.getName() + ")";
@@ -113,38 +110,25 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 					outputString = outputString + "Shorter path to " + edge.nodeB + " found from " + currentNode + ". ";
 				}
 				if(!visitedNodes.contains(edge.nodeB)){
-					nextStates.add(edge.nodeB);
+					addDiscoveredNode(edge.nodeB);
 					nodeStates.put(edge.nodeB, GraphComponentState.IN_OPEN_LIST);
 					outputString += "New state discovered (" + edge.nodeB.getName() + ")- adding to open list";
 				}
+				//End of the main loop of an iterative implementation
+				if(currentNodeEdges.size() == 0){
+					stepCount++;
+				}
 			}
 		}
-		stepCount++;
 		return outputString;
 
-	}
-
-	public void setStartNode(GraphNode startNodeIn){
-        if(!running){
-    		startNode = startNodeIn;
-	    	currentNode = startNode;
-			if(nodes != null){
-    			for(GraphNode n : nodes){
-    				nodeStates.put(n, GraphComponentState.UNVISITED);
-    			}
-			}
-			nodeStates.put(startNodeIn, GraphComponentState.CURRENT);
-		}
-	}
-
-	public GraphNode getStartNode(){
-		return startNode;
 	}
 
 	/**
 	*    Initialise variables
 	**/
 	public void initialise(ArrayList<GraphNode> nodesIn){
+		stepCount = 1;
 		if(nodesIn == null){
 			return;
 		}
@@ -167,14 +151,14 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		}
 
 		//current node is initially the start node
-		currentNode = startNode;
+		currentNode = null;//startNode;
 		nodeStates.put(currentNode, GraphComponentState.CURRENT);
 
 		//nodes initially in the open list are nodes connected to the start node
-		nextStates = currentNode.getConnectedNodes();
-
+		initialiseNextStates();
+		addDiscoveredNode(startNode);
 		//copy the array so that unwanted edits are not made to the model
-		currentNodeEdges = new ArrayList<>(currentNode.getEdges());
+		currentNodeEdges = new ArrayList<>();//new ArrayList<>(currentNode.getEdges());
 
 		//list of nodes visited by DSP
 		visitedNodes = new ArrayList<>();
@@ -184,81 +168,27 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 		running = false;
 	}
 
-	/**
-	*    @Return a map of distances
+    /**
+	*    Creates the next states data structure to vary/improve performance
 	**/
-	public HashMap<GraphNode, Integer> getDistances(){
-		return distances;
-	}
+	protected abstract void initialiseNextStates();
 
-	/**
-	*    @Return a map of predecessors
+    /**
+	*    @Return the next node to be expanded"
 	**/
-	public HashMap<GraphNode, GraphNode> getPredecessors(){
-		return predecessors;
-	}
+	protected abstract GraphNode getNextNode();
 
-	/**
-	*    @Return the current node DSP is expanding
+    /**
+	*    Remove and return the next node from the open list
+	*    @Return the next node from the open list
 	**/
-	public GraphNode getCurrentNode(){
-		return currentNode;
-	}
+	protected abstract GraphNode removeMinimum();
 
-	/**
-	*    @Param node: the node to find the distance for
-	*    @Return the distance DSP has found from the start node to the given node so far
-	*    If called when DSP.finished == true, this will return the shortest distance
+    /**
+	*    Add a newly-discovered node to the open list
+	*    @Param the discovered node
 	**/
-	public int getDistance(GraphNode node){
-	    if(distances.containsKey(node)){
-			return distances.get(node);
-		}
-		return -1;
-	}
-
-	/**
-	*    @Param node: the node to find the predecessor for
-	*    @Return: the predecessor node for the route from the start node to the current node
-	*    For example, say the route was A->C->D->Z
-	*    predecessor(z) -> D
-	*    predecessor(d) -> C
-	*
-	*    predecessor(startNode) is ALWAYS itself
-	**/
-	public GraphNode getPredecessor(GraphNode node){
-		if(predecessors.containsKey(node)){
-			return predecessors.get(node);
-		}
-		return null;
-	}
-
-
-	/**
-	*    @Param: the node to get a path for
-	*    @Return the shortest path found so far from the start node to the given node
-	*    Will return the shortest path if DSP.finished
-	*    Format: StartNode, intermediate path, node
-	**/
-	public ArrayList<GraphNode> getShortestPath(GraphNode node){
-		ArrayList<GraphNode> reversedPathList = new ArrayList<>();
-		reversedPathList.add(node);
-		GraphNode current = getPredecessor(node);
-		while(current != startNode){
-			reversedPathList.add(current);
-			current = getPredecessor(current);
-		}
-		//If node = start node, do not repeat the start node in the list
-		if(!reversedPathList.contains(startNode)){
-		    reversedPathList.add(startNode);
-		}
-
-		ArrayList output = new ArrayList<>();
-		for(int i = reversedPathList.size()-1; i>=0; i--){
-			output.add(reversedPathList.get(i));
-		}
-		return output;
-	}
+	protected abstract void addDiscoveredNode(GraphNode toAdd);
 
 	public String[] getDetails(){
 		String start = "Not set";
@@ -271,7 +201,7 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 			current = currentNode.getName();
 		}
 		String state = "";
-		if(stepCount == 0){
+		if(stepCount == 1){
 			state = "Not started";
 		}
 		else{
@@ -291,10 +221,6 @@ public class DijkstraShortestPath extends GraphAlgorithm{
 							"Distances:      " + distances,
 						    "OpenList:  " + nextStates,
 						    "ClosedList:" + visitedNodes};
-	}
-
-	public boolean canRun(){
-        return (startNode != null && nodes != null);
 	}
 
 }
