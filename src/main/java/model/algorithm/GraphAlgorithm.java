@@ -82,6 +82,10 @@ public abstract class GraphAlgorithm{
 		return name;
 	}
 
+	public String getDescription(){
+		return description;
+	}
+
 	public boolean isRunning(){
 		return running;
 	}
