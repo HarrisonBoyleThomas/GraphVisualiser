@@ -26,10 +26,11 @@ public class ViewportAlgorithmSelector extends ComboBox{
 		}
 
 		setOnAction((event) -> {
-			if(viewport.getAlgorithm() != null && !viewport.getAlgorithm().isRunning()){
+			if(viewport.getAlgorithm() == null || (viewport.getAlgorithm() != null && !viewport.getAlgorithm().isRunning())){
                 Class selectedClass = algorithmList[getSelectionModel().getSelectedIndex()];
     			try{
     			    GraphAlgorithm instance = (GraphAlgorithm) selectedClass.getConstructor(GraphNode.class).newInstance((Object) null);
+					System.out.println("try set algorithm");
     				viewport.setAlgorithm(instance);
     			}
     			catch(Exception e){

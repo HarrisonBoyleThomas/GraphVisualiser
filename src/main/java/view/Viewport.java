@@ -127,7 +127,7 @@ public class Viewport extends Pane{
 	public void setAlgorithm(GraphAlgorithm algorithmIn){
 		//Copy the old start node to be the start node of the replacement algorithm
 		if(algorithm != null){
-		    ((DijkstraShortestPath) algorithmIn).setStartNode(((DijkstraShortestPath) algorithm).getStartNode());
+		    ((ShortestPathAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
 		}
 		algorithm = algorithmIn;
 		viewportDetails.update(this);

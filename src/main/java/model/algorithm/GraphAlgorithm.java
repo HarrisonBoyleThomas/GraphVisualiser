@@ -48,6 +48,10 @@ public abstract class GraphAlgorithm{
 	**/
 	public abstract String step();
 
+    public int getIterationStep(){
+		return stepCount;
+	}
+
 	/**
 	*    Run the algorithm until it is finished
 	*    @Return a log of what occurred during execution

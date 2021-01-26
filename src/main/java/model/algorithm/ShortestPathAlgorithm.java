@@ -120,7 +120,7 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 	}
 
     public boolean canRun(){
-        return (startNode != null && nodes != null);
+        return (startNode != null);
 	}
 
 }

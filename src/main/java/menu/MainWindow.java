@@ -110,7 +110,9 @@ public class MainWindow extends BorderPane{
 	public void setStartNode(GraphNode newNode){
 	    GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-		    ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+			if(((Viewport) n).getAlgorithm() != null){
+		        ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+			}
 		}
 		updateViewport();
     }
@@ -338,7 +340,7 @@ public class MainWindow extends BorderPane{
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
 			GraphAlgorithm algorithm = ((Viewport) n).getAlgorithm();
-		    if(algorithm == null || (algorithm != null && (algorithm.isFinished() || ((ShortestPathAlgorithm) algorithm).getStartNode() == null))){
+		    if(algorithm == null || (algorithm != null && !algorithm.canRun())){
 				return false;
 			}
 		}

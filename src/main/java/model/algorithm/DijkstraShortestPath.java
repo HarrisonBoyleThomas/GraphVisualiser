@@ -95,6 +95,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 					outputString = "Selecting initial node: " + getNextNode() + " ";
 				}
 				currentNode = removeMinimum();
+				stepCount++;
 				nodeStates.put(currentNode, GraphComponentState.CURRENT);
 				currentNodeEdges = new ArrayList<>(currentNode.getEdges());
 				outputString += " have been considered. Choosing new state (" + currentNode.getName() + ")";
@@ -120,10 +121,6 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 					nodeStates.put(edge.nodeB, GraphComponentState.IN_OPEN_LIST);
 					outputString += "New state discovered (" + edge.nodeB.getName() + ")- adding to open list";
 				}
-				//End of the main loop of an iterative implementation
-				if(currentNodeEdges.size() == 0){
-					stepCount++;
-				}
 			}
 		}
 		return outputString;
@@ -134,7 +131,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 	*    Initialise variables
 	**/
 	public void initialise(ArrayList<GraphNode> nodesIn){
-		stepCount = 1;
+		stepCount = 0;
 		if(nodesIn == null){
 			return;
 		}

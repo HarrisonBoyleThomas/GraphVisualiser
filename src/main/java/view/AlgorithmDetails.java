@@ -70,6 +70,8 @@ public class AlgorithmDetails extends VBox{
 	            });
 			    getChildren().add(inspect);
 			}
+			Label iterations = new Label("Iteration number: "+ viewport.getAlgorithm().getIterationStep());
+			getChildren().add(iterations);
 		}
 		else{
 			Label details = new Label("State: Not running");
