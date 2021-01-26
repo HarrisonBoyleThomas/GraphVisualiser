@@ -38,6 +38,10 @@ public class MainWindow extends BorderPane{
 
 	private ArrayList<VisualGraphEdge> clickedEdges = new ArrayList<>();
 
+    //copy and paste implemented through a duplicate of the clickedNodeArray, otherwise
+	//drag and drop overrides a shared clipboard
+	private ArrayList<VisualGraphNode> copiedNodes = new ArrayList<>();
+
 	private CameraDetails cameraDetails;
 
 	private AlgorithmDetailsPanel algorithmDetails;
@@ -239,6 +243,16 @@ public class MainWindow extends BorderPane{
 		}
 		if(k == KeyCode.TAB){
 			selectNextNode();
+		}
+		if(multiSelect){
+			//copy
+			if(k == KeyCode.C){
+                copySelected();
+			}
+			//paste
+			if(k == KeyCode.V){
+                pasteSelected();
+			}
 		}
 	}
 
@@ -851,6 +865,57 @@ public class MainWindow extends BorderPane{
 			System.out.println("No file selected to load, aborting load");
 		}
 		System.out.println("\n");
+	}
+
+
+    /**
+	*    Copy the clickedNode list into the copiedNodes list
+	**/
+	private void copySelected(){
+        copiedNodes = new ArrayList<VisualGraphNode>(clickedNodes);
+		System.out.println("Copied " + copiedNodes.size() + " nodes!");
+	}
+
+    /**
+	*    Paste the copied node list at the original location of the copied subgraph
+	*    First, copy the nodes. Then copy the edges between them.
+	*    Copied nodes and edges do not share the name of their original node, to avoid ambiguity
+	**/
+	private void pasteSelected(){
+		clearClickedNodes();
+		clearClickedEdges();
+		if(copiedNodes == null){
+			System.out.println("No nodes copied - aborting paste operation");
+			return;
+		}
+		//Create the nodes first, storing a list of nodes that have edges between copied nodes
+		ArrayList<VisualGraphNode> newVisualGraphNodes = new ArrayList<>();
+		ArrayList<GraphNode> validNodes = new ArrayList<>();
+        for(VisualGraphNode node : copiedNodes){
+			GraphNode n = new GraphNode(0);
+			n.setName(node.getNode().getName() + "(copy)");
+			n.setValue(node.getNode().getValue());
+			VisualGraphNode newNode = VisualGraphNode.create(node.getLocation(), n);
+			newVisualGraphNodes.add(newNode);
+			validNodes.add(node.getNode());
+			addClickedComponent(newNode, true);
+		}
+		//Iterate back through the copied nodes, but create a duplicate edge only for the edges that link to copied
+		//nodes
+		int index = 0;
+		for(VisualGraphNode copiedNode : copiedNodes){
+			for(GraphEdge copiedEdge : copiedNode.getNode().getEdges()){
+                if(validNodes.contains(copiedEdge.nodeB)){
+					GraphNode targetNode = newVisualGraphNodes.get(validNodes.indexOf(copiedEdge.nodeB)).getNode();
+					GraphEdge e = newVisualGraphNodes.get(index).getNode().addEdge(targetNode, false);
+					e.setName(copiedEdge.getName() + "(copy)");
+					e.setLength(copiedEdge.getLength());
+					VisualGraphEdge.create(e);
+				}
+			}
+			index++;
+		}
+		System.out.println("Successfully pasted " + copiedNodes.size() + " nodes!");
 	}
 
 
