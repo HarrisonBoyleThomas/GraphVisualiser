@@ -814,8 +814,8 @@ public class MainWindow extends BorderPane{
 				System.out.println("Successfully loaded " + selectedFile + "!");
 			}
 			catch(Exception e){
-				System.out.println("Unable to load " + selectedFile);
-				e.printStackTrace();
+				System.out.println("Unable to load " + selectedFile + ". The file may be corrupted");
+				//e.printStackTrace();
 			}
 		}
 		else{
