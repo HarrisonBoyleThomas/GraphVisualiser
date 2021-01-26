@@ -65,7 +65,28 @@ public class MenuHeader extends MenuBar{
 	private void initialiseEditMenu(){
 		Menu edit = new Menu("Edit");
 
+        Tooltip copyTooltip = new Tooltip("Copy the selected nodes to a buffer");
+		Label copyLabel = new Label("Copy");
+		Tooltip.install(copyLabel, copyTooltip);
+		CustomMenuItem copy = new CustomMenuItem(copyLabel);
+		copy.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent e){
+				MainWindow.get().copySelected();
+			}
+		});
+		edit.getItems().add(copy);
 
+
+		Tooltip pasteTooltip = new Tooltip("Paste the nodes from the buffer");
+		Label pasteLabel = new Label("Paste");
+		Tooltip.install(pasteLabel, pasteTooltip);
+		CustomMenuItem paste = new CustomMenuItem(pasteLabel);
+		paste.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent e){
+				MainWindow.get().pasteSelected();
+			}
+		});
+        edit.getItems().add(paste);
 
 
 		getMenus().add(edit);

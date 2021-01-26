@@ -871,7 +871,7 @@ public class MainWindow extends BorderPane{
     /**
 	*    Copy the clickedNode list into the copiedNodes list
 	**/
-	private void copySelected(){
+	protected void copySelected(){
         copiedNodes = new ArrayList<VisualGraphNode>(clickedNodes);
 		System.out.println("Copied " + copiedNodes.size() + " nodes!");
 	}
@@ -881,7 +881,7 @@ public class MainWindow extends BorderPane{
 	*    First, copy the nodes. Then copy the edges between them.
 	*    Copied nodes and edges do not share the name of their original node, to avoid ambiguity
 	**/
-	private void pasteSelected(){
+	protected void pasteSelected(){
 		clearClickedNodes();
 		clearClickedEdges();
 		if(copiedNodes == null){
