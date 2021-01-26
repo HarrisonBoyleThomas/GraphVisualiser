@@ -79,6 +79,12 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 
         selection.setOnAction((event) -> {
             MainWindow.get().setStartNode(VisualGraphNode.getNodes().get(selection.getSelectionModel().getSelectedIndex()).getNode());
+			if(MainWindow.get().canRunAlgorithms()){
+				MainWindow.get().displayMessage("Algorithms initialised!", "You may now run the algorithms in each viewport");
+			}
+			else{
+				MainWindow.get().displayWarningMessage("Algorithms incorrectly set up", "Please select an algorithm to run in all viewports");
+			}
         });
 
         getChildren().add(section);
@@ -96,6 +102,11 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	    	});
 		}
 		else{
+			button.setOnAction(new EventHandler<ActionEvent>() {
+	    		@Override public void handle(ActionEvent e){
+	    			MainWindow.get().displayErrorMessage("Unable to run algorithms", "You must set up the algorithms first!", null);
+	    		}
+	    	});
 			tooltip = new Tooltip("Unable to run algorithms. You must initialise the algorithms in each viewport first");
 			Tooltip.install(button, tooltip);
 		}
@@ -116,6 +127,11 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	    	});
 		}
 		else{
+			button.setOnAction(new EventHandler<ActionEvent>() {
+	    		@Override public void handle(ActionEvent e){
+	    			MainWindow.get().displayErrorMessage("Unable to execute algorithms", "You must set up the algorithms first!", null);
+	    		}
+	    	});
 			tooltip = new Tooltip("Unable to execute algorithms. You must initialise the algorithms in each viewport first");
 			Tooltip.install(button, tooltip);
 		}

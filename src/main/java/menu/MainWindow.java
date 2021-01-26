@@ -16,6 +16,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.stage.FileChooser;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -114,6 +116,7 @@ public class MainWindow extends BorderPane{
 		        ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
 			}
 		}
+		updateAlgorithmDetails();
 		updateViewport();
     }
 
@@ -355,6 +358,24 @@ public class MainWindow extends BorderPane{
 			}
 		}
 		return true;
+	}
+
+    public void displayMessage(String title, String message){
+        Alert alert = new Alert(AlertType.INFORMATION, message);
+		alert.setHeaderText(title);
+		alert.showAndWait();
+	}
+
+	public void displayWarningMessage(String title, String message){
+		Alert alert = new Alert(AlertType.WARNING, message);
+		alert.setHeaderText(title);
+		alert.showAndWait();
+	}
+
+	public void displayErrorMessage(String title, String message, Exception error){
+        Alert alert = new Alert(AlertType.ERROR, message);
+		alert.setHeaderText(title);
+		alert.showAndWait();
 	}
 
 
@@ -707,6 +728,7 @@ public class MainWindow extends BorderPane{
 			updateAlgorithmDetails();
 			return true;
 		}
+		displayErrorMessage("Unable to run algorithms", "You must set up the algorithms before they can run", null);
 		return false;
 	}
 
@@ -723,6 +745,7 @@ public class MainWindow extends BorderPane{
 			updateViewport();
 			return true;
 		}
+		displayErrorMessage("Unable to execute algorithms", "You must set up the algorithms before they can run", null);
 		return false;
 	}
 
@@ -741,6 +764,7 @@ public class MainWindow extends BorderPane{
 			state = MainWindowState.EDIT;
 			return true;
 		}
+		displayErrorMessage("Unable to terminate algorithms", "You cannot terminate algorithms that aren't running", null);
 		return false;
 	}
 
@@ -758,9 +782,11 @@ public class MainWindow extends BorderPane{
     			objectOutputStream.writeObject(clickedNodes);
     			objectOutputStream.close();
     			fileOutputStream.close();
+				displayMessage("Save successful", "Successfully saved graph to " + saveFile);
 				System.out.println("Successfully saved graph to " + saveFile + "\n");
 			}
 			catch(Exception e){
+				displayErrorMessage("Unable to save graph", "", e);
 				System.out.println("Unable to save\n");
 			}
 		}
@@ -816,6 +842,7 @@ public class MainWindow extends BorderPane{
 				System.out.println("Successfully loaded " + selectedFile + "!");
 			}
 			catch(Exception e){
+				displayErrorMessage("Failed to load graph", "Unable to load " + selectedFile + ". The file may be corrupted", e);
 				System.out.println("Unable to load " + selectedFile + ". The file may be corrupted");
 				//e.printStackTrace();
 			}
