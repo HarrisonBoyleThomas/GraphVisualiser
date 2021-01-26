@@ -63,9 +63,13 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 	/**
 	*    @Param node: the node to find the distance for
 	*    @Return the distance DSP has found from the start node to the given node so far
+	*    @Return -1 if the distance list is not initialised(ie distance between nodes is unknown)
 	*    If called when DSP.finished == true, this will return the shortest distance
 	**/
 	public int getDistance(GraphNode node){
+		if(distances == null){
+			return -1;
+		}
 	    if(distances.containsKey(node)){
 			return distances.get(node);
 		}

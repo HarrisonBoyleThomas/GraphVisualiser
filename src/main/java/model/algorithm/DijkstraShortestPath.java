@@ -76,6 +76,12 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 			outputString = "Dijkstra has finished";
 			running = false;
 			visitedNodes.add(currentNode);
+			for(GraphNode n : predecessors.keySet()){
+				if(predecessors.get(n) != null){
+				    nodeStates.put(n, GraphComponentState.IN_TREE);
+					edgeStates.put(predecessors.get(n).getEdge(n), GraphComponentState.IN_TREE);
+				}
+			}
 		}
 		else{
 			running = true;
@@ -149,6 +155,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 			predecessors.put(node, null);
 			nodeStates.put(node, GraphComponentState.UNVISITED);
 		}
+		edgeStates.clear();
 
 		//current node is initially the start node
 		currentNode = null;//startNode;
@@ -190,6 +197,14 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 	**/
 	protected abstract void addDiscoveredNode(GraphNode toAdd);
 
+	public ArrayList<GraphNode> getNextStates(){
+		return new ArrayList<GraphNode>(nextStates);
+	}
+
+	public ArrayList<GraphNode> getVisitedNodes(){
+		return new ArrayList<GraphNode>(visitedNodes);
+	}
+
 	public String[] getDetails(){
 		String start = "Not set";
 		if(startNode != null){
@@ -212,15 +227,26 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
     			state = "Not finished";
     		}
 		}
+		String distanceString = "{";
+		for(GraphNode n : distances.keySet()){
+			distanceString += (n.getName() + "=");
+			int distance = distances.get(n);
+			if(distance < 0){
+			    distanceString += '\u221e';
+			}
+			else{
+				distanceString += distance;
+			}
+			distanceString += ", ";
+		}
+		distanceString += "}";
 
 
-        return new String[]{"StartNode: " + start,
-		                    "CurrentNode: " + current,
-						    "State: " + state, "Step number: " + stepCount,
-						    "Predecessors: " + predecessors,
-							"Distances:      " + distances,
+        return new String[]{"Distances:      " + distanceString,
+			                "Predecessors: " + predecessors,
 						    "OpenList:  " + nextStates,
-						    "ClosedList:" + visitedNodes};
+						    "ClosedList:" + visitedNodes,
+						    "Main loop iterations: " + stepCount};
 	}
 
 }

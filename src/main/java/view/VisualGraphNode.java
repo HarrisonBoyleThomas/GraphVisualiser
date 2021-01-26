@@ -23,6 +23,11 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import javafx.event.EventHandler;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 
 import javafx.scene.input.MouseEvent;
 
@@ -172,6 +177,9 @@ public class VisualGraphNode extends VisualGraphComponent{
 	        	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
 	        		background.setFill(Color.CYAN);
 	        	}
+				else if(algorithm.getNodeState(node) == GraphComponentState.IN_TREE){
+					background.setFill(Color.CORNFLOWERBLUE);
+				}
 	        	else{
 	        		background.setFill(Color.WHITE);
 		        }
@@ -180,13 +188,38 @@ public class VisualGraphNode extends VisualGraphComponent{
 		pane.getChildren().add(background);
 		Text label = new Text(node.getName());
 		pane.getChildren().add(label);
-
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
+		if(algorithm instanceof ShortestPathAlgorithm){
+            addEstimatedDistance((ShortestPathAlgorithm) algorithm);
+		}
 		Tooltip tooltip = new Tooltip("Click to edit node");
 		Tooltip.install(icon, tooltip);
 		addDragEvents();
+	}
+
+    /**
+	*    Add a small label above the node to represent the current estimated distance
+	*    from the start node if the running algorithm is a SPA
+	**/
+	private void addEstimatedDistance(ShortestPathAlgorithm algorithm){
+        if(icon == null || algorithm == null){
+			return;
+		}
+        int distance = algorithm.getDistance(node);
+		String number = "" + distance;
+		if(distance < 0){
+            number = "" + '\u221e';
+		}
+
+        //create and add the label to the node
+		Label label = new Label(number);
+		label.setLayoutX(30*renderScale);
+		label.setLayoutY(-15*renderScale);
+		BackgroundFill bg = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY);
+        label.setBackground(new Background(bg));
+		icon.getChildren().add(label);
 	}
 
 	private void addDragEvents(){

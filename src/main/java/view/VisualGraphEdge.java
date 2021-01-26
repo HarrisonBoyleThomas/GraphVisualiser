@@ -225,17 +225,22 @@ public class VisualGraphEdge extends VisualGraphComponent{
 			fillColour = Color.ORANGE;
 		}
 		else{
-    		if(algorithm != null && (algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED)){
-    			if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
-    				fillColour = Color.LIME;
-    			}
-    			else if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.IN_OPEN_LIST){
-    				fillColour = Color.RED;
-    			}
-    			else{
-    				fillColour = Color.BLACK;
-    			}
-    		}
+			if(algorithm != null){
+				if(algorithm.getEdgeState(edge) == GraphComponentState.IN_TREE){
+                    fillColour = Color.CORNFLOWERBLUE;
+				}
+    		    else if(algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED){
+    			    if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
+    				    fillColour = Color.LIME;
+    			    }
+    			    else if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.IN_OPEN_LIST){
+    				    fillColour = Color.RED;
+    			    }
+    			    else{
+    				    fillColour = Color.BLACK;
+    			    }
+    		    }
+			}
     		else{
     			fillColour = Color.BLACK;
     		}

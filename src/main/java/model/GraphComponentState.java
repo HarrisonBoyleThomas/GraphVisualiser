@@ -9,5 +9,6 @@ public enum GraphComponentState{
 	UNVISITED,
 	VISITED,
 	IN_OPEN_LIST,
-	CURRENT
+	CURRENT,
+	IN_TREE
 }
