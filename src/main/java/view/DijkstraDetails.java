@@ -29,7 +29,7 @@ public class DijkstraDetails extends ShortestPathAlgorithmDetails{
             return;
         }
         DijkstraShortestPath algorithm = (DijkstraShortestPath) algorithmIn;
-        GridPane grid = new GridPane();;
+        GridPane grid = new GridPane();
 
         grid.add(new Label("Open list"), 0, 0);
         int index = 1;
@@ -52,5 +52,6 @@ public class DijkstraDetails extends ShortestPathAlgorithmDetails{
         }
         grid.setGridLinesVisible(true);
         ((VBox) getContent()).getChildren().add(grid);
+        ((VBox) getContent()).getChildren().add(new AlgorithmPseudocodePanel(algorithmIn));
     }
 }

@@ -51,9 +51,10 @@ public class AlgorithmDetails extends VBox{
 				    	try{
     					    Class windowClass = algorithmDetailsMap.get(viewport.getAlgorithm().getClass());
 	                        Stage popup = new Stage();
+							popup.setTitle(viewport.getAlgorithm().toString() + " details");
     	    			    popup.initOwner(AlgorithmDetails.this.getScene().getWindow());
 		    			    detailsInstance = (AlgorithmDetailsWindow) windowClass.getConstructor(GraphAlgorithm.class).newInstance((GraphAlgorithm) viewport.getAlgorithm());
-		    			    Scene scene = new Scene(detailsInstance, 600, 150);
+		    			    Scene scene = new Scene(detailsInstance, 600, 400);
 		    			    popup.setScene(scene);
 							popup.setOnCloseRequest(closeEvent -> {
                                detailsInstance = null;

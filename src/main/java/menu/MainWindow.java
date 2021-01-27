@@ -320,6 +320,7 @@ public class MainWindow extends BorderPane{
     	GridPane view = (GridPane) getCenter();
     	for(Node n : view.getChildren()){
     		((Viewport) n).getAlgorithm().initialise(nodes);
+			((Viewport) n).getAlgorithm().start();
     	}
 		updateAlgorithmDetails();
 		//need to update viewport's algorithm details

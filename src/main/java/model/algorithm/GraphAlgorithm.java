@@ -32,8 +32,14 @@ public abstract class GraphAlgorithm{
 
 	protected boolean running = false;
 
+	protected int[] currentPseudocodeLines = new int[0];
+
 	public GraphAlgorithm(){
 		finished = false;
+	}
+
+	public void start(){
+		running = true;
 	}
 
 	/**
@@ -107,5 +113,11 @@ public abstract class GraphAlgorithm{
 	**/
 	public void terminate(){
 		finished = true;
+	}
+
+	public abstract String[] getPseudocodeLines();
+
+	public int[] getCurrentPseudocodeLines(){
+		return currentPseudocodeLines;
 	}
 }

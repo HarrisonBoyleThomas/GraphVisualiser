@@ -82,6 +82,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 					edgeStates.put(predecessors.get(n).getEdge(n), GraphComponentState.IN_TREE);
 				}
 			}
+			currentPseudocodeLines = new int[0];
 		}
 		else{
 			running = true;
@@ -94,6 +95,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 				else{
 					outputString = "Selecting initial node: " + getNextNode() + " ";
 				}
+				currentPseudocodeLines = new int[] {3,4};
 				currentNode = removeMinimum();
 				stepCount++;
 				nodeStates.put(currentNode, GraphComponentState.CURRENT);
@@ -101,6 +103,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 				outputString += " have been considered. Choosing new state (" + currentNode.getName() + ")";
 			}
 			else{
+				currentPseudocodeLines = new int[] {6};
 				GraphEdge edge = currentNodeEdges.remove(0);
 				edgeStates.put(edge, GraphComponentState.VISITED);
 				//If the current node does not exist in the list of expected nodes,
@@ -170,6 +173,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 
 		finished = false;
 		running = false;
+		currentPseudocodeLines = new int[] {2};
 	}
 
     /**
@@ -244,6 +248,16 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 						    "OpenList:  " + nextStates,
 						    "ClosedList:" + visitedNodes,
 						    "Main loop iterations: " + stepCount};
+	}
+
+	public String[] getPseudocodeLines(){
+			return new String[]{"Dijkstra(G, w, s)",
+		            "    initialise()",
+				    "    while nextStates.length > 0",
+				    "        current <- EXTRACTMIN(nextStates)",
+				    "        visited.add(current)",
+				    "        for each edge from current",
+				    "            RELAX(edge)"};
 	}
 
 }
