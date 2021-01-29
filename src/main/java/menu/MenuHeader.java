@@ -45,8 +45,8 @@ public class MenuHeader extends MenuBar{
 		file.getItems().add(load);
 
 
-		String saveInstructios = "Save the currently selected nodes";
-		Tooltip saveTooltip = new Tooltip(saveInstructios);
+		String saveInstructions = "Save the currently selected nodes";
+		Tooltip saveTooltip = new Tooltip(saveInstructions);
 		Label saveLabel = new Label("Save");
 		Tooltip.install(saveLabel, saveTooltip);
 		CustomMenuItem save = new CustomMenuItem(saveLabel);
@@ -57,6 +57,25 @@ public class MenuHeader extends MenuBar{
 		});
 
 		file.getItems().add(save);
+
+
+		String themeInstructions = "Set the theme of GraphVisualiser";
+		Tooltip themeTooltip = new Tooltip(themeInstructions);
+		Label themeLabel = new Label("Theme");
+		Tooltip.install(themeLabel, themeTooltip);
+		Menu theme = new Menu("Theme");
+		for(Object value : ThemeState.values()){
+			CustomMenuItem item = new CustomMenuItem(new Label(("" + value).toLowerCase()));
+			theme.getItems().add(item);
+			item.setOnAction(new EventHandler<ActionEvent>(){
+				@Override public void handle(ActionEvent e){
+                    MainWindow.get().setTheme((ThemeState) value);
+				}
+			});
+		}
+
+		file.getItems().add(theme);
+
 
 
 		getMenus().add(file);

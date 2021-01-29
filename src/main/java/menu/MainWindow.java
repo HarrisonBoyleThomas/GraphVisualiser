@@ -56,6 +56,8 @@ public class MainWindow extends BorderPane{
 
 	private boolean multiSelect;
 
+	private ThemeState theme;
+
 
 	private MainWindowState state = MainWindowState.EDIT;
 
@@ -77,6 +79,7 @@ public class MainWindow extends BorderPane{
 
 		initialiseRightDetailsPanel();
 		setTop(new MenuHeader());
+		initialiseTheme();
 
 	}
 
@@ -917,6 +920,46 @@ public class MainWindow extends BorderPane{
 			index++;
 		}
 		System.out.println("Successfully pasted " + copiedNodes.size() + " nodes!");
+	}
+
+
+    /**
+	*    Attempt to load the theme setting from the config folder.
+	*    If this fails, set the default theme to LIGHT, and create the
+	*    missing file
+	**/
+	private void initialiseTheme(){
+		ThemeState themeIn = ThemeState.LIGHT;
+		try{
+    		FileInputStream fileStream = new FileInputStream("config/theme");
+    		ObjectInputStream objectStream = new ObjectInputStream(fileStream);
+    		themeIn = (ThemeState) objectStream.readObject();
+    		objectStream.close();
+	    	fileStream.close();
+			setTheme(themeIn);
+		}
+		catch(Exception e){
+            setTheme(ThemeState.LIGHT);
+		}
+	}
+
+    /**
+	*    Set the theme of the app, and save this to the theme file in the config
+	*    folder
+	**/
+	protected void setTheme(ThemeState stateIn){
+        theme = stateIn;
+		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
+		try{
+		    FileOutputStream fileOutputStream = new FileOutputStream("config/theme");
+    		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+    		objectOutputStream.writeObject(theme);
+    		objectOutputStream.close();
+    		fileOutputStream.close();
+		}
+		catch(Exception e){
+            displayErrorMessage("Theme set error", "Unable to save the theme of the app", e);
+		}
 	}
 
 
