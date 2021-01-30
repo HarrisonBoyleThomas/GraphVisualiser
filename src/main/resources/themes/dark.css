@@ -18,6 +18,22 @@ Line, Polygon {
     -fx-fill: -colour;
 }
 
+Circle {
+    -strokeColour: #ffffff;
+    -fillColour: #252525;
+    -fx-stroke: -strokeColour;
+    -fx-fill: -fillColour
+}
+
 #viewport {
     -fx-background-color: #333333;
+}
+
+#edgeLabel {
+    -fx-background-color: #454545;
+    -fx-text-color: #ffffff;
+}
+
+#nodeLabel {
+    -fx-text-color: #ffffff;
 }

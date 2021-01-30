@@ -19,7 +19,6 @@ import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import javafx.event.EventHandler;
@@ -155,38 +154,38 @@ public class VisualGraphNode extends VisualGraphComponent{
 	public void updateIcon(GraphAlgorithm algorithm){
 		StackPane pane = new StackPane();
 		Circle background = new Circle(26 * renderScale);
-		background.setStroke(Color.BLACK);
+		//background.setStroke(Color.BLACK);
 		background.setStrokeWidth(3);
 		if(selected){
 			background.setFill(Color.ORANGE);
+			background.setStyle("-fillColour: rgba(255, 140, 0, 1)");
 		}
 		else{
 			if(algorithm == null){
-				background.setFill(Color.WHITE);
+
 			}
 			else{
-        		if(algorithm.getNodeState(node) == GraphComponentState.UNVISITED){
-        			background.setFill(Color.WHITE);
-        		}
-        		else if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
-        			background.setFill(Color.LIME);
+				if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
+					//LIME colour
+					background.setStyle("-fillColour: rgba(0, 255, 0, 1)");
         		}
         		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
-        			background.setFill(Color.RED);
+        			//RED colour
+					background.setStyle("-fillColour: rgba(255, 0, 0, 1)");
 	        	}
 	        	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
-	        		background.setFill(Color.CYAN);
+	        		//CYAN colour
+					background.setStyle("-fillColour: rgba(0, 255, 255, 1)");
 	        	}
 				else if(algorithm.getNodeState(node) == GraphComponentState.IN_TREE){
-					background.setFill(Color.CORNFLOWERBLUE);
+					//CORNFLOWERBLUE colour
+					background.setStyle("-fillColour: rgba(100, 149, 237, 1)");
 				}
-	        	else{
-	        		background.setFill(Color.WHITE);
-		        }
 			}
 		}
 		pane.getChildren().add(background);
-		Text label = new Text(node.getName());
+		Label label = new Label(node.getName());
+		label.setId("nodeLabel");
 		pane.getChildren().add(label);
 		icon = new Group();
 		icon.getChildren().add(pane);
@@ -215,10 +214,9 @@ public class VisualGraphNode extends VisualGraphComponent{
 
         //create and add the label to the node
 		Label label = new Label(number);
+		label.setId("nodeLabel");
 		label.setLayoutX(30*renderScale);
 		label.setLayoutY(-15*renderScale);
-		BackgroundFill bg = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY);
-        label.setBackground(new Background(bg));
 		icon.getChildren().add(label);
 	}
 

@@ -252,6 +252,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		pane.getChildren().add(line);
 		pane.getChildren().add(arrow);
 		Label label = new Label(edge.getName() + ":" + edge.getLength());
+		label.setId("edgeLabel");
 		Vector midpoint = getCenter(nodeALoc, nodeBLoc);
 		label.setLayoutX((int) (Math.cos(lineAngle+0.174533)*lineLength*0.625));
         label.setLayoutY((int) (Math.sin(lineAngle+0.174533)*lineLength*0.625));

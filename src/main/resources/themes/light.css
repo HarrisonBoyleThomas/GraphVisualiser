@@ -11,3 +11,19 @@
 Viewport {
     -fx-background-color: #ffffff;
 }
+
+Circle {
+    -strokeColour: #000000;
+    -fillColour: #ffffff;
+    -fx-stroke: -strokeColour;
+    -fx-fill: -fillColour
+}
+
+#edgeLabel {
+    -fx-background-color: #ffffff;
+    -fx-text-color: #000000;
+}
+
+#nodeLabel {
+    -fx-text-color: #000000;
+}
