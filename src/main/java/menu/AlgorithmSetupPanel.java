@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.geometry.Pos;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
@@ -37,14 +38,8 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 		getChildren().add(title);
 
 		if(MainWindow.get() != null){
-    		createStartNodeSection();
-			if(!MainWindow.get().areAlgorithmsFinished()){
-    		    createRunButton();
-    		    createExecuteButton();
-		    }
-			else{
-				createResetButton();
-			}
+			createStartNodeSection();
+    		createRunButton();
 		}
 		else{
 			getChildren().add(new Label("Algorithm setup dirty"));
@@ -56,6 +51,7 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 
         Tooltip tooltip = new Tooltip("Select a start node for the algorithm");
         HBox section = new HBox();
+		section.setAlignment(Pos.BASELINE_CENTER);
         Tooltip.install(section, tooltip);
 
         Label label = new Label("Start node:");
@@ -79,6 +75,8 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 
         selection.setOnAction((event) -> {
             MainWindow.get().setStartNode(VisualGraphNode.getNodes().get(selection.getSelectionModel().getSelectedIndex()).getNode());
+			MainWindow.get().updateAlgorithmDetails();
+			//MainWindow.get().initialiseAlgorithms();
 			if(MainWindow.get().canRunAlgorithms()){
 				MainWindow.get().displayMessage("Algorithms initialised!", "You may now run the algorithms in each viewport");
 			}
@@ -92,7 +90,7 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 
 	private void createRunButton(){
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, step by step");
-		Button button = new Button("Run");
+		Button button = new Button("RUN");
 		Tooltip.install(button, tooltip);
         if(MainWindow.get() != null && MainWindow.get().canRunAlgorithms()){
             button.setOnAction(new EventHandler<ActionEvent>() {
@@ -110,45 +108,6 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 			tooltip = new Tooltip("Unable to run algorithms. You must initialise the algorithms in each viewport first");
 			Tooltip.install(button, tooltip);
 		}
-
-		getChildren().add(button);
-	}
-
-	private void createExecuteButton(){
-		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, to quickly obtain their output without stepping");
-		Button button = new Button("Execute");
-		Tooltip.install(button, tooltip);
-
-        if(MainWindow.get() != null && MainWindow.get().canRunAlgorithms()){
-            button.setOnAction(new EventHandler<ActionEvent>() {
-	    		@Override public void handle(ActionEvent e){
-	    			MainWindow.get().executeAlgorithms();
-	    		}
-	    	});
-		}
-		else{
-			button.setOnAction(new EventHandler<ActionEvent>() {
-	    		@Override public void handle(ActionEvent e){
-	    			MainWindow.get().displayErrorMessage("Unable to execute algorithms", "You must set up the algorithms first!", null);
-	    		}
-	    	});
-			tooltip = new Tooltip("Unable to execute algorithms. You must initialise the algorithms in each viewport first");
-			Tooltip.install(button, tooltip);
-		}
-
-		getChildren().add(button);
-	}
-
-	private void createResetButton(){
-		Tooltip tooltip = new Tooltip("Reset all algorithms");
-		Button button = new Button("Reset");
-		Tooltip.install(button, tooltip);
-
-		button.setOnAction(new EventHandler<ActionEvent>() {
-			@Override public void handle(ActionEvent e){
-				MainWindow.get().initialiseAlgorithms();
-			}
-		});
 
 		getChildren().add(button);
 	}

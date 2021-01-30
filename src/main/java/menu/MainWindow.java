@@ -339,6 +339,9 @@ public class MainWindow extends BorderPane{
 			if(areAlgorithmsFinished()){
 				state = MainWindowState.EDIT;
 				updateAlgorithmDetails();
+				for(Node n : view.getChildren()){
+					((Viewport) n).getAlgorithm().stop();
+				}
 			}
 			updateViewport();
 		}
@@ -777,9 +780,9 @@ public class MainWindow extends BorderPane{
 			for(Node n : view.getChildren()){
 				((Viewport) n).getAlgorithm().terminate();
 			}
-			updateAlgorithmDetails();
 			updateViewport();
 			state = MainWindowState.EDIT;
+			updateAlgorithmDetails();
 			return true;
 		}
 		displayErrorMessage("Unable to terminate algorithms", "You cannot terminate algorithms that aren't running", null);
@@ -949,6 +952,7 @@ public class MainWindow extends BorderPane{
 	**/
 	protected void setTheme(ThemeState stateIn){
         theme = stateIn;
+		getStylesheets().clear();
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
 		try{
 		    FileOutputStream fileOutputStream = new FileOutputStream("config/theme");
@@ -959,6 +963,10 @@ public class MainWindow extends BorderPane{
 		}
 		catch(Exception e){
             displayErrorMessage("Theme set error", "Unable to save the theme of the app", e);
+		}
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			((Viewport) n).setStyleSheet(getStylesheets().get(0));
 		}
 	}
 

@@ -4,6 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.geometry.Pos;
 
 import model.GraphNode;
 import model.GraphEdge;
@@ -41,6 +42,7 @@ public class NodeDetails extends DetailsPanel{
 
 	private void addNameSection(){
 		HBox nameSection = new HBox();
+		nameSection.setAlignment(Pos.TOP_CENTER);
 		Tooltip tooltip = new Tooltip("The name of the currently selected node. You can change the name of the node by typing into the text box");
 		Label title = new Label("Name:");
 		Tooltip.install(title, tooltip);
@@ -59,6 +61,7 @@ public class NodeDetails extends DetailsPanel{
 
 	private void addValueSection(){
 		HBox valueSection = new HBox();
+		valueSection.setAlignment(Pos.TOP_CENTER);
 		Tooltip tooltip = new Tooltip("The value of the currently selected node. You can change the value of the node by typing into the text box");
 		Label title = new Label("Value:");
 		Tooltip.install(title, tooltip);

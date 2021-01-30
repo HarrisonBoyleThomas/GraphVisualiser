@@ -33,6 +33,9 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 			}
 			nodeStates.put(startNodeIn, GraphComponentState.CURRENT);
 		}
+		else{
+			System.out.println("cant set because running");
+		}
 	}
 
 	public GraphNode getStartNode(){

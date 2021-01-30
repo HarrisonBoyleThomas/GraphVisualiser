@@ -44,7 +44,8 @@ public class Viewport extends Pane{
 	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
 		setMinSize(width, height);
 		setMaxSize(width, height);
-		setStyle("-fx-background-color: #ffffff");
+		setId("viewport");
+		//setStyle("-fx-background-color: #ffffff");
 		camera = cameraIn;
 		algorithm = algorithmIn;
 		draw();
@@ -171,6 +172,11 @@ public class Viewport extends Pane{
 
 	public GraphAlgorithm getAlgorithm(){
 		return algorithm;
+	}
+
+	public void setStyleSheet(String sheetIn){
+        getStylesheets().clear();
+		getStylesheets().add(sheetIn);
 	}
 
 }

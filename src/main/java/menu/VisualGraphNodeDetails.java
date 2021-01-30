@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
@@ -56,6 +57,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 	private void addLocationSection(){
 		HBox locationSection = new HBox();
+		locationSection.setAlignment(Pos.TOP_CENTER);
 		Tooltip tooltip = new Tooltip("The location of the node in world space. This is an x-y-z vector");
 
 		Label title = new Label("Location: ");

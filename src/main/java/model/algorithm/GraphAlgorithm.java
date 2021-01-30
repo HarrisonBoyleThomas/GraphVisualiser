@@ -42,6 +42,10 @@ public abstract class GraphAlgorithm{
 		running = true;
 	}
 
+	public void stop(){
+		running = false;
+	}
+
 	/**
 	*    initialise the algorithm
 	*    @param nodes: all nodes within the graph. Should contain all reachable nodes as a minimum

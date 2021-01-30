@@ -1,3 +1,23 @@
+.root {
+    -fx-base: #454545;
+}
+
 .button {
-   -fx-background-color: red;
+   -fx-padding: 10 10 10 10;
+   -fx-pref-width: 200px;
+   -fx-font-weight: bold;
+}
+
+.label {
+    -fx-font-weight: bold;
+}
+
+Line, Polygon {
+    -colour : #ffffff;
+    -fx-stroke: -colour;
+    -fx-fill: -colour;
+}
+
+#viewport {
+    -fx-background-color: #333333;
 }

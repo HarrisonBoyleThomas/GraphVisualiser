@@ -219,8 +219,8 @@ public class VisualGraphEdge extends VisualGraphComponent{
 
 
 		Pane pane = new Pane();
-		Color fillColour = Color.BLACK;
-		line.setStroke(Color.BLACK);
+		Color fillColour = null;//Color.BLACK;
+		//line.setStroke(Color.BLACK);
 		if(selected){
 			fillColour = Color.ORANGE;
 		}
@@ -236,18 +236,18 @@ public class VisualGraphEdge extends VisualGraphComponent{
     			    else if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.IN_OPEN_LIST){
     				    fillColour = Color.RED;
     			    }
-    			    else{
-    				    fillColour = Color.BLACK;
-    			    }
     		    }
 			}
-    		else{
-    			fillColour = Color.BLACK;
-    		}
 		}
-		line.setStroke(fillColour);
-		arrow.setStroke(fillColour);
-		arrow.setFill(fillColour);
+		//Override the css color property if the edge must be coloured differently
+		if(fillColour != null){
+			String selectedColour = String.format("rgba(%d, %d, %d, %f)", ((int) (255*fillColour.getRed())), ((int) (255*fillColour.getGreen())), ((int) (255*fillColour.getBlue())), fillColour.getOpacity());
+			line.setStyle("-colour: " + selectedColour + ";");
+		    line.setStroke(fillColour);
+			arrow.setStyle("-colour: " + selectedColour + ";");
+			arrow.setStroke(fillColour);
+			arrow.setFill(fillColour);
+		}
 
 		pane.getChildren().add(line);
 		pane.getChildren().add(arrow);
