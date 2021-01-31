@@ -20,6 +20,9 @@ public class Vector implements Serializable{
 
 	/**
 	*    create a 3D vector
+	*    @param xIn the x component of the vector
+	*    @param yIn the y component of the vector
+	*    @param zIn the z component of the vector
 	**/
 	public Vector(double xIn, double yIn, double zIn){
 		x = xIn;
@@ -28,7 +31,9 @@ public class Vector implements Serializable{
 	}
 
 	/**
-	*    create a 2D vector
+	*    create a 2D vector, with z = 0
+	*    @param xIn the x component of the vector
+	*    @param yIn the y component of the vector
 	**/
 	public Vector(double xIn,double yIn){
 		x = xIn;
@@ -47,7 +52,8 @@ public class Vector implements Serializable{
 
 	/**
 	*    Add the given vector to the current vector
-	*    @Return a new Vector of the result
+	*    @param the vector to add to the current vector
+	*    @return a new Vector of the result
 	**/
 	public Vector add(Vector other){
 		return new Vector(x + other.x, y + other.y, z + other.z);
@@ -55,7 +61,9 @@ public class Vector implements Serializable{
 
 	/**
 	*    Add the two supplied vectors together
-	*    @Return a new Vector of the result
+	*    @param v1 operand one of the operation
+	*    @param v2 operand two of the operation
+	*    @return a new Vector of the result
 	**/
 	public static Vector add(Vector v1, Vector v2){
 		if(v1 == null){
@@ -69,7 +77,8 @@ public class Vector implements Serializable{
 
 	/**
 	*    Subtract the given vector from the current vector
-	*    @Return a new Vector of the result
+	*    @param other the vector to subtract
+	*    @return a new Vector of the result
 	**/
 	public Vector subtract(Vector other){
 		return new Vector(x - other.x, y - other.y, z - other.z);
@@ -77,7 +86,9 @@ public class Vector implements Serializable{
 
 	/**
 	*    Subtract vector v2 from vector v1
-	*    @Return a new Vector of the result
+	*    @param v1 operand one of the operation
+	*    @param v2 operand two of the operation
+	*    @return a new Vector of the result
 	**/
 	public static Vector subtract(Vector v1, Vector v2){
 		if(v1 == null){
@@ -90,14 +101,17 @@ public class Vector implements Serializable{
 	}
 
 	/**
-	*    @Return the dot product between the current vector and the supplied vector
+	*    @param other apply the dot product using the other vector
+	*    @return the dot product between the current vector and the supplied vector
 	**/
 	public double dot(Vector other){
 		return (x * other.x) + (y * other.y) + (z * other.z);
 	}
 
     /**
-	*    @Return the dot product of the two given vectors
+	*    @param v1 operand one
+	*    @param v2 operand two
+	*    @return the dot product of the two given vectors
 	**/
     public static double dot(Vector v1, Vector v2){
 		if(v1 == null){
@@ -111,7 +125,8 @@ public class Vector implements Serializable{
 
 	/**
 	*    Scales the current vector by the given multiplier
-	*    @Return a Vector of the result
+	*    @param multiplier the amount to scale by
+	*    @return a Vector of the result
 	**/
 	public Vector multiply(double multiplier){
 		return new Vector(x * multiplier, y * multiplier, z * multiplier);
@@ -119,7 +134,9 @@ public class Vector implements Serializable{
 
 	/**
 	*    Scales the given vector by the given multiplier
-	*    @Return a Vector of the result
+	*    @param v the vector to scale
+	*    @param multiplier the amount to scale by
+	*    @return a Vector of the result
 	**/
 	public static Vector multiply(Vector v, double multiplier){
 		return v.multiply(multiplier);
@@ -127,6 +144,7 @@ public class Vector implements Serializable{
 
 	/**
 	*    Divide the current vector by the given dividend
+	*    @param divident the amount to divide by
 	*    @Return a Vector of the result
 	**/
 	public Vector divide(int dividend) throws ArithmeticException{
@@ -137,7 +155,9 @@ public class Vector implements Serializable{
 	}
 
 	/**
-	*    Divide the given vector by the given dividend
+	*    Divide the given vector by the given dividend]
+	*    @param v the vector to divide
+	*    @param divident the amount to divide by
 	*    @Return a Vector of the result
 	**/
 	public static Vector divide(Vector v, int dividend){
@@ -145,7 +165,9 @@ public class Vector implements Serializable{
 	}
 
 	/**
-	*    @Return the euclidian distance between two given vectors
+	*    @param v1 the origin vector
+	*    @param v2 the target vector
+	*    @return the euclidian distance between two given vectors
 	**/
 	public static double distance(Vector v1, Vector v2){
 		Vector diff = subtract(v1, v2);
@@ -153,7 +175,8 @@ public class Vector implements Serializable{
 	}
 
 	/**
-	*    @Return the length of the given vector
+	*    @param v the vector to find the length of
+	*    @rturn the length of the given vector
 	*    If the given vector is the difference between two vectors, this will return the
 	*    distance between them. If the given vector is a vector in world space,
 	*    the return length will be equivalent to it's distance from the origin
@@ -162,14 +185,17 @@ public class Vector implements Serializable{
 		return Math.sqrt(Math.pow(v.x,2) + Math.pow(v.y,2) + Math.pow(v.z,2));
 	}
 
+    /**
+	*    @return the length of the vector
+	**/
 	public double length(){
 		return Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
 	}
 
 
 	/**
-	*    @Return a normalised vector
-	*    @Return null for (0,0,0)
+	*    @return a normalised vector
+	*    @return null for (0,0,0)
 	**/
 	public Vector normalise(){
 		if(x == 0 && y == 0 && z == 0){
@@ -178,10 +204,17 @@ public class Vector implements Serializable{
 		return new Vector((x / length()), (y / length()), (z / length()));
 	}
 
+    /**
+	*    @param v the vector to normalise
+	*    @return the result of normalisation
+	**/
 	public static Vector normalise(Vector v){
 		return v.normalise();
 	}
 
+    /**
+	*    @return true if the x y z components match
+	**/
 	@Override
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof Vector){
@@ -196,6 +229,9 @@ public class Vector implements Serializable{
         return "(" + x + "," + y + "," + z + ")";
     }
 
+	/**
+	*    @return a formatted string of constant length
+	**/
 	public String toStringNeat(){
 		String strX = "" + Functions.round(x, 2);
 		String strY = "" + Functions.round(y, 2);
