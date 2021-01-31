@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
@@ -57,6 +58,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 	public void addEdgeSection(){
 		VBox edgeSection = new VBox();
+		edgeSection.setAlignment(Pos.TOP_CENTER);
 		Tooltip tooltip = new Tooltip("Details about the selected edge");
 
 
@@ -67,7 +69,8 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 		Tooltip nameTooltip = new Tooltip("The name of the selected edge. An edge's name can contain a maximum of 15 characters");
 		HBox nameSection = new HBox();
-		Label nameTitle = new Label("Name:");
+		nameSection.setAlignment(Pos.TOP_CENTER);
+		Label nameTitle = new Label("  Name:");
 		nameSection.getChildren().add(nameTitle);
 		Tooltip.install(nameTitle, nameTooltip);
 		Tooltip.install(nameSection, nameTooltip);
@@ -89,6 +92,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 		Tooltip lengthTooltip = new Tooltip("The weight of the selected edge. Edges cannot have a negative weight.");
 		HBox lengthSection = new HBox();
+		lengthSection.setAlignment(Pos.TOP_CENTER);
 		Label lengthTitle = new Label("Weight:");
 		lengthSection.getChildren().add(lengthTitle);
 		Tooltip.install(lengthTitle, lengthTooltip);
@@ -117,29 +121,38 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 
 
-		HBox nodeA = new HBox();
+		VBox nodeA = new VBox(3);
+		nodeA.setAlignment(Pos.TOP_CENTER);
 		Tooltip nodeATooltip = new Tooltip("The origin node of the edge");
 		Tooltip.install(nodeA, nodeATooltip);
 
-		Label nodeALabel = new Label("Origin:");
+		Label nodeALabel = new Label("Origin");
 		Button nodeAButton = new Button(edge.getEdge().nodeA.getName());
 		nodeAButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 MainWindow.get().addClickedComponent(VisualGraphNode.getNode(edge.getEdge().nodeA));
             }
         });
+		Tooltip.install(nodeAButton, nodeATooltip);
 		nodeA.getChildren().add(nodeALabel);
 		nodeA.getChildren().add(nodeAButton);
 
 
-		HBox nodeB = new HBox();
+		VBox nodeB = new VBox(3);
+		nodeB.setAlignment(Pos.TOP_CENTER);
 		Tooltip nodeBTooltip = new Tooltip("The end node of the edge");
 		Tooltip.install(nodeB, nodeBTooltip);
 
-		Label nodeBLabel = new Label("End:   ");
-		Label nodeBName = new Label(edge.getEdge().nodeB.getName());
+		Label nodeBLabel = new Label("End");
+		Button nodeBButton = new Button(edge.getEdge().nodeB.getName());
+		nodeBButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                MainWindow.get().addClickedComponent(VisualGraphNode.getNode(edge.getEdge().nodeB));
+            }
+        });
+		Tooltip.install(nodeBButton, nodeBTooltip);
 		nodeB.getChildren().add(nodeBLabel);
-		nodeB.getChildren().add(nodeBName);
+		nodeB.getChildren().add(nodeBButton);
 
 		edgeSection.getChildren().add(nodeA);
 		edgeSection.getChildren().add(nodeB);

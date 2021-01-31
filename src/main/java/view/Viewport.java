@@ -15,6 +15,7 @@ import menu.MainWindow;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.scene.control.Button;
 import javafx.scene.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -55,6 +56,7 @@ public class Viewport extends Pane{
 		Rectangle clip = new Rectangle(width, height);
         setClip(clip);
 		addDragAndDropEvents();
+		createCloseButton();
 	}
 
 	private void addDragAndDropEvents(){
@@ -137,6 +139,7 @@ public class Viewport extends Pane{
 
 	public void draw(){
 		getChildren().clear();
+		createCloseButton();
 
 		ArrayList<VisualGraphNode> nodes = VisualGraphNode.getNodes();
 		ArrayList<VisualGraphEdge> edges = VisualGraphEdge.getEdges();
@@ -177,6 +180,22 @@ public class Viewport extends Pane{
 	public void setStyleSheet(String sheetIn){
         getStylesheets().clear();
 		getStylesheets().add(sheetIn);
+	}
+
+    /**
+	*    Create a button in the top right corner that deletes the viewport from the main window
+	**/
+	private void createCloseButton(){
+		Button close = new Button("X");
+		close.setId("closeButton");
+		close.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                MainWindow.get().deleteViewport(Viewport.this);
+            }
+        });
+		getChildren().add(close);
+		//Position in the top right corner
+		close.setLayoutX(width - 30);
 	}
 
 }

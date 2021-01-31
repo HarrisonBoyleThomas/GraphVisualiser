@@ -11,6 +11,9 @@
 Viewport {
     -fx-background-color: #ffffff;
 }
+#closeButton {
+    -fx-pref-width: 10px;
+}
 
 Circle {
     -strokeColour: #000000;

@@ -121,7 +121,7 @@ public class MenuHeader extends MenuBar{
 		CustomMenuItem run = new CustomMenuItem(r);
 		run.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                MainWindow.get().createViewport();
+                MainWindow.get().startAlgorithms();
             }
         });
 

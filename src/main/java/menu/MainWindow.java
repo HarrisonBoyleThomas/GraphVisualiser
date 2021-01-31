@@ -88,6 +88,10 @@ public class MainWindow extends BorderPane{
 		return addViewport(v);
 	}
 
+	public void deleteViewport(Viewport v){
+		((GridPane) getCenter()).getChildren().remove(v);
+	}
+
 
 	/**
 	*     Add a viewport to the center of the window
@@ -362,6 +366,9 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean canRunAlgorithms(){
 		GridPane view = (GridPane) getCenter();
+		if(view.getChildren().size() == 0){
+			return false;
+		}
 		for(Node n : view.getChildren()){
 			GraphAlgorithm algorithm = ((Viewport) n).getAlgorithm();
 		    if(algorithm == null || (algorithm != null && !algorithm.canRun())){
@@ -383,18 +390,21 @@ public class MainWindow extends BorderPane{
 
     public void displayMessage(String title, String message){
         Alert alert = new Alert(AlertType.INFORMATION, message);
+		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
 		alert.setHeaderText(title);
 		alert.showAndWait();
 	}
 
 	public void displayWarningMessage(String title, String message){
 		Alert alert = new Alert(AlertType.WARNING, message);
+		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
 		alert.setHeaderText(title);
 		alert.showAndWait();
 	}
 
 	public void displayErrorMessage(String title, String message, Exception error){
         Alert alert = new Alert(AlertType.ERROR, message);
+		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
 		alert.setHeaderText(title);
 		alert.showAndWait();
 	}

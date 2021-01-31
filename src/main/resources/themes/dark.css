@@ -29,6 +29,10 @@ Circle {
     -fx-background-color: #333333;
 }
 
+#closeButton {
+    -fx-pref-width: 10px;
+}
+
 #edgeLabel {
     -fx-background-color: #454545;
     -fx-text-color: #ffffff;

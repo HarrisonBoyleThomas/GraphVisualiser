@@ -1,13 +1,21 @@
 package menu;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.geometry.Pos;
 
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+
 import model.GraphNode;
 import model.GraphEdge;
+
+import viewport.VisualGraphEdge;
 
 /**
 *    NodeDetails contains some key details about nodes, such as their
@@ -38,6 +46,7 @@ public class NodeDetails extends DetailsPanel{
 
 		addNameSection();
 		addValueSection();
+		addEdgeButtons();
 	}
 
 	private void addNameSection(){
@@ -81,5 +90,35 @@ public class NodeDetails extends DetailsPanel{
 				value.setText("" + oldValue);
 			}
         });
+	}
+
+	private void addEdgeButtons(){
+		Tooltip tooltip = new Tooltip("Click to view the outgoing edge from " + node.getName() + " to the target node");
+		ScrollPane pane = new ScrollPane();
+		pane.setFitToWidth(true);
+		VBox edges = new VBox(2);
+		edges.setAlignment(Pos.TOP_CENTER);
+
+		Label title = new Label("OUTGOING EDGES");
+		Tooltip.install(title, new Tooltip("Below are a list of nodes that are connected to the selected node"));
+		edges.getChildren().add(title);
+
+
+        for(GraphEdge edge : node.getEdges()){
+            Button button = new Button(edge.nodeB.getName());
+            button.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override public void handle(ActionEvent e) {
+	                MainWindow.get().addClickedComponent(VisualGraphEdge.getEdge(edge));
+	            }
+	        });
+			Tooltip.install(button, tooltip);
+			edges.getChildren().add(button);
+		}
+		pane.setContent(edges);
+		pane.setMaxHeight(200);
+		pane.setMinHeight(200);
+
+		getChildren().add(pane);
+
 	}
 }
