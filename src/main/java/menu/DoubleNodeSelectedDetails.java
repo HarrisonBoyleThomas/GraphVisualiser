@@ -55,6 +55,11 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 
 	}
 
+	/**
+	*    @param start the start node of the edge
+	*    @param end the end node of the edge
+	*    @return true IFF an edge can be added from the start node to the end node
+	**/
 	private GraphEdge canAddEdge(GraphNode start, GraphNode end){
 		for(GraphEdge e : start.getEdges()){
 			if(e.nodeB.equals(end)){
@@ -64,6 +69,10 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		return null;
 	}
 
+    /**
+	*    Create and setup buttons to create and delete edges between the two
+	*    stored nodes
+	**/
 	private void addCreateEdgeButtons(){
 		Tooltip createTooltip = new Tooltip("Click to create an edge between the two edges");
 		Tooltip deleteTooltip = new Tooltip("Click to delete the edge between the two edges");
@@ -116,10 +125,11 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		getChildren().add(bToA);
 	}
 
-
-
-
-	public void addDeleteButton(){
+	/**
+	*    Create and set up the delete node button
+	*    The delete button asks the mainWindow to delete the two stored nodes
+	**/
+	private void addDeleteButton(){
 		Tooltip tooltip = new Tooltip("Delete the selected node");
 		Button delete = new Button("DELETE NODE");
 		Tooltip.install(delete, tooltip);

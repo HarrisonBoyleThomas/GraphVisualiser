@@ -30,6 +30,10 @@ public class NodeDetails extends DetailsPanel{
 		update();
 	}
 
+	/**
+	*    Set the node the component represents
+	*    @param nodeIn the node to set to
+	**/
 	public void setNode(GraphNode nodeIn){
 		node = nodeIn;
 	}
@@ -49,6 +53,11 @@ public class NodeDetails extends DetailsPanel{
 		addEdgeButtons();
 	}
 
+    /**
+	*    Create and set up the name section
+	*    The name section allows the user to edit the name of the stored node using
+	*    a text box
+	**/
 	private void addNameSection(){
 		HBox nameSection = new HBox();
 		nameSection.setAlignment(Pos.TOP_CENTER);
@@ -68,6 +77,10 @@ public class NodeDetails extends DetailsPanel{
         });
 	}
 
+    /**
+	*    Create and set up the value section of the stored node
+	*    Allows the user to store edit the value associated to the node using a text box
+	**/
 	private void addValueSection(){
 		HBox valueSection = new HBox();
 		valueSection.setAlignment(Pos.TOP_CENTER);
@@ -92,6 +105,11 @@ public class NodeDetails extends DetailsPanel{
         });
 	}
 
+    /**
+	*    Create a scorll section that lists all edges from the stored node
+	*    The buttons are labelled by the name of the connected node, rather than
+	*    edge name, because edge names can be ambiguous
+	**/
 	private void addEdgeButtons(){
 		Tooltip tooltip = new Tooltip("Click to view the outgoing edge from " + node.getName() + " to the target node");
 		ScrollPane pane = new ScrollPane();

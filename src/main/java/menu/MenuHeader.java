@@ -27,6 +27,9 @@ public class MenuHeader extends MenuBar{
 
 	}
 
+    /**
+	*    Create and set up the FILE tab in the menu
+	**/
 	private void initialiseFileMenu(){
 		Menu file = new Menu("File");
 
@@ -81,6 +84,9 @@ public class MenuHeader extends MenuBar{
 		getMenus().add(file);
 	}
 
+    /**
+	*    Create and set up the EDIT tab in the menu
+	**/
 	private void initialiseEditMenu(){
 		Menu edit = new Menu("Edit");
 
@@ -111,6 +117,9 @@ public class MenuHeader extends MenuBar{
 		getMenus().add(edit);
 	}
 
+    /**
+	*    Create and set up the ALGORITHM tab in the menu
+	**/
 	private void initialiseAlgorithmMenu(){
 		Menu algorithm = new Menu("Algorithm");
 
@@ -131,6 +140,9 @@ public class MenuHeader extends MenuBar{
 		getMenus().add(algorithm);
 	}
 
+	/**
+	*    Create and set up the VIEW tab in the menu
+	**/
 	private void initialiseViewMenu(){
 		Menu view = new Menu("View");
 

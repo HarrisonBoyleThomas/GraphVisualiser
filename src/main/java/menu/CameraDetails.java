@@ -21,7 +21,7 @@ import java.lang.NumberFormatException;
 *    The CameraDetails simply writes properties of the camera, such as location and
 *    rotation on screen for the user to see
 *    @Author Harrison Boyle-Thomas
-*    @Date 2020
+*    @Date 31/01/21
 **/
 public class CameraDetails extends DetailsPanel{
 	Camera camera;

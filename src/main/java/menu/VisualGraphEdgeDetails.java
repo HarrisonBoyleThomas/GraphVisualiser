@@ -28,11 +28,18 @@ import java.lang.NumberFormatException;
 public class VisualGraphEdgeDetails extends DetailsPanel{
 	VisualGraphEdge edge;
 
+    /**
+	*    @param edgeIn the edge to represent
+	**/
 	public VisualGraphEdgeDetails(VisualGraphEdge edgeIn){
 		edge = edgeIn;
 		update();
 	}
 
+    /**
+	*    Set the edge this component represents
+	*    @param edgeIn the edge to set
+	**/
 	public void setEdge(VisualGraphEdge edgeIn){
 		edge = edgeIn;
 		update();
@@ -56,7 +63,11 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 	}
 
-	public void addEdgeSection(){
+    /**
+	*    Create and set up the edge section, which allows the user to edit the core
+	*    attributes of the stored edge through text boxes
+	**/
+	private void addEdgeSection(){
 		VBox edgeSection = new VBox();
 		edgeSection.setAlignment(Pos.TOP_CENTER);
 		Tooltip tooltip = new Tooltip("Details about the selected edge");
@@ -161,7 +172,11 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 	}
 
-	public void addDeleteButton(){
+    /**
+	*    Create and set up the delete button for edges
+	*    The delete button asks the mainWindow to delete the stored edge
+	**/
+	private void addDeleteButton(){
 		Tooltip tooltip = new Tooltip("Delete the selected edge");
 		Button delete = new Button("DELETE EDGE");
 		Tooltip.install(delete, tooltip);

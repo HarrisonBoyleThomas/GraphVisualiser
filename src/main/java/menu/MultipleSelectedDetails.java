@@ -38,6 +38,7 @@ public class MultipleSelectedDetails extends DetailsPanel{
 		Tooltip.install(title, tooltip);
 		getChildren().add(title);
 
+        //Create a scroll section listing selected nodes
 		ScrollPane nodeSection = new ScrollPane();
 		VBox nodes = new VBox();
 		Label nodeTitle = new Label("SELECTED NODES");
@@ -56,7 +57,7 @@ public class MultipleSelectedDetails extends DetailsPanel{
 		nodeSection.setContent(nodes);
 		getChildren().add(nodeSection);
 
-
+        //Create a scroll section listing selected edges
 		ScrollPane edgeSection = new ScrollPane();
 		VBox edges = new VBox();
 		Label edgeTitle = new Label("SELECTED EDGES");

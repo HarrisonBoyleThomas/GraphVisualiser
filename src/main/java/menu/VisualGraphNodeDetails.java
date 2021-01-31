@@ -25,11 +25,18 @@ import java.lang.NumberFormatException;
 **/
 public class VisualGraphNodeDetails extends DetailsPanel{
 	VisualGraphNode node;
+	/**
+	*    @param nodeIn the node to represent
+	**/
 	public VisualGraphNodeDetails(VisualGraphNode nodeIn){
 		node = nodeIn;
 		update();
 	}
 
+    /**
+	*    Set the stored node to the supplied node
+	*    @param nodeIn the node to set
+	**/
 	public void setNode(VisualGraphNode nodeIn){
 		node = nodeIn;
 	}
@@ -55,6 +62,11 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 	}
 
+    /**
+	*    Create and set up the location section, which allows the
+	*    user to edit the location of the node by manually typing in the values
+	*    of it's vector components
+	**/
 	private void addLocationSection(){
 		HBox locationSection = new HBox();
 		locationSection.setAlignment(Pos.TOP_CENTER);
@@ -159,7 +171,11 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		getChildren().add(locationSection);
 	}
 
-	public void addDeleteButton(){
+    /**
+	*    Create and set up the delete button.
+	*    The delete button asks the mainWindow to delete the stored node
+	**/
+	private void addDeleteButton(){
 		Tooltip tooltip = new Tooltip("Delete the selected node");
 		Button delete = new Button("DELETE NODE");
 		Tooltip.install(delete, tooltip);

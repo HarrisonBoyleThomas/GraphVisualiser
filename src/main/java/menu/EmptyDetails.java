@@ -28,6 +28,10 @@ public class EmptyDetails extends DetailsPanel{
 		addCreateNodeButton();
 	}
 
+    /**
+	*    Create and set up the create node button
+	*    the create button asks the mainWindow to create a node in front of the camera
+	**/
 	private void addCreateNodeButton(){
 		Button createButton = new Button("CREATE NODE");
 		Tooltip tooltip = new Tooltip("Create a node in front of the camera");

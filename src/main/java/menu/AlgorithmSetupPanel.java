@@ -46,7 +46,11 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 		}
 	}
 
-
+    /**
+	*    Create and setup the start node selection box
+	*    The selection box allows the user to select a start node for shortest path algorithms,
+	*    and asks the mainWindow to set the start node to the selected node when selected
+	**/
     private void createStartNodeSection(){
 
         Tooltip tooltip = new Tooltip("Select a start node for the algorithm");
@@ -88,6 +92,10 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
         getChildren().add(section);
     }
 
+    /**
+	*    Create and set up the RUN button
+	*    The run button asks the mainWindow to begin the execution of algorithms
+	**/
 	private void createRunButton(){
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, step by step");
 		Button button = new Button("RUN");

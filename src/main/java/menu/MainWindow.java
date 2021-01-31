@@ -29,7 +29,15 @@ import maths.Functions;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+*    The MainWindow provides the interface for all the components of the app
+*    The MainWindow itself is just a simple border pane, but it controls the
+*    communication between all components it contains
+*    The class is implemented as a singleton, to prevent potential risky concurrent
+*    modification of the app's state
+*    @author Harrison Boyle-Thomas
+*    @date 31/01/21
+**/
 public class MainWindow extends BorderPane{
 
 	private static MainWindow window = new MainWindow();
@@ -46,6 +54,9 @@ public class MainWindow extends BorderPane{
 
 	private AlgorithmDetailsPanel algorithmDetails;
 
+    /**
+	*    @return the single created instance
+	**/
 	public static MainWindow get(){
 		return window;
 	}
@@ -83,6 +94,10 @@ public class MainWindow extends BorderPane{
 
 	}
 
+    /**
+	*    allows an external source to create a viewport
+	*    @return true if successful
+	**/
 	public boolean createViewport(){
 		Viewport v = new Viewport(camera, null);
 		return addViewport(v);

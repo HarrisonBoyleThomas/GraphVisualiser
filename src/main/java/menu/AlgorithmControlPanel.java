@@ -40,6 +40,10 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 		createTerminateButton();
 	}
 
+    /**
+	*    Create and setup events for the STEP button in the control panel
+	*    The step button asks the mainWindow to execute one step of algorithms
+	**/
 	private void createStepButton(){
 		Tooltip tooltip = new Tooltip("Advance all algorithms one step");
 		Button step = new Button("Step");
@@ -54,6 +58,10 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 		getChildren().add(step);
 	}
 
+    /**
+	*    Create and setup the EXECUTE button in the control panel
+	*    The execute button asks the mainWindow to execute all steps of the algorithms
+	**/
 	private void createExecuteButton(){
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, to quickly obtain their output without stepping");
 		Button button = new Button("Execute");
@@ -68,6 +76,10 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 		getChildren().add(button);
 	}
 
+    /**
+	*    Create and setup the TERMINATE button in the control panel
+	*    The terminate button asks the mainWIndow to stop the execution of the algorithms
+	**/
 	private void createTerminateButton(){
 		Tooltip tooltip = new Tooltip("Cancel the execution of all algorithms so you can make edits to the graph");
 		Button button = new Button("Terminate");
