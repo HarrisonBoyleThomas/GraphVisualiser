@@ -16,7 +16,7 @@ import java.util.ArrayList;
 *    the original implementation explores all supplied nodes. In essence, this is the same, but the GraphVisualiser
 *    allows many unconnected subgraphs to exist, so without pruning DSP may unnecessarily run on unreachable nodes
 *    @Author Harrison Boyle-Thomas
-*    @Date 02.11.2020
+*    @Date 02/11/2020
 **/
 public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 

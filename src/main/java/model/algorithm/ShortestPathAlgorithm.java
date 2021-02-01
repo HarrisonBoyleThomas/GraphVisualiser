@@ -7,6 +7,12 @@ import model.GraphComponentState;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+/**
+*     A shortest path algorithm finds the shortest path from a given start node
+*    to other nodes in a graph
+*    @Author Harrison Boyle-Thomas
+*    @Date 01/02/21
+**/
 public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
     //the node to find the distance from
 	protected GraphNode startNode;
@@ -21,7 +27,10 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 	//the current node the algorithm is expanding
 	protected GraphNode currentNode;
 
-
+    /**
+	*    Set the start node of the algorithm if it is not running
+	*    @param startNodeIn the new start node
+	**/
     public void setStartNode(GraphNode startNodeIn){
         if(!running){
     		startNode = startNodeIn;
@@ -37,7 +46,9 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 			System.out.println("cant set because running");
 		}
 	}
-
+    /**
+	*    @return the start node
+	**/
 	public GraphNode getStartNode(){
 		return startNode;
 	}
@@ -121,7 +132,7 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 		}
 		return output;
 	}
-
+	
     public boolean canRun(){
         return (startNode != null);
 	}

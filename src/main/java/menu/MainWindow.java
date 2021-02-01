@@ -40,18 +40,23 @@ import java.util.List;
 **/
 public class MainWindow extends BorderPane{
 
+    //single instance
 	private static MainWindow window = new MainWindow();
 
+    //list of clicked nodes. The most recently clicked node is at the front of the list
 	private ArrayList<VisualGraphNode> clickedNodes = new ArrayList<>();
 
+    //List of clicked edges. The most recently clicked edge is at the front of the list
 	private ArrayList<VisualGraphEdge> clickedEdges = new ArrayList<>();
 
     //copy and paste implemented through a duplicate of the clickedNodeArray, otherwise
 	//drag and drop overrides a shared clipboard
 	private ArrayList<VisualGraphNode> copiedNodes = new ArrayList<>();
 
+    //Display the details of the camera
 	private CameraDetails cameraDetails;
 
+    //The algorithm setup/control panel
 	private AlgorithmDetailsPanel algorithmDetails;
 
     /**
@@ -60,16 +65,16 @@ public class MainWindow extends BorderPane{
 	public static MainWindow get(){
 		return window;
 	}
-
+    //A single camera is shared between viewports
 	private Camera camera = new Camera();
-
+    //The current details panel that changes based on clicked component combinations
 	private DetailsPanel detailsPanel;
 
+    //If true, then the user may select multiple components at once
 	private boolean multiSelect;
-
+    //The current teme of the app
 	private ThemeState theme;
-
-
+    //The state of the mainWindow
 	private MainWindowState state = MainWindowState.EDIT;
 
 	private MainWindow(){
@@ -103,13 +108,18 @@ public class MainWindow extends BorderPane{
 		return addViewport(v);
 	}
 
+    /**
+	*    @param v the viewport to delete
+	**/
 	public void deleteViewport(Viewport v){
 		((GridPane) getCenter()).getChildren().remove(v);
 	}
 
 
 	/**
-	*     Add a viewport to the center of the window
+	*    Add a viewport to the center of the window
+	*    @param viewport the viewport to add to the window
+	*    @return true if successful
 	**/
 	private boolean addViewport(Viewport viewport){
 		int noOfViewports = ((GridPane) getCenter()).getChildren().size();
@@ -134,6 +144,7 @@ public class MainWindow extends BorderPane{
 
     /**
 	*    Set the start node of all viewport algorithms to the given start node
+	*    @param newNode the node to set as start node for shortest path algorithms
 	**/
 	public void setStartNode(GraphNode newNode){
 	    GridPane view = (GridPane) getCenter();
@@ -161,28 +172,32 @@ public class MainWindow extends BorderPane{
 	}
 
 	/**
-	*    @Return a copy of all clicked nodes
+	*    @return a copy of all clicked nodes
 	**/
 	public ArrayList<VisualGraphNode> getClickedNodes(){
 		return new ArrayList<VisualGraphNode>(clickedNodes);
 	}
 
 	/**
-	*    @Return a copy of all clicked e3dges
+	*    @return a copy of all clicked edges
 	**/
 	public ArrayList<VisualGraphEdge> getClickedEdges(){
 		return new ArrayList<VisualGraphEdge>(clickedEdges);
 	}
 
 	/**
-	*    @Return the camera
+	*    @return the camera
 	**/
 	public Camera getCamera(){
 		return camera;
 	}
 
+    //KeyBoard input section
+
 	/**
-	*    Handle all movement input cpntrols that the user can enter
+	*    Handle all movement input controls that the user can enter
+	*    @param keys the keys that have been pressed by the user
+	*
 	**/
 	public void handleMovementInput(ArrayList<KeyCode> keys){
 		boolean moved = false;
@@ -248,6 +263,11 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
+    /**
+	*    Handle "semi-automatic" key presses. This would only apply the input once, even
+	*    if the key is held down
+	*    @param k the key that was pressed
+	**/
 	public void handleSingleInput(KeyCode k){
 		if(k == KeyCode.DELETE){
 			deleteAllSelected();
@@ -278,6 +298,7 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
+    //Window component refresh section
 
 	/**
 	*    Draws all nodes on all viewports
@@ -312,10 +333,17 @@ public class MainWindow extends BorderPane{
 		updateAlgorithmDetails();
 	}
 
+    /**
+	*    Update the cameraDetails box in the right panel, to display correct
+	*    data about the camera
+	**/
 	private void updateCameraDetails(){
 		cameraDetails.update();
 	}
 
+    /**
+	*    Refresh the algorithmDetails panel, so that it displays valid operations
+	**/
 	protected void updateAlgorithmDetails(){
 		if(((ScrollPane) getRight()) == null){
 			return;
@@ -333,76 +361,50 @@ public class MainWindow extends BorderPane{
 		rightDetails.getChildren().add(1, algorithmDetails);
 	}
 
-
-    public void initialiseAlgorithms(){
-    	ArrayList<GraphNode> nodes = new ArrayList<>();
-    	for(VisualGraphNode n : VisualGraphNode.getNodes()){
-    		nodes.add(n.getNode());
-    	}
-    	GridPane view = (GridPane) getCenter();
-    	for(Node n : view.getChildren()){
-    		((Viewport) n).getAlgorithm().initialise(nodes);
-			((Viewport) n).getAlgorithm().start();
-    	}
-		updateAlgorithmDetails();
-		//need to update viewport's algorithm details
-		updateViewport();
-	}
-
-	public void stepAlgorithms(){
-		if(state == MainWindowState.RUNNING){
-    		GridPane view = (GridPane) getCenter();
-    		for(Node n : view.getChildren()){
-    			System.out.println(((Viewport) n).getAlgorithm().step());
-    		}
-			if(areAlgorithmsFinished()){
-				state = MainWindowState.EDIT;
-				updateAlgorithmDetails();
-				for(Node n : view.getChildren()){
-					((Viewport) n).getAlgorithm().stop();
-				}
-			}
-			updateViewport();
-		}
-	}
-
-	public void runAlgorithms(){
-		state = MainWindowState.RUNNING;
-		initialiseAlgorithms();
-		GridPane view = (GridPane) getCenter();
-		for(Node n : view.getChildren()){
-			((Viewport) n).getAlgorithm().run();
-		}
-        state = MainWindowState.EDIT;
-	}
-
 	/**
-	*    @Return true if all viewports have a valid algorithm
+	*    Update the details panel to allow valid operations on a particular combination of selected
+	*    graph components
 	**/
-	public boolean canRunAlgorithms(){
-		GridPane view = (GridPane) getCenter();
-		if(view.getChildren().size() == 0){
-			return false;
-		}
-		for(Node n : view.getChildren()){
-			GraphAlgorithm algorithm = ((Viewport) n).getAlgorithm();
-		    if(algorithm == null || (algorithm != null && !algorithm.canRun())){
-				return false;
+	private void updateDetailsPanel(){
+		if(clickedNodes.size() > 0){
+			if(clickedEdges.size() > 0){
+				setLeft(new MultipleSelectedDetails());
+			}
+			else{
+    			if(clickedNodes.size() == 1){
+    				setLeft(new VisualGraphNodeDetails(clickedNodes.get(0)));
+    			}
+    			else if(clickedNodes.size() == 2){
+    				setLeft(new DoubleNodeSelectedDetails(clickedNodes.get(0), clickedNodes.get(1)));
+     			}
+    			else{
+	    			setLeft(new MultipleSelectedDetails());
+		    	}
 			}
 		}
-		return true;
-	}
+		else{
+			if(clickedEdges.size() > 0){
+			    if(clickedEdges.size() == 1){
+				    setLeft(new VisualGraphEdgeDetails(clickedEdges.get(0)));
+			    }
+				else{
+					setLeft(new MultipleSelectedDetails());
+				}
 
-	public boolean areAlgorithmsFinished(){
-		GridPane view = (GridPane) getCenter();
-		for(Node n : view.getChildren()){
-			if(!((Viewport) n).getAlgorithm().isFinished()){
-				return false;
-			}
+		    }
+	    	else{
+				setLeft(new EmptyDetails());
+		    }
 		}
-		return true;
 	}
 
+    //ALert message section
+
+    /**
+	*    Display an alert message with given title and message
+	*    @param title the title of the message
+	*    @param message the message of the alert
+	**/
     public void displayMessage(String title, String message){
         Alert alert = new Alert(AlertType.INFORMATION, message);
 		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
@@ -410,6 +412,11 @@ public class MainWindow extends BorderPane{
 		alert.showAndWait();
 	}
 
+    /**
+	*    Display a warning message with given title and message
+	*    @param title the title of the message
+	*    @param message the message of the alert
+	**/
 	public void displayWarningMessage(String title, String message){
 		Alert alert = new Alert(AlertType.WARNING, message);
 		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
@@ -417,6 +424,12 @@ public class MainWindow extends BorderPane{
 		alert.showAndWait();
 	}
 
+    /**
+	*    Display an error message to the user
+	*    @param title the title of the message
+	*    @param message the message of the alert
+	*    @param error the error that caused the message(skipped if null)
+	**/
 	public void displayErrorMessage(String title, String message, Exception error){
         Alert alert = new Alert(AlertType.ERROR, message);
 		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
@@ -479,9 +492,10 @@ public class MainWindow extends BorderPane{
 		VisualGraphEdge.updateEdges();
 	}
 
+    //Graph editing controls section
 
 	/**
-	*    Set all clicked nodes to unselected, and cleat the clicked node list
+	*    Set all clicked nodes to unselected, and clear the clicked node list
 	**/
 	private void clearClickedNodes(){
 		for(VisualGraphNode n : clickedNodes){
@@ -502,6 +516,7 @@ public class MainWindow extends BorderPane{
 
 	/**
 	*    Add the supplied VGC to a clicked component list. This allows the user to edit a clicked component
+	*    @param c the clicked component. Can be null to simulate clicking on nothing
 	**/
 	public void addClickedComponent(VisualGraphComponent c){
 		if(state == MainWindowState.EDIT){
@@ -537,8 +552,10 @@ public class MainWindow extends BorderPane{
 	}
 
     /**
-	*    Add the supplied VGC to a clicked component list. This allows the user to edit a clicked component.
-	*    @param overrideMultiselect = allows the user to simulate holding hte multiselect key while adding the component
+	*    Add the supplied VGC to a clicked component list. This allows the user to edit a clicked component without
+	*    deselecting other components
+	*    @param c the component that was clicked. Can be null
+	*    @param overrideMultiselect allows the user to simulate holding hte multiselect key while adding the component
 	**/
 	public void addClickedComponent(VisualGraphComponent c, boolean overrideMultiselect){
 		boolean multiSelectBefore = multiSelect;
@@ -549,44 +566,9 @@ public class MainWindow extends BorderPane{
 
 
 	/**
-	*    Update the details panel to allow operations on a particular combination of selected
-	*    graph components
-	**/
-	private void updateDetailsPanel(){
-		if(clickedNodes.size() > 0){
-			if(clickedEdges.size() > 0){
-				setLeft(new MultipleSelectedDetails());
-			}
-			else{
-    			if(clickedNodes.size() == 1){
-    				setLeft(new VisualGraphNodeDetails(clickedNodes.get(0)));
-    			}
-    			else if(clickedNodes.size() == 2){
-    				setLeft(new DoubleNodeSelectedDetails(clickedNodes.get(0), clickedNodes.get(1)));
-     			}
-    			else{
-	    			setLeft(new MultipleSelectedDetails());
-		    	}
-			}
-		}
-		else{
-			if(clickedEdges.size() > 0){
-			    if(clickedEdges.size() == 1){
-				    setLeft(new VisualGraphEdgeDetails(clickedEdges.get(0)));
-			    }
-				else{
-					setLeft(new MultipleSelectedDetails());
-				}
-
-		    }
-	    	else{
-				setLeft(new EmptyDetails());
-		    }
-		}
-	}
-
-	/**
 	*    Create a node 10 units infront of the camera, and update the viewport to render the new node
+	*    Nodes can only be created if the mainWindow is in EDIT Mode
+	*    @return true if a node was created
 	**/
 	public boolean createNode(){
 		if(state == MainWindowState.EDIT){
@@ -603,6 +585,10 @@ public class MainWindow extends BorderPane{
 
 	/**
 	*    Create an edge between the two supplied nodes, and update the viewport
+	*    edges can only be added if the mainWindow is in EDIT mode
+	*    @param nodeA the origin of the edge
+	*    @param nodeB the end point of the edge
+	*    return true if an edge was created
 	**/
 	public boolean createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
 		if(state == MainWindowState.EDIT){
@@ -621,6 +607,9 @@ public class MainWindow extends BorderPane{
 
 	/**
 	*    Delete the given node from the model, and update the viewport
+	*    Nodes can only be deleted if the mainWindow is in EDIT mode
+	*    @param toDelete the node to delete
+	*    @return true if successful
 	**/
 	public boolean deleteNode(VisualGraphNode toDelete){
 		if(state == MainWindowState.EDIT){
@@ -640,6 +629,9 @@ public class MainWindow extends BorderPane{
 
 	/**
 	*    Delete the given VGE from the model, and update the viewport
+	*    Edges can only be deleted if the mainWindow is in EDIT mode
+	*    @param toDelete the edge to delete
+	*    @return true if successful
     **/
 	public boolean deleteEdge(VisualGraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
@@ -657,6 +649,9 @@ public class MainWindow extends BorderPane{
 
 	/**
 	*    Delete the given edge from the model, and update the viewport
+	*    Edges can only be deleted if the mainWIndow is in EDIT mode
+	*    @param toDelete the edge to delete
+	*    @return true if successful
 	**/
 	public boolean deleteEdge(GraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
@@ -673,7 +668,9 @@ public class MainWindow extends BorderPane{
 	}
 
 	/**
-	*    Delete all selected nodes and edges. This is triggerred by pressing the DEL keys
+	*    Delete all selected nodes and edges. This is triggerred by pressing the DEL key
+	*    Components can only be deleted if the mainWindow is in EDIT mode
+	*    @return true if successful
 	**/
 	private boolean deleteAllSelected(){
 		if(state == MainWindowState.EDIT){
@@ -698,6 +695,11 @@ public class MainWindow extends BorderPane{
 
     /**
 	*    Create a path between each selected node, if only nodes are selected
+	*    For example, if three nodes A B C were selected in that order, then a path
+	*    is created like: A->B->C
+	*    Duplicate nodes cannot appear in the clicked list, so cycles are not possible
+	*    Only available if the mainWindow is in EDIT mode
+	*    @return true if successful
 	**/
 	private boolean addPathBetweenSelected(){
 		if(state == MainWindowState.EDIT){
@@ -721,6 +723,9 @@ public class MainWindow extends BorderPane{
 		return false;
 	}
 
+    /**
+	*    Select all nodes and edges that exist within the application
+	**/
 	private void selectAll(){
 		boolean multiSelectBefore = multiSelect;
 		multiSelect = true;
@@ -741,6 +746,10 @@ public class MainWindow extends BorderPane{
 		multiSelect = multiSelectBefore;
 	}
 
+    /**
+	*    Shuffle through the clickedNode list, so that the next appearing node is at the front of the
+	*    clickedNode list
+	**/
 	private void selectNextNode(){
 		boolean multiSelectBefore = multiSelect;
 		multiSelect = false;
@@ -753,16 +762,28 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
+	//Window state section
+
+    /**
+	*    Set the mainWindow state
+	*    @param stateIn the new state
+	**/
 	public void setState(MainWindowState stateIn){
 		state = stateIn;
 	}
 
+    /**
+	*    @return the current state of the mainWindow
+	**/
 	public MainWindowState getState(){
 		return state;
 	}
 
+	//Algorithm controls section
+
     /**
 	*    begins all algorithms, which prevents the graph from being edited
+	*    @return true if successful
 	**/
 	public boolean startAlgorithms(){
 		if(state != MainWindowState.RUNNING && canRunAlgorithms()){
@@ -780,6 +801,7 @@ public class MainWindow extends BorderPane{
 
     /**
 	*    Begins and executes all algorithms
+	*    @return true if successful
 	**/
 	public boolean executeAlgorithms(){
 		if(canRunAlgorithms()){
@@ -797,6 +819,7 @@ public class MainWindow extends BorderPane{
 
     /**
 	*    Ends the execution of all algorithms
+	*    @return true if successful
 	**/
 	public boolean terminateAlgorithms(){
 		if(state == MainWindowState.RUNNING){
@@ -814,7 +837,95 @@ public class MainWindow extends BorderPane{
 		return false;
 	}
 
+	/**
+	*    Start all algorithms in each viewport
+	**/
+    public void initialiseAlgorithms(){
+    	ArrayList<GraphNode> nodes = new ArrayList<>();
+    	for(VisualGraphNode n : VisualGraphNode.getNodes()){
+    		nodes.add(n.getNode());
+    	}
+    	GridPane view = (GridPane) getCenter();
+    	for(Node n : view.getChildren()){
+    		((Viewport) n).getAlgorithm().initialise(nodes);
+			((Viewport) n).getAlgorithm().start();
+    	}
+		updateAlgorithmDetails();
+		//need to update viewport's algorithm details
+		updateViewport();
+	}
 
+    /**
+	*    Advance all algorithms one step
+	**/
+	public void stepAlgorithms(){
+		if(state == MainWindowState.RUNNING){
+    		GridPane view = (GridPane) getCenter();
+    		for(Node n : view.getChildren()){
+    			System.out.println(((Viewport) n).getAlgorithm().step());
+    		}
+			if(areAlgorithmsFinished()){
+				state = MainWindowState.EDIT;
+				updateAlgorithmDetails();
+				for(Node n : view.getChildren()){
+					((Viewport) n).getAlgorithm().stop();
+				}
+			}
+			updateViewport();
+		}
+	}
+
+    /**
+	*    Execute all algorithms, so that their result is quickly obtained
+	**/
+	public void runAlgorithms(){
+		state = MainWindowState.RUNNING;
+		initialiseAlgorithms();
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			((Viewport) n).getAlgorithm().run();
+		}
+        state = MainWindowState.EDIT;
+	}
+
+	/**
+	*    @return true if all viewports have a valid algorithm
+	**/
+	public boolean canRunAlgorithms(){
+		GridPane view = (GridPane) getCenter();
+		if(view.getChildren().size() == 0){
+			return false;
+		}
+		for(Node n : view.getChildren()){
+			GraphAlgorithm algorithm = ((Viewport) n).getAlgorithm();
+		    if(algorithm == null || (algorithm != null && !algorithm.canRun())){
+				return false;
+			}
+		}
+		return true;
+	}
+
+    /**
+	*    @return true if all algorithms are marked as finished
+	**/
+	public boolean areAlgorithmsFinished(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			if(!((Viewport) n).getAlgorithm().isFinished()){
+				return false;
+			}
+		}
+		return true;
+	}
+
+    //Utility controls
+
+    /**
+	*    Save the selected nodes and edges into a file of the user's choice
+	*    The operation saves all edges that a node has, including edges that end at
+	*    nodes that will not be saved. The means that when loading a graph, invalid edges may exist
+	*    which need to be culled when loading
+	**/
 	public void saveGraph(){
         FileChooser dialog = new FileChooser();
 		String initialPath = Paths.get(".").toAbsolutePath().normalize().toString() + "/savedGraphs";
@@ -841,6 +952,11 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
+    /**
+	*    Load a graph from a file of the user's choice
+	*    To prevent errors and illegal states, each created edge is validated, so that only
+	*    legal edges are created
+	**/
 	public void loadGraph(){
 		FileChooser dialog = new FileChooser();
 		//Restrict file search type
@@ -950,6 +1066,7 @@ public class MainWindow extends BorderPane{
 		System.out.println("Successfully pasted " + copiedNodes.size() + " nodes!");
 	}
 
+	//Theme section
 
     /**
 	*    Attempt to load the theme setting from the config folder.

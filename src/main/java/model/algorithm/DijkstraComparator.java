@@ -7,6 +7,8 @@ import model.GraphNode;
 *    DijkstraComparator compares two graph node weights
 *    Weights less than 0 are assumed to be Infinity,
 *    so a the compare() function takes this into account
+*    @Author Harrison Boyle-Thomas
+*    @Date 01/02/21
 **/
 public class DijkstraComparator implements Comparator<GraphNode>{
 
@@ -20,7 +22,9 @@ public class DijkstraComparator implements Comparator<GraphNode>{
     }
 
     /**
-    *    @Return -1 if the weight(a) < weight(b) from the
+    *    @a operand one
+    *    @b operand two
+    *    @return -1 if the weight(a) < weight(b) from the
     *    supplied distance map
     **/
     public int compare(GraphNode a, GraphNode b){

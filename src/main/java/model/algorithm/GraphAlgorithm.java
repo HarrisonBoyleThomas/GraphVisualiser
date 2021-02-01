@@ -23,25 +23,30 @@ public abstract class GraphAlgorithm{
 	protected String name;
 
 	protected String description;
-
+    //State of discovered nodes during the algorithm's execution
 	protected HashMap<GraphNode, GraphComponentState> nodeStates = new HashMap<>();
-
+    //State of discovered edges during the algorithm's execution
 	protected HashMap<GraphEdge, GraphComponentState> edgeStates = new HashMap<>();
-
+    //number of iterations of the main loop
 	protected int stepCount = 1;
 
 	protected boolean running = false;
-
+    //The lines that are being considered by the algorithm. A list of line is required, because
+	//Algorithm execution can effectively execute multiple lines in one loop(too quick for the user to see)
 	protected int[] currentPseudocodeLines = new int[0];
 
 	public GraphAlgorithm(){
 		finished = false;
 	}
-
+    /**
+	*    Mark the algorithm as running
+	**/
 	public void start(){
 		running = true;
 	}
-
+    /**
+	*    Mark the algorithm as not running
+	**/
 	public void stop(){
 		running = false;
 	}
@@ -83,33 +88,53 @@ public abstract class GraphAlgorithm{
 			nodeStates.put(node, stateIn);
 		}
 	}
-
+    /**
+	*    @param node the node to get the state for
+	*    @return the state of the node stored by the algorithm
+	**/
 	public GraphComponentState getNodeState(GraphNode node){
 		return nodeStates.get(node);
 	}
-
+    /**
+	*    @param edge the edge to get the state for
+	*    @return the state of the edge stored by the algorithm
+	**/
 	public GraphComponentState getEdgeState(GraphEdge edge){
 		return edgeStates.get(edge);
 	}
-
+    /**
+	*     @return the name of the algorithm
+	**/
 	public String toString(){
 		return name;
 	}
-
+    /**
+	*    @return the description of the algorithm
+	**/
 	public String getDescription(){
 		return description;
 	}
-
+    /**
+	*    @return true if the algorithm is marked as running
+	**/
 	public boolean isRunning(){
 		return running;
 	}
-
+    /**
+	*    @return true if the algorithm is marked as finished
+	**/
 	public boolean isFinished(){
 		return finished;
 	}
 
+    /**
+	*    @return an array containing a representation of each component of the algorithm
+	**/
 	public abstract String[] getDetails();
 
+    /**
+	*    @return true if the algorithm is in a legal running state
+	**/
 	public abstract boolean canRun();
 
     /**
@@ -119,8 +144,14 @@ public abstract class GraphAlgorithm{
 		finished = true;
 	}
 
+    /**
+	*    @return the pseudocode of the algorithm, where each element of the array is one line
+	**/
 	public abstract String[] getPseudocodeLines();
 
+    /**
+	*    @return an array of lines that are being considered by the algorithm
+	**/
 	public int[] getCurrentPseudocodeLines(){
 		return currentPseudocodeLines;
 	}
