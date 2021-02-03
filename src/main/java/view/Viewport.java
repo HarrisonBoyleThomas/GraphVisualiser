@@ -30,7 +30,13 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 import javafx.animation.AnimationTimer;
-
+/**
+*    The Viewport is an intergal part of GraphVisualiser
+*    The viewport makes duplicates of the base VisualGraphComponents, and alters
+*    their colours based on the viewport's algorithm state
+*    @author Harrison Boyle-Thomas
+*    @date 03/02/21
+**/
 public class Viewport extends Pane{
 	private Camera camera;
 	GraphAlgorithm algorithm;
@@ -58,7 +64,9 @@ public class Viewport extends Pane{
 		addDragAndDropEvents();
 		createCloseButton();
 	}
-
+    /**
+	*    Add drag and drop events so that nodes can be dragged onto the viewport
+	**/
 	private void addDragAndDropEvents(){
 		setOnDragOver(new EventHandler <DragEvent>() {
             public void handle(DragEvent e) {
@@ -126,7 +134,10 @@ public class Viewport extends Pane{
         });
 
 	}
-
+    /**
+	*    Set the algorithm of the viewport. If the algorithm is a shortest path algorithm, try
+	*    to copy the start node from other existing shortest path algorithms to save the user time
+	**/
 	public void setAlgorithm(GraphAlgorithm algorithmIn){
 		//Copy the old start node to be the start node of the replacement algorithm
 		if(algorithm != null){
@@ -136,16 +147,22 @@ public class Viewport extends Pane{
 		viewportDetails.update(this);
 	}
 
-
+    /**
+	*    Draw all VGCs to the viewport
+	*    Note: VGC's renderLocations MUST be updated before draw, to ensure their
+	*    locations are correct
+	**/
 	public void draw(){
+		//clear the old frame
 		getChildren().clear();
+		//add the close button
 		createCloseButton();
-
+        //get copies of VGCs
 		ArrayList<VisualGraphNode> nodes = VisualGraphNode.getNodes();
 		ArrayList<VisualGraphEdge> edges = VisualGraphEdge.getEdges();
 
 		Group root = new Group();
-
+        //draw the edges
 		for(VisualGraphEdge e : edges){
 			VisualGraphEdge edge = new VisualGraphEdge(e);
 			if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
@@ -155,6 +172,7 @@ public class Viewport extends Pane{
 	    		edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
 			}
 		}
+		//Draw the nodes
 		for(VisualGraphNode n : nodes){
 			VisualGraphNode node = new VisualGraphNode(n);
 			node.updateIcon(algorithm);

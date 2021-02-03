@@ -5,16 +5,21 @@ import maths.Rotator;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
-
+/**
+*    The viewportDetails displays details about the viewport
+*    Currently, this just includes it's algorithm details
+*    @author Harrison Boyle-Thomas
+*    @date 03/02/21
+**/
 public class ViewportDetails extends VBox{
 	AlgorithmDetails algorithmDetails;
 	public ViewportDetails(){
 		algorithmDetails = new AlgorithmDetails();
 	}
-	
+
 	public void update(Viewport viewport){
 		getChildren().clear();
-		
+
 		algorithmDetails.update(viewport);
 		getChildren().add(algorithmDetails);
 	}

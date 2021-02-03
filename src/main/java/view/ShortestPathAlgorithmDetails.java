@@ -15,7 +15,11 @@ import javafx.scene.Node;
 
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
-
+/**
+*    ShortestPathAlgorithmDetails displays the distance list and parent list from
+*    a generic shortest path algorithm so that the cells are neatly aligned in a
+*    gridPane
+**/
 public class ShortestPathAlgorithmDetails extends AlgorithmDetailsWindow{
     public ShortestPathAlgorithmDetails(GraphAlgorithm algorithmIn){
         update(algorithmIn);

@@ -32,6 +32,7 @@ public abstract class VisualGraphComponent extends Actor{
 
 	protected transient EventHandler<MouseEvent> clickEvent;
 
+    //true if the component has been clicked by the user
 	protected transient boolean selected;
 
 	public Vector getRenderLocation(){

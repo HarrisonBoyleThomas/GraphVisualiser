@@ -5,6 +5,8 @@ import java.io.*;
 /**
 *    A GraphComponent represents a part of a graph
 *    All GraphComponents have a name and an algorithm state
+*    @author Harrison Boyle-Thomas
+*    @date 03/02/21
 **/
 abstract class GraphComponent implements Serializable{
 	private GraphComponentState state;

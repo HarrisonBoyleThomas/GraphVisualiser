@@ -14,37 +14,51 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 import java.util.HashMap;
-
+/**
+*    AlgorithmDetails displays information about the alhorithm in a Viewport.
+*    A static map of algorithms to AlgorithmWindows is used to add
+*    varied data about a particular algorithm instance
+*    @author Harrison Boyle-Thomas
+*    @date 03/02/21
+**/
 public class AlgorithmDetails extends VBox{
-
+    //A map from algorithm to detailsWindow for this particular algorithm. I intended to
+	//keep algorithms independent of it's corresponding details component
+	//To correctly display details, an algorithm MUST be added to this map
 	private static HashMap<Class, Class> algorithmDetailsMap = new HashMap<>();
 	static {
 		algorithmDetailsMap.put(DijkstraShortestPath.class, DijkstraDetails.class);
 		algorithmDetailsMap.put(ArrayBasedDijkstra.class, DijkstraDetails.class);
 		algorithmDetailsMap.put(HeapBasedDijkstra.class, DijkstraDetails.class);
 	}
-
+    //Popup window that displays information about a particular algorithm
 	private AlgorithmDetailsWindow detailsInstance;
 
 	public AlgorithmDetails(){
 
 	}
-
+    /**
+	*    Refresh the details component
+	*    @param viewport to extract an algorithm from/represent
+	**/
 	public void update(Viewport viewport){
 		GraphAlgorithm algorithm = viewport.getAlgorithm();
 		getChildren().clear();
 		if(viewport.getAlgorithm() == null || (viewport.getAlgorithm() != null && !viewport.getAlgorithm().isRunning())){
+			//Add a selection box to choose an algorithm for the viewport
     		ViewportAlgorithmSelector selection = new ViewportAlgorithmSelector(viewport);
 	    	getChildren().add(selection);
 		}
 
 		if(viewport.getAlgorithm() != null && (viewport.getAlgorithm().isRunning() || viewport.getAlgorithm().isFinished())){
+			//Display this if the algorithm is runnin/has run
 		    Label title = new Label("Algorithm: " + algorithm);
 		    getChildren().add(title);
             if(detailsInstance != null){
 				detailsInstance.update(viewport.getAlgorithm());
 			}
 			else{
+				//The inspect button opens up a popup window that displays pseudocode/state variables for the algorithm
                 Button inspect = new Button("Inspect");
 	            inspect.setOnAction(new EventHandler<ActionEvent>() {
 	                @Override public void handle(ActionEvent e) {
@@ -75,6 +89,7 @@ public class AlgorithmDetails extends VBox{
 			getChildren().add(iterations);
 		}
 		else{
+			//Display this if the algorithm isn't/has not run
 			Label details = new Label("State: Not running");
 			Tooltip tooltip = new Tooltip("Not running! Start the algorithm using the algorithm control panel!");
 			Tooltip.install(details, tooltip);

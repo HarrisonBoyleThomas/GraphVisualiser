@@ -17,6 +17,13 @@ import javafx.scene.Node;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+/**
+*    DijkstraDetails displays details specific to the DSP algorithm.
+*    Open list, and closed list are added in addition to inherited distance and
+*    parent lists from SPAD
+*    @author Harrison Boyle-Thomas
+*    @date 03/02/21
+**/
 public class DijkstraDetails extends ShortestPathAlgorithmDetails{
     public DijkstraDetails(GraphAlgorithm algorithmIn){
         super(algorithmIn);
