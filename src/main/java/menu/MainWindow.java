@@ -9,6 +9,7 @@ import model.algorithm.*;
 import model.GraphNode;
 import model.GraphEdge;
 import threads.AlgorithmRunner;
+import data.Data;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -830,6 +831,13 @@ public class MainWindow extends BorderPane{
 		return false;
 	}
 
+	public void updateAlgorithmSpeed(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			((Viewport) n).updateAlgorithmSpeed();
+		}
+	}
+
     /**
 	*    Ends the execution of all algorithms
 	*    @return true if successful
@@ -963,6 +971,7 @@ public class MainWindow extends BorderPane{
 	    if(areAlgorithmsFinished()){
 			if(state == MainWindowState.RUNNING){
 				state = MainWindowState.EDIT;
+				updateAlgorithmDetails();
 			}
 		}
 		return state;
@@ -1126,7 +1135,7 @@ public class MainWindow extends BorderPane{
 	private void initialiseTheme(){
 		ThemeState themeIn = ThemeState.LIGHT;
 		try{
-    		FileInputStream fileStream = new FileInputStream("config/theme");
+    		FileInputStream fileStream = new FileInputStream(Data.THEME_CONFIG_PATH);
     		ObjectInputStream objectStream = new ObjectInputStream(fileStream);
     		themeIn = (ThemeState) objectStream.readObject();
     		objectStream.close();
@@ -1147,7 +1156,7 @@ public class MainWindow extends BorderPane{
 		getStylesheets().clear();
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
 		try{
-		    FileOutputStream fileOutputStream = new FileOutputStream("config/theme");
+		    FileOutputStream fileOutputStream = new FileOutputStream(Data.THEME_CONFIG_PATH);
     		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
     		objectOutputStream.writeObject(theme);
     		objectOutputStream.close();

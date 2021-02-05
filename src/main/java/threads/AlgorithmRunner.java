@@ -1,7 +1,8 @@
 package threads;
 
+import data.Data;
+
 import model.algorithm.GraphAlgorithm;
-import viewport.Viewport;
 import maths.Functions;
 
 /**
@@ -14,13 +15,13 @@ import maths.Functions;
 public class AlgorithmRunner extends Thread{
     boolean running = true;
     boolean paused = false;
-    Viewport viewport;
+    GraphAlgorithm algorithm;
     //delay in milliseconds
     int sleepDelay;
 
-    public AlgorithmRunner(Viewport viewportIn, int delayIn){
-        viewport = viewportIn;
-        setSleepDelay(delayIn);
+    public AlgorithmRunner(GraphAlgorithm algorithmIn, int delayIn){
+        algorithm = algorithmIn;
+        updateSleepDelay();
     }
 
     public boolean isRunning(){
@@ -30,13 +31,9 @@ public class AlgorithmRunner extends Thread{
     *    Calls the step() function repeatedly
     **/
     public void run(){
-        if(viewport == null){
+        if(algorithm == null){
             return;
         }
-        if(viewport.getAlgorithm() == null){
-            return;
-        }
-        GraphAlgorithm algorithm = viewport.getAlgorithm();
         while(running && !algorithm.isFinished() && algorithm.isRunning()){
             while(paused){
                 try{
@@ -61,7 +58,6 @@ public class AlgorithmRunner extends Thread{
     *    Set the running flag to false, so that the thread terminates
     **/
     public void terminate(){
-        GraphAlgorithm algorithm = viewport.getAlgorithm();
         algorithm.terminate();
         running = false;
     }
@@ -69,8 +65,8 @@ public class AlgorithmRunner extends Thread{
     *    set the sleep delay to the given value
     *    the value is clamped between 0 and 1000
     **/
-    public void setSleepDelay(int delayIn){
-        sleepDelay = (int) Functions.clamp(delayIn, 0, 1000);
+    public void updateSleepDelay(){
+        sleepDelay = (int) Functions.clamp(Data.getExecutionSleepDelay(), 0, 1000);
     }
     /**
     *       Flip the value of the paused flag

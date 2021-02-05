@@ -1,5 +1,7 @@
 package menu;
 
+import data.Data;
+
 import maths.Vector;
 import viewport.Camera;
 
@@ -7,6 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
@@ -16,6 +22,9 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 import java.lang.NumberFormatException;
+
+import java.io.*;
+import java.nio.file.Paths;
 
 /**
 *    The AlgorithmControlPanel allows users to handle the execution of running AlgorithmSetupPanel
@@ -37,6 +46,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 
 		createStepButton();
 		createExecuteButton();
+		createSpeedDial();
 		createPauseButton();
 		createTerminateButton();
 	}
@@ -111,5 +121,26 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
         });
 
 		getChildren().add(button);
+	}
+    /**
+	*    Create a dial that controls the speed of algorithms
+	*    And saves it's value to a config file for later use
+	**/
+	private void createSpeedDial(){
+		Tooltip tooltip = new Tooltip("Set the execution speed of algorithms(milliseconds)");
+		Slider slider = new Slider(0, 1000, Data.getExecutionSleepDelay());
+		Tooltip.install(slider, tooltip);
+
+		slider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> value, Number oldValue, Number newValue) {
+				Data.updateSleepDelay((int) ((double) newValue));
+                MainWindow.get().updateAlgorithmSpeed();
+            }
+        });
+		slider.setMinorTickCount(5);
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+
+		getChildren().add(slider);
 	}
 }

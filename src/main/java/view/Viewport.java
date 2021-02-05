@@ -4,6 +4,8 @@ import maths.Vector;
 import maths.Rotator;
 import maths.Functions;
 
+import data.Data;
+
 import model.GraphNode;
 import model.GraphEdge;
 import model.GraphComponentState;
@@ -30,6 +32,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+
+import java.io.*;
+import java.nio.file.Paths;
 
 import javafx.animation.AnimationTimer;
 /**
@@ -230,7 +235,9 @@ public class Viewport extends Pane{
 	**/
 	public void executeAlgorithm(){
 		terminateAlgorithm();
-		algorithmRunner = new AlgorithmRunner(this, 100);
+		algorithmRunner = new AlgorithmRunner(algorithm, 100);
+		//Extract the algorithm speed
+		updateAlgorithmSpeed();
 		algorithmRunner.start();
 		new AnimationTimer() {
 			public void handle(long currentNanoTime) {
@@ -243,6 +250,13 @@ public class Viewport extends Pane{
 				}
 			}
 		}.start();
+	}
+
+	public void updateAlgorithmSpeed(){
+		if(algorithmRunner == null){
+			return;
+		}
+		algorithmRunner.updateSleepDelay();
 	}
     /**
 	*    toggle the pause value of the algorithm runner, if it exists
