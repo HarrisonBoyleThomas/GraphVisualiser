@@ -13,7 +13,9 @@ import menu.MainWindow;
 
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Collections;
 
 import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
@@ -78,7 +80,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	*    @Param node the VGN represents
 	*    @Return the created node
 	**/
-	public static VisualGraphNode create(Vector location, GraphNode node){
+	public static synchronized VisualGraphNode create(Vector location, GraphNode node){
 		VisualGraphNode newIcon = new VisualGraphNode(location, node);
 		icons.add(newIcon);
 		return newIcon;
@@ -89,7 +91,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	*    To ensure the node is deleted, all references to the
 	*    given node must further be deleted
 	**/
-	public static boolean delete(VisualGraphNode toDelete){
+	public static synchronized boolean delete(VisualGraphNode toDelete){
 		VisualGraphEdge.delete(toDelete.getNode());
 	    return icons.remove(toDelete);
 	}
@@ -97,7 +99,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	/**
 	*    Delete the VGN with the given node from the node list
 	**/
-	public static boolean delete(GraphNode toDelete){
+	public static synchronized boolean delete(GraphNode toDelete){
 		VisualGraphNode iconToDelete = getNode(toDelete);
 		return delete((VisualGraphNode) iconToDelete);
 	}
@@ -119,11 +121,26 @@ public class VisualGraphNode extends VisualGraphComponent{
 	/**
 	*    Update the positions of all icons
 	**/
-	public static void updateNodes(Camera camera, int width, int height){
+	public static synchronized void updateNodes(Camera camera, int width, int height){
 		for(VisualGraphNode icon : icons){
 			icon.updateRenderLocation(camera.project(icon.getLocation(), width, height));
 			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
 		}
+	}
+
+	public static synchronized void sortByDistance(Camera camera){
+		HashMap<VisualGraphNode, Double> distances = new HashMap<>();
+        for(VisualGraphNode node : getNodes()){
+            distances.put(node, Vector.distance(node.getLocation(), camera.getLocation()));
+        }
+		ArrayList<Entry<VisualGraphNode, Double>> list = new ArrayList<>(distances.entrySet());
+		list.sort(Entry.comparingByValue());
+		Collections.reverse(list);
+		ArrayList<VisualGraphNode> sortedNodes = new ArrayList<>();
+		for(Entry<VisualGraphNode, Double> e : list){
+			sortedNodes.add(e.getKey());
+		}
+		icons = sortedNodes;
 	}
 
 	/**
