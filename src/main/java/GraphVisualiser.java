@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.*;
 import javafx.stage.Stage;
 
@@ -8,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 
 import javafx.animation.AnimationTimer;
 
@@ -43,6 +45,16 @@ public class GraphVisualiser extends Application{
 			}
 		}.start();
 
+        //kill all threads in the program when closing
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+            public void handle(WindowEvent e) {
+				Platform.exit();
+				System.exit(0);
+            }
+		});
+
+
 	}
 
 
@@ -73,6 +85,8 @@ public class GraphVisualiser extends Application{
 				MainWindow.get().handleSingleInput(e.getCode());
 			}
 		});
+
+
 
 	}
 

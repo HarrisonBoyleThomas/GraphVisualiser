@@ -37,6 +37,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 
 		createStepButton();
 		createExecuteButton();
+		createPauseButton();
 		createTerminateButton();
 	}
 
@@ -75,7 +76,25 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 
 		getChildren().add(button);
 	}
+    private void createPauseButton(){
+		if(!MainWindow.get().areAlgorithmsExecuting()){
+			return;
+		}
+		Tooltip tooltip = new Tooltip("Toggle pause the execution of algorithms");
+		Button button = new Button("Pause");
+		if(MainWindow.get().areAlgorithmsPaused()){
+			button = new Button("Unpause");
+		}
+		Tooltip.install(button, tooltip);
 
+		button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                MainWindow.get().pauseAlgorithms();
+            }
+        });
+
+		getChildren().add(button);
+	}
     /**
 	*    Create and setup the TERMINATE button in the control panel
 	*    The terminate button asks the mainWIndow to stop the execution of the algorithms

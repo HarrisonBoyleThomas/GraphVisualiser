@@ -8,6 +8,7 @@ import viewport.VisualGraphEdge;
 import model.algorithm.*;
 import model.GraphNode;
 import model.GraphEdge;
+import threads.AlgorithmRunner;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -104,8 +105,14 @@ public class MainWindow extends BorderPane{
 	*    @return true if successful
 	**/
 	public boolean createViewport(){
-		Viewport v = new Viewport(camera, null);
-		return addViewport(v);
+		if(state == MainWindowState.EDIT){
+		    Viewport v = new Viewport(camera, null);
+		    return addViewport(v);
+		}
+		else{
+			displayWarningMessage("Unable to create viewport", "Viewports cannot be created while algorithms are running");
+			return false;
+		}
 	}
 
     /**
@@ -808,7 +815,13 @@ public class MainWindow extends BorderPane{
 			if(state != MainWindowState.RUNNING){
 			    startAlgorithms();
 			}
-			runAlgorithms();
+			state = MainWindowState.RUNNING;
+			initialiseAlgorithms();
+			GridPane view = (GridPane) getCenter();
+			for(Node n : view.getChildren()){
+				((Viewport) n).executeAlgorithm();
+				//((Viewport) n).getAlgorithm().run();
+			}
 			updateAlgorithmDetails();
 			updateViewport();
 			return true;
@@ -826,7 +839,8 @@ public class MainWindow extends BorderPane{
 			System.out.println("Algorithms terminated!\n\n");
 			GridPane view = (GridPane) getCenter();
 			for(Node n : view.getChildren()){
-				((Viewport) n).getAlgorithm().terminate();
+				((Viewport) n).terminateAlgorithm();
+				//((Viewport) n).getAlgorithm().terminate();
 			}
 			updateViewport();
 			state = MainWindowState.EDIT;
@@ -834,6 +848,45 @@ public class MainWindow extends BorderPane{
 			return true;
 		}
 		displayErrorMessage("Unable to terminate algorithms", "You cannot terminate algorithms that aren't running", null);
+		return false;
+	}
+
+	public boolean areAlgorithmsExecuting(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			if(((Viewport) n).isExecutingAlgorithm()){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean areAlgorithmsPaused(){
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			if(((Viewport) n).isAlgorithmPaused()){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean pauseAlgorithms(){
+		if(state == MainWindowState.RUNNING){
+			boolean paused = false;
+			GridPane view = (GridPane) getCenter();
+			for(Node n : view.getChildren()){
+				paused = ((Viewport) n).pauseAlgorithm();
+			}
+			if(paused){
+				System.out.println("Algorithms paused!");
+			}
+			else{
+				System.out.println("Algorithms unpaused!");
+			}
+			updateAlgorithmDetails();
+			return true;
+		}
 		return false;
 	}
 
@@ -875,18 +928,6 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
-    /**
-	*    Execute all algorithms, so that their result is quickly obtained
-	**/
-	public void runAlgorithms(){
-		state = MainWindowState.RUNNING;
-		initialiseAlgorithms();
-		GridPane view = (GridPane) getCenter();
-		for(Node n : view.getChildren()){
-			((Viewport) n).getAlgorithm().run();
-		}
-        state = MainWindowState.EDIT;
-	}
 
 	/**
 	*    @return true if all viewports have a valid algorithm
@@ -916,6 +957,15 @@ public class MainWindow extends BorderPane{
 			}
 		}
 		return true;
+	}
+
+	public MainWindowState updateWindowStatus(){
+	    if(areAlgorithmsFinished()){
+			if(state == MainWindowState.RUNNING){
+				state = MainWindowState.EDIT;
+			}
+		}
+		return state;
 	}
 
     //Utility controls

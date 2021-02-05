@@ -11,6 +11,8 @@ import model.algorithm.*;
 
 import menu.MainWindow;
 
+import threads.AlgorithmRunner;
+
 
 import java.util.ArrayList;
 
@@ -47,6 +49,8 @@ public class Viewport extends Pane{
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
 
 	private ViewportDetails viewportDetails = new ViewportDetails();
+
+	private AlgorithmRunner algorithmRunner;
 
 	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
 		setMinSize(width, height);
@@ -200,6 +204,8 @@ public class Viewport extends Pane{
 		getStylesheets().add(sheetIn);
 	}
 
+    //Algorithm execution section
+
     /**
 	*    Create a button in the top right corner that deletes the viewport from the main window
 	**/
@@ -209,11 +215,77 @@ public class Viewport extends Pane{
 		close.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 MainWindow.get().deleteViewport(Viewport.this);
+				terminateAlgorithm();
             }
         });
 		getChildren().add(close);
 		//Position in the top right corner
 		close.setLayoutX(width - 30);
+	}
+
+    /**
+	*    Create an AlgorithmRunner which runs the algorithm in a separate thread.
+	*    The viewport automatically redraws the graph to reflect the changes within
+	*    the algorithm
+	**/
+	public void executeAlgorithm(){
+		terminateAlgorithm();
+		algorithmRunner = new AlgorithmRunner(this, 100);
+		algorithmRunner.start();
+		new AnimationTimer() {
+			public void handle(long currentNanoTime) {
+				draw();
+				if(algorithmRunner == null || !algorithmRunner.isRunning()){
+					System.out.println("end draw");
+					stop();
+					draw();
+					MainWindow.get().updateWindowStatus();
+				}
+			}
+		}.start();
+	}
+    /**
+	*    toggle the pause value of the algorithm runner, if it exists
+	*    @return the value of pause, or false on failure
+	**/
+	public boolean pauseAlgorithm(){
+		if(algorithmRunner == null){
+			return false;
+		}
+		return algorithmRunner.togglePause();
+	}
+    /**
+	*    @return true if the algorithmRunner exists
+	**/
+	public boolean isExecutingAlgorithm(){
+		return algorithmRunner != null;
+	}
+    /**
+	*    @return true if the algorithmRunner's pause flag is true, or false if the runner doesn't exist
+	**/
+	public boolean isAlgorithmPaused(){
+		if(algorithmRunner == null){
+			return false;
+		}
+		return algorithmRunner.isPaused();
+	}
+    /**
+	*    Ends the AlgorithmRunner thread if it existed, which safely terminates the
+	*    running algorithm
+	**/
+	public void terminateAlgorithm(){
+		if(algorithmRunner != null){
+			algorithmRunner.stop();
+			try{
+				algorithmRunner.join();
+			}
+			catch(Exception e){
+				System.out.println("Failed to join with runner thread");
+			    e.printStackTrace();
+			}
+			System.out.println("Algorithm terminated!");
+			algorithmRunner = null;
+		}
 	}
 
 }

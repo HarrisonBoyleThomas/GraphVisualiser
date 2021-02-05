@@ -64,7 +64,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 	*
 	*    @Return A String describing what DSP did in the current cycle
 	**/
-	public String step(){
+	public synchronized String step(){
 		if(finished){
 			return "";
 		}
