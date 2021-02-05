@@ -119,7 +119,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 					predecessors.put(edge.nodeB, currentNode);
 					outputString = outputString + "Shorter path to " + edge.nodeB + " found from " + currentNode + ". ";
 				}
-				if(!visitedNodes.contains(edge.nodeB)){
+				if(!visitedNodes.contains(edge.nodeB) && !nextStates.contains(edge.nodeB)){
 					addDiscoveredNode(edge.nodeB);
 					nodeStates.put(edge.nodeB, GraphComponentState.IN_OPEN_LIST);
 					outputString += "New state discovered (" + edge.nodeB.getName() + ")- adding to open list";
