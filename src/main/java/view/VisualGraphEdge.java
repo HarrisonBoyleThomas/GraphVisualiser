@@ -12,6 +12,9 @@ import model.algorithm.*;
 
 import java.util.ArrayList;
 import java.lang.NullPointerException;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Collections;
 
 
 import javafx.scene.Group;
@@ -65,7 +68,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    Create a VGE at the location of nodeA that represents the given edge
 	*    @Return the edge
 	**/
-	public static VisualGraphEdge create(GraphEdge edgeIn){
+	public static synchronized VisualGraphEdge create(GraphEdge edgeIn){
 		VisualGraphEdge newEdge = new VisualGraphEdge(edgeIn);
 		edges.add(newEdge);
 		return newEdge;
@@ -75,7 +78,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    Delete the given VGE from the list of all VGEs
 	*    @Return true if an edge was deleted
 	**/
-	public static boolean delete(VisualGraphEdge toRemove){
+	public static synchronized boolean delete(VisualGraphEdge toRemove){
 		toRemove.getEdge().nodeA.removeEdge(toRemove.getEdge(), false);
 		return edges.remove(toRemove);
 	}
@@ -84,18 +87,18 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    Delete the VGE that represents the given graph edge
 	*    @Return true if successful
 	**/
-	public static boolean delete(GraphEdge edgeToDelete){
+	public static synchronized boolean delete(GraphEdge edgeToDelete){
 		VisualGraphEdge e = getEdge(edgeToDelete);
 		return delete(e);
 	}
 
-	public static void delete(ArrayList<GraphEdge> toDelete){
+	public static synchronized void delete(ArrayList<GraphEdge> toDelete){
 		for(GraphEdge e : toDelete){
 			delete(e);
 		}
 	}
 
-	public static void delete(GraphNode node){
+	public static synchronized void delete(GraphNode node){
 		ArrayList<GraphEdge> toDelete = new ArrayList<>();
 		for(VisualGraphEdge e : edges){
 			if(e.getEdge().nodeA.equals(node) || e.getEdge().nodeB.equals(node)){
@@ -144,7 +147,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	/**
 	*    Update the positions of all icons
 	**/
-	public static void updateEdges(){
+	public static synchronized void updateEdges(){
 		ArrayList<VisualGraphEdge> invalid = new ArrayList<>();
 		for(VisualGraphEdge e : edges){
 			if(e.getEdge().nodeA == null || e.getEdge().nodeB == null){
@@ -155,6 +158,21 @@ public class VisualGraphEdge extends VisualGraphComponent{
 			}
 		}
 		edges.removeAll(invalid);
+	}
+
+	public static synchronized void sortByDistance(Camera camera){
+		HashMap<VisualGraphEdge, Double> distances = new HashMap<>();
+        for(VisualGraphEdge edge : getEdges()){
+            distances.put(edge, Vector.distance(edge.getLocation(), camera.getLocation()));
+        }
+		ArrayList<Entry<VisualGraphEdge, Double>> list = new ArrayList<>(distances.entrySet());
+		list.sort(Entry.comparingByValue());
+		Collections.reverse(list);
+		ArrayList<VisualGraphEdge> sortedEdges = new ArrayList<>();
+		for(Entry<VisualGraphEdge, Double> e : list){
+			sortedEdges.add(e.getKey());
+		}
+		edges = sortedEdges;
 	}
 
 	/**
