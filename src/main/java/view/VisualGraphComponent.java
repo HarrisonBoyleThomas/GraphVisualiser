@@ -7,6 +7,11 @@ import model.algorithm.GraphAlgorithm;
 
 import menu.MainWindow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Collections;
+
 import javafx.scene.Group;
 
 import javafx.event.EventHandler;
@@ -34,6 +39,8 @@ public abstract class VisualGraphComponent extends Actor{
 
     //true if the component has been clicked by the user
 	protected transient boolean selected;
+
+	private static ArrayList<VisualGraphComponent> components = new ArrayList<>();
 
 	public Vector getRenderLocation(){
 		return renderLocation;
@@ -87,6 +94,32 @@ public abstract class VisualGraphComponent extends Actor{
 
 	public void setSelected(boolean selectedIn){
 		selected = selectedIn;
+	}
+
+	public static synchronized void updateComponents(Camera camera){
+		ArrayList<VisualGraphComponent> comps = new ArrayList<>();
+		comps.addAll(VisualGraphNode.getNodes());
+		comps.addAll(VisualGraphEdge.getEdges());
+
+		HashMap<VisualGraphComponent, Double> distances = new HashMap<>();
+		//To improve performance, only add components that are within the max view distance
+        for(VisualGraphComponent comp : comps){
+			if(camera.isInViewRange(comp.getLocation()) || comp instanceof VisualGraphEdge){
+                distances.put(comp, Vector.distance(comp.getLocation(), camera.getLocation()));
+			}
+		}
+		ArrayList<Entry<VisualGraphComponent, Double>> list = new ArrayList<>(distances.entrySet());
+		list.sort(Entry.comparingByValue());
+		Collections.reverse(list);
+		comps = new ArrayList<>();
+		for(Entry<VisualGraphComponent, Double> e : list){
+			comps.add(e.getKey());
+		}
+		components = comps;
+	}
+
+	public static ArrayList<VisualGraphComponent> getComponents(){
+		return new ArrayList<VisualGraphComponent>(components);
 	}
 
 }

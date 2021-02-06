@@ -123,24 +123,12 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static synchronized void updateNodes(Camera camera, int width, int height){
 		for(VisualGraphNode icon : icons){
-			icon.updateRenderLocation(camera.project(icon.getLocation(), width, height));
-			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
+			Vector loc = camera.project(icon.getLocation(), width, height);
+			if(loc != null){
+			    icon.updateRenderLocation(loc);
+			    icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
+			}
 		}
-	}
-
-	public static synchronized void sortByDistance(Camera camera){
-		HashMap<VisualGraphNode, Double> distances = new HashMap<>();
-        for(VisualGraphNode node : getNodes()){
-            distances.put(node, Vector.distance(node.getLocation(), camera.getLocation()));
-        }
-		ArrayList<Entry<VisualGraphNode, Double>> list = new ArrayList<>(distances.entrySet());
-		list.sort(Entry.comparingByValue());
-		Collections.reverse(list);
-		ArrayList<VisualGraphNode> sortedNodes = new ArrayList<>();
-		for(Entry<VisualGraphNode, Double> e : list){
-			sortedNodes.add(e.getKey());
-		}
-		icons = sortedNodes;
 	}
 
 	/**
@@ -201,14 +189,25 @@ public class VisualGraphNode extends VisualGraphComponent{
 			}
 		}
 		pane.getChildren().add(background);
-		Label label = new Label(node.getName());
-		label.setId("nodeLabel");
-		pane.getChildren().add(label);
+		//Only add the label if the node is close enough to the camera
+		if(renderScale >= 0.5){
+		    Label label;
+		    if(node.getName().length() < 4){
+		    	label = new Label(node.getName());
+		    }
+	    	else{
+	    		label = new Label(node.getName().substring(0, 4));
+	    	}
+	    	label.setId("nodeLabel");
+    		pane.getChildren().add(label);
+		}
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
-		if(algorithm instanceof ShortestPathAlgorithm){
-            addEstimatedDistance((ShortestPathAlgorithm) algorithm);
+		if(renderScale >= 0.5){
+    		if(algorithm instanceof ShortestPathAlgorithm){
+                addEstimatedDistance((ShortestPathAlgorithm) algorithm);
+		    }
 		}
 		Tooltip tooltip = new Tooltip("Click to edit node");
 		Tooltip.install(icon, tooltip);

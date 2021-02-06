@@ -7,6 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Slider;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
@@ -45,5 +50,32 @@ public class CameraDetails extends DetailsPanel{
 
 		Label rotation = new Label("    Rotation: " + camera.getRotation().toStringNeat());
 		getChildren().add(rotation);
+
+		addViewDistanceDial();
+	}
+
+    /**
+	*    Add a dial that allows the user to edit the view distance of the camera
+	**/
+	private void addViewDistanceDial(){
+		VBox section = new VBox();
+		Tooltip tooltip = new Tooltip("Set maximum view distance of the camera(metres)");
+		Label title = new Label("Max draw distance");
+		Tooltip.install(title, tooltip);
+		section.getChildren().add(title);
+
+		Slider slider = new Slider(10, 200, camera.getMaxDrawDistance());
+		Tooltip.install(slider, tooltip);
+
+		slider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> value, Number oldValue, Number newValue) {
+				camera.setMaxDrawDistance((double) newValue);
+            }
+        });
+		slider.setMinorTickCount(2);
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+        section.getChildren().add(slider);
+		getChildren().add(section);
 	}
 }

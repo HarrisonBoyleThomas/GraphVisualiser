@@ -26,7 +26,7 @@ public class Camera extends Actor{
 	private Vector displayPosition;
 
 	//Nodes beyond this distance are not rendered
-	private double maxDrawDistance = 1000;
+	private double maxDrawDistance = setMaxDrawDistance(100);
 
     /**
 	*    @param initialRotation the rotation to give the camera when it is created
@@ -75,7 +75,7 @@ public class Camera extends Actor{
 	*    @param distanceIn the new distance
 	**/
 	public double setMaxDrawDistance(double distanceIn){
-		maxDrawDistance = distanceIn;
+		maxDrawDistance = Functions.clamp(distanceIn, 10, 200);
 		return maxDrawDistance;
 	}
 
@@ -342,9 +342,25 @@ public class Camera extends Actor{
 	*    @Param width and height of the screen
 	*
 	*    @Return a Vector representing the screen-space position of an orthographic projection
+	*    @return null if the target is not in view range
 	**/
 	public Vector project(Vector target, int width, int height){
+		if(!isInViewRange(target)){
+			return null;
+		}
 		return convert2DAxis(projectOrthographic(target, width, height), width, height);
+	}
+    /**
+	*    @return true if the distance between the camera and the target is less than the maxdrawdistance
+	**/
+	public boolean isInViewRange(Vector target){
+		return Vector.distance(location, target) < maxDrawDistance;
+	}
+    /**
+	*    @return true if the distance between the camera and the target is less than the maxdrawdistance
+	**/
+	public boolean isInViewRange(Actor target){
+		return Vector.distance(location, target.getLocation()) < maxDrawDistance;
 	}
 
 	/**

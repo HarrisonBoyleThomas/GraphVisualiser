@@ -1,8 +1,7 @@
 package threads;
 
 import menu.MainWindow;
-import viewport.VisualGraphNode;
-import viewport.VisualGraphEdge;
+import viewport.VisualGraphComponent;
 
 import java.util.ArrayList;
 
@@ -29,8 +28,7 @@ public class RenderThread extends Thread{
 
     public void run(){
         while(true){
-            VisualGraphNode.sortByDistance(MainWindow.get().getCamera());
-            VisualGraphEdge.sortByDistance(MainWindow.get().getCamera());
+            VisualGraphComponent.updateComponents(MainWindow.get().getCamera());
         }
     }
 }

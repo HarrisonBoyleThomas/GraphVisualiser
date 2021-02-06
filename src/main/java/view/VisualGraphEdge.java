@@ -160,21 +160,6 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		edges.removeAll(invalid);
 	}
 
-	public static synchronized void sortByDistance(Camera camera){
-		HashMap<VisualGraphEdge, Double> distances = new HashMap<>();
-        for(VisualGraphEdge edge : getEdges()){
-            distances.put(edge, Vector.distance(edge.getLocation(), camera.getLocation()));
-        }
-		ArrayList<Entry<VisualGraphEdge, Double>> list = new ArrayList<>(distances.entrySet());
-		list.sort(Entry.comparingByValue());
-		Collections.reverse(list);
-		ArrayList<VisualGraphEdge> sortedEdges = new ArrayList<>();
-		for(Entry<VisualGraphEdge, Double> e : list){
-			sortedEdges.add(e.getKey());
-		}
-		edges = sortedEdges;
-	}
-
 	/**
 	*    @Return a copy of all edges
 	**/

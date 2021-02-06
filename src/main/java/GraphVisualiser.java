@@ -36,12 +36,12 @@ public class GraphVisualiser extends Application{
 		new AnimationTimer() {
 			public void handle(long currentNanoTime) {
 				handleMovementInput();
-			    try{
-				    Thread.sleep(1);
-			    }
-			    catch(InterruptedException  error){
-
-			    }
+			    //try{
+				//    Thread.sleep(1);
+			    //}
+			    //catch(InterruptedException  error){
+                //
+			    //}
 			}
 		}.start();
 

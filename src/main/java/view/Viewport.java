@@ -167,27 +167,28 @@ public class Viewport extends Pane{
 		//add the close button
 		createCloseButton();
         //get copies of VGCs
-		ArrayList<VisualGraphNode> nodes = VisualGraphNode.getNodes();
-		ArrayList<VisualGraphEdge> edges = VisualGraphEdge.getEdges();
+		ArrayList<VisualGraphComponent> components = VisualGraphComponent.getComponents();
 
 		Group root = new Group();
-        //draw the edges
-		for(VisualGraphEdge e : edges){
-			VisualGraphEdge edge = new VisualGraphEdge(e);
-			if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
-				edge.updateIcon(algorithm);
-	    		root.getChildren().add(edge.getIcon());
-	    		edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
-	    		edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
+		for(VisualGraphComponent c : components){
+			if(c.isOnScreen(width, height) || c instanceof VisualGraphEdge){
+    			if(c instanceof VisualGraphEdge){
+    				VisualGraphEdge edge = new VisualGraphEdge((VisualGraphEdge) c);
+    				if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
+    					edge.updateIcon(algorithm);
+    		    		root.getChildren().add(edge.getIcon());
+    		    		edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
+    		    		edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
+    				}
+    			}
+	    		else{
+	    			VisualGraphNode node = new VisualGraphNode((VisualGraphNode) c);
+	    			node.updateIcon(algorithm);
+	    			root.getChildren().add(node.getIcon());
+	    			node.getIcon().setLayoutX((int) node.getRenderLocation().x);
+    				node.getIcon().setLayoutY((int) node.getRenderLocation().y);
+    			}
 			}
-		}
-		//Draw the nodes
-		for(VisualGraphNode n : nodes){
-			VisualGraphNode node = new VisualGraphNode(n);
-			node.updateIcon(algorithm);
-			root.getChildren().add(node.getIcon());
-			node.getIcon().setLayoutX((int) node.getRenderLocation().x);
-			node.getIcon().setLayoutY((int) node.getRenderLocation().y);
 		}
 		getChildren().add(root);
 
