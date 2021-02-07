@@ -1,6 +1,7 @@
 package menu;
 
 import maths.Functions;
+import data.Data;
 
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
@@ -10,8 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tooltip;
-
-import java.lang.instrument.Instrumentation;
 
 /**
 *    The GraphDetails box displays useful information about the current graph,
@@ -62,7 +61,7 @@ public class GraphDetails extends DetailsPanel{
         HBox section = new HBox();
         Tooltip.install(section, tooltip);
         Label title = new Label("Est. mem: ");
-        Label count = new Label("" + Functions.round(((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024.0/1024.0), 3) + "MB");
+        Label count = new Label("" + (int) ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024.0/1024.0) + "MB");
         section.getChildren().add(title);
         section.getChildren().add(count);
         section.setAlignment(Pos.TOP_CENTER);

@@ -4,6 +4,7 @@ import javafx.scene.*;
 import javafx.stage.Stage;
 
 import menu.*;
+import data.Data;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.input.KeyEvent;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 
 public class GraphVisualiser extends Application{
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
+
+	private long lastFrameTime;
 
 	public static void main(String[] args){
 		launch(args);
@@ -35,7 +38,11 @@ public class GraphVisualiser extends Application{
 		//Mainloop
 		new AnimationTimer() {
 			public void handle(long currentNanoTime) {
+				Data.setDeltaTime(currentNanoTime - lastFrameTime);
 				handleMovementInput();
+				MainWindow.get().updateAppDetails();
+				lastFrameTime = currentNanoTime;
+
 			    //try{
 				//    Thread.sleep(1);
 			    //}

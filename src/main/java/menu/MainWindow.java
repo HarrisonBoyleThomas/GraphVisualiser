@@ -64,6 +64,8 @@ public class MainWindow extends BorderPane{
 
 	private GraphDetails graphDetails = new GraphDetails();
 
+	private AppDetails appDetails = new AppDetails();
+
     /**
 	*    @return the single created instance
 	**/
@@ -332,6 +334,10 @@ public class MainWindow extends BorderPane{
 		graphDetails.update();
 	}
 
+	public void updateAppDetails(){
+		appDetails.update();
+	}
+
 
 	/**
 	*    Initialise the components of the right details panel
@@ -350,6 +356,7 @@ public class MainWindow extends BorderPane{
 		updateAlgorithmDetails();
 
 		rightDetails.getChildren().add(graphDetails);
+		rightDetails.getChildren().add(appDetails);
 	}
 
     /**

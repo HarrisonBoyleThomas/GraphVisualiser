@@ -18,12 +18,29 @@ public class Data{
 
     public static String THEME_CONFIG_PATH = "config/theme";
 
+    private static long DELTA_TIME;
+
     public static void updateSleepDelay(int newValue){
         EXECUTION_SLEEP_DELAY = (int) Functions.clamp(newValue, 0, 1000);
     }
 
     public static int getExecutionSleepDelay(){
         return EXECUTION_SLEEP_DELAY;
+    }
+
+    public static void setDeltaTime(long timeIn){
+        DELTA_TIME = timeIn;
+    }
+
+    public static long getDeltaTime(){
+        return DELTA_TIME;
+    }
+
+    public static int getFrameRate(){
+        if(DELTA_TIME == 0){
+            return 0;
+        }
+        return (int) (1000000000.0/DELTA_TIME) ;
     }
 
 }
