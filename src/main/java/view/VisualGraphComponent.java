@@ -73,6 +73,10 @@ public abstract class VisualGraphComponent extends Actor{
 		renderScale = Functions.clamp(scaleIn, 0.3, 3.0);
 	}
 
+	public double getRenderScale(){
+		return renderScale;
+	}
+
 	/**
 	*    Update the visual appearance of the icon
 	**/

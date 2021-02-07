@@ -203,20 +203,29 @@ public class VisualGraphEdge extends VisualGraphComponent{
 
 	/**
 	*    Draw a line from nodeA to nodeB, and add it to the VGE's icon
+	*    The line is drawn by using the relative position of nodeB from nodeA,
 	**/
 	public void updateIcon(GraphAlgorithm algorithm){
 		Vector nodeALoc = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
-		Vector nodeBLoc = VisualGraphNode.getNode(edge.nodeB).getRenderLocation();
+		VisualGraphNode nodeB = VisualGraphNode.getNode(edge.nodeB);
+		Vector nodeBLoc = nodeB.getRenderLocation();
 		Vector difference = nodeBLoc.subtract(nodeALoc);
+		//How much space nodeB's circle radius takes up along the edge line
+		Vector nodeBSize = difference.normalise().multiply(nodeB.getRenderScale()*23);
+		//Subtract nodeB's circle radius, so that the arrow head ends at the boundary of the node
+		difference = difference.subtract(nodeBSize);
 		double gradient = -(difference.x / difference.y);
 		Line line = new Line(0, 0, (int) difference.x, (int) difference.y);
 		Polygon arrow = new Polygon();
 		double lineAngle = Math.atan2(difference.y, difference.x);
+		//How far up the line the arrow head ends
 		double lineLength = 0.8*difference.length();
+		//The two trigonometric points are a distance along the line, and slightly offset perpendicular to the line
+		//(the edges of the arrows)
 		arrow.getPoints().addAll(new Double[]{
 			difference.x, difference.y,
-			Math.cos(lineAngle+0.05)*lineLength, Math.sin(lineAngle+0.05)*lineLength,
-			Math.cos(lineAngle-0.05)*lineLength, Math.sin(lineAngle-0.05)*lineLength
+			Math.cos(lineAngle+0.1)*lineLength, Math.sin(lineAngle+0.1)*lineLength,
+			Math.cos(lineAngle-0.1)*lineLength, Math.sin(lineAngle-0.1)*lineLength
 		});
 
 		line.setStrokeWidth(4);
@@ -269,8 +278,8 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
-		Tooltip tooltip = new Tooltip("Click to edit edge");
-		Tooltip.install(icon, tooltip);
+		//Tooltip tooltip = new Tooltip("Click to edit edge");
+		//Tooltip.install(icon, tooltip);
 	}
 
 	private Vector getCenter(Vector a, Vector b){

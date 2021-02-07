@@ -209,8 +209,8 @@ public class VisualGraphNode extends VisualGraphComponent{
                 addEstimatedDistance((ShortestPathAlgorithm) algorithm);
 		    }
 		}
-		Tooltip tooltip = new Tooltip("Click to edit node");
-		Tooltip.install(icon, tooltip);
+		//Tooltip tooltip = new Tooltip("Click to edit node");
+		//Tooltip.install(icon, tooltip);
 		addDragEvents();
 	}
 

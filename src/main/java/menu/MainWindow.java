@@ -112,6 +112,9 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean createViewport(){
 		if(state == MainWindowState.EDIT){
+			//ensure algorithms are reset
+			setStartNode(null);
+			terminateAlgorithms();
 		    Viewport v = new Viewport(camera, null);
 		    return addViewport(v);
 		}
@@ -164,10 +167,18 @@ public class MainWindow extends BorderPane{
 	*    @param newNode the node to set as start node for shortest path algorithms
 	**/
 	public void setStartNode(GraphNode newNode){
+		boolean failed = false;
 	    GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
 			if(((Viewport) n).getAlgorithm() != null){
 		        ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+			}
+			else{
+				if(newNode != null){
+					setStartNode(null);
+					displayErrorMessage("Failed to set start node", "Some viewports have no algorithms selected", null);
+					return;
+				}
 			}
 		}
 		updateAlgorithmDetails();
@@ -325,7 +336,6 @@ public class MainWindow extends BorderPane{
 		VisualGraphEdge.updateEdges();
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-			VisualGraphNode.updateNodes(camera, 500,500);
 		    Viewport v = (Viewport) n;
 			v.draw();
 		}
@@ -861,20 +871,16 @@ public class MainWindow extends BorderPane{
 	*    @return true if successful
 	**/
 	public boolean terminateAlgorithms(){
-		if(state == MainWindowState.RUNNING){
-			System.out.println("Algorithms terminated!\n\n");
-			GridPane view = (GridPane) getCenter();
-			for(Node n : view.getChildren()){
-				((Viewport) n).terminateAlgorithm();
-				//((Viewport) n).getAlgorithm().terminate();
-			}
-			updateViewport();
-			state = MainWindowState.EDIT;
-			updateAlgorithmDetails();
-			return true;
+		System.out.println("Algorithms terminated!\n\n");
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			((Viewport) n).terminateAlgorithm();
+			//((Viewport) n).getAlgorithm().terminate();
 		}
-		displayErrorMessage("Unable to terminate algorithms", "You cannot terminate algorithms that aren't running", null);
-		return false;
+		updateViewport();
+		state = MainWindowState.EDIT;
+		updateAlgorithmDetails();
+		return true;
 	}
 
 	public boolean areAlgorithmsExecuting(){
@@ -990,6 +996,10 @@ public class MainWindow extends BorderPane{
 			if(state == MainWindowState.RUNNING){
 				state = MainWindowState.EDIT;
 				updateAlgorithmDetails();
+				GridPane view = (GridPane) getCenter();
+				for(Node n : view.getChildren()){
+					((Viewport) n).terminateAlgorithm();
+				}
 			}
 		}
 		return state;
@@ -1140,6 +1150,7 @@ public class MainWindow extends BorderPane{
 			}
 			index++;
 		}
+		updateViewport();
 		System.out.println("Successfully pasted " + copiedNodes.size() + " nodes!");
 	}
 

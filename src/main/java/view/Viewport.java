@@ -27,6 +27,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.*;
 import java.awt.Point;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import java.util.concurrent.CountDownLatch;
+import javafx.application.Platform;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
@@ -162,38 +166,57 @@ public class Viewport extends Pane{
 	*    locations are correct
 	**/
 	public void draw(){
-		//clear the old frame
-		getChildren().clear();
-		//add the close button
-		createCloseButton();
-        //get copies of VGCs
-		ArrayList<VisualGraphComponent> components = VisualGraphComponent.getComponents();
+		new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+    			return new Task<Void>() {
+	    			@Override
+                    protected Void call() throws Exception {
+                        CountDownLatch delay = new CountDownLatch(1);
+						VisualGraphNode.updateNodes(camera, 500,500);
+						//get copies of VGCs
+						ArrayList<VisualGraphComponent> components = VisualGraphComponent.getComponents();
 
-		Group root = new Group();
-		for(VisualGraphComponent c : components){
-			if(c.isOnScreen(width, height) || c instanceof VisualGraphEdge){
-    			if(c instanceof VisualGraphEdge){
-    				VisualGraphEdge edge = new VisualGraphEdge((VisualGraphEdge) c);
-    				if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
-    					edge.updateIcon(algorithm);
-    		    		root.getChildren().add(edge.getIcon());
-    		    		edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
-    		    		edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
-    				}
-    			}
-	    		else{
-	    			VisualGraphNode node = new VisualGraphNode((VisualGraphNode) c);
-	    			node.updateIcon(algorithm);
-	    			root.getChildren().add(node.getIcon());
-	    			node.getIcon().setLayoutX((int) node.getRenderLocation().x);
-    				node.getIcon().setLayoutY((int) node.getRenderLocation().y);
-    			}
-			}
-		}
-		getChildren().add(root);
-
-		viewportDetails.update(this);
-		getChildren().add(viewportDetails);
+						ArrayList<Node> icons = new ArrayList<>();
+						for(VisualGraphComponent c : components){
+							if(c.isOnScreen(width, height) || c instanceof VisualGraphEdge){
+								if(c instanceof VisualGraphEdge){
+									VisualGraphEdge edge = new VisualGraphEdge((VisualGraphEdge) c);
+									if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
+										edge.updateIcon(algorithm);
+										icons.add(edge.getIcon());
+										edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
+										edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
+									}
+								}
+								else{
+									VisualGraphNode node = new VisualGraphNode((VisualGraphNode) c);
+									node.updateIcon(algorithm);
+                                    icons.add(node.getIcon());
+									node.getIcon().setLayoutX((int) node.getRenderLocation().x);
+									node.getIcon().setLayoutY((int) node.getRenderLocation().y);
+								}
+							}
+						}
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+							    //clear the old frame
+								getChildren().clear();
+								//add the close button
+								createCloseButton();
+								getChildren().addAll(icons);
+								viewportDetails.update(Viewport.this);
+								getChildren().add(viewportDetails);
+							    delay.countDown();
+                            }
+                        });
+                        delay.await();
+                        return null;
+                    }
+                };
+            }
+	    }.start();
 	}
 
 	public Camera getCamera(){
@@ -244,10 +267,10 @@ public class Viewport extends Pane{
 			public void handle(long currentNanoTime) {
 				draw();
 				if(algorithmRunner == null || !algorithmRunner.isRunning()){
-					System.out.println("end draw");
 					stop();
 					draw();
 					MainWindow.get().updateWindowStatus();
+					terminateAlgorithm();
 				}
 			}
 		}.start();
