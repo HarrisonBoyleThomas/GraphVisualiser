@@ -74,6 +74,9 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 	*    The execute button asks the mainWindow to execute all steps of the algorithms
 	**/
 	private void createExecuteButton(){
+		if(MainWindow.get().areAlgorithmsExecuting()){
+			return;
+		}
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, to quickly obtain their output without stepping");
 		Button button = new Button("Execute");
 		Tooltip.install(button, tooltip);

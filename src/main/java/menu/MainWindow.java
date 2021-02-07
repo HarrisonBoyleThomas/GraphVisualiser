@@ -62,6 +62,8 @@ public class MainWindow extends BorderPane{
     //The algorithm setup/control panel
 	private AlgorithmDetailsPanel algorithmDetails;
 
+	private GraphDetails graphDetails = new GraphDetails();
+
     /**
 	*    @return the single created instance
 	**/
@@ -121,6 +123,10 @@ public class MainWindow extends BorderPane{
 	*    @param v the viewport to delete
 	**/
 	public void deleteViewport(Viewport v){
+		if(areAlgorithmsExecuting()){
+			displayWarningMessage("Unable to close viewport", "You cannot close a viewport while algorithms are running");
+			return;
+		}
 		((GridPane) getCenter()).getChildren().remove(v);
 	}
 
@@ -323,6 +329,7 @@ public class MainWindow extends BorderPane{
 		}
 		updateCameraDetails();
 		updateAlgorithmDetails();
+		graphDetails.update();
 	}
 
 
@@ -331,15 +338,18 @@ public class MainWindow extends BorderPane{
 	**/
 	private void initialiseRightDetailsPanel(){
 		ScrollPane sp = new ScrollPane();
-		VBox rightDetails = new VBox();
+		VBox rightDetails = new VBox(50);
 		rightDetails.setMaxWidth(300);
 		rightDetails.setMinWidth(300);
 		sp.setContent(rightDetails);
 		rightDetails.getChildren().add(cameraDetails);
 
+
 		setRight(sp);
 
 		updateAlgorithmDetails();
+
+		rightDetails.getChildren().add(graphDetails);
 	}
 
     /**

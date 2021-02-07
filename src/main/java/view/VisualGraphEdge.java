@@ -52,6 +52,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	private VisualGraphEdge(GraphEdge edgeIn){
 		edge = edgeIn;
 		location = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
+
 		addEvents();
 	}
 
