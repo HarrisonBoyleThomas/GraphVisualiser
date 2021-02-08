@@ -123,10 +123,8 @@ public class VisualGraphNode extends VisualGraphComponent{
 	public static synchronized void updateNodes(Camera camera, int width, int height){
 		for(VisualGraphNode icon : icons){
 			Vector loc = camera.project(icon.getLocation(), width, height);
-			if(loc != null){
-			    icon.updateRenderLocation(loc);
-			    icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
-			}
+			icon.updateRenderLocation(loc);
+			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
 		}
 	}
 
@@ -157,7 +155,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public void updateIcon(GraphAlgorithm algorithm){
 		StackPane pane = new StackPane();
-		Circle background = new Circle(26 * renderScale);
+		Circle background = new Circle(26);// * renderScale);
 		//background.setStroke(Color.BLACK);
 		background.setStrokeWidth(3);
 		if(selected){
@@ -194,18 +192,15 @@ public class VisualGraphNode extends VisualGraphComponent{
 		}
 		pane.getChildren().add(background);
 
-		//Only add the label if the node is close enough to the camera
-		if(renderScale >= 0.5){
-		    Label label;
-		    if(node.getName().length() < 4){
-		    	label = new Label(node.getName());
-		    }
-	    	else{
-	    		label = new Label(node.getName().substring(0, 4));
-	    	}
-	    	label.setId("nodeLabel");
-    		pane.getChildren().add(label);
+	    Label label;
+	    if(node.getName().length() < 4){
+		   	label = new Label(node.getName());
 		}
+	    else{
+	    	label = new Label(node.getName().substring(0, 4));
+	    }
+	    label.setId("nodeLabel");
+    	pane.getChildren().add(label);
 
 		icon = new Group();
 		icon.getChildren().add(pane);

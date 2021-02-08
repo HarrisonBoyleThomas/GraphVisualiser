@@ -139,6 +139,11 @@ public abstract class VisualGraphComponent extends Actor{
 		return new ArrayList<VisualGraphComponent>(components);
 	}
 
+    /**
+	*    Find if the given group is the identical to the VGC's icon
+	*    @param other the group to compare with
+	*    @return true if the two groups share common key features
+	**/
 	public abstract boolean iconsEqual(Group other);
 
 	public Color getSetColour(){

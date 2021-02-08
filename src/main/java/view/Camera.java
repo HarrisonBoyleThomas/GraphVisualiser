@@ -342,12 +342,8 @@ public class Camera extends Actor{
 	*    @Param width and height of the screen
 	*
 	*    @Return a Vector representing the screen-space position of an orthographic projection
-	*    @return null if the target is not in view range
 	**/
 	public Vector project(Vector target, int width, int height){
-		if(!isInViewRange(target)){
-			return null;
-		}
 		return convert2DAxis(projectOrthographic(target, width, height), width, height);
 	}
     /**

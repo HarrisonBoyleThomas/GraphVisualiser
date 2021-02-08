@@ -32,6 +32,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
+import javafx.scene.transform.Scale;
 
 import javafx.scene.image.Image;
 
@@ -168,7 +169,12 @@ public class Viewport extends Pane{
     /**
 	*    Draw all VGCs to the viewport
 	*    Note: VGC's renderLocations MUST be updated before draw, to ensure their
-	*    locations are correct
+	*    locations are correct. The Viewport simply renders what it is given
+	*
+	*    To improve performance, only new icons are added to the viewport.
+	*    The outer Task identifies VGC icons that are "out of date", and adds them to
+	*    an invalid icon list. The viewport also stores a hashmap of VGCs mapped to the
+	*    current valid icon for the component.
 	**/
 	public void draw(){
 		new Service<Void>() {
@@ -179,12 +185,16 @@ public class Viewport extends Pane{
                     protected Void call() throws Exception {
                         CountDownLatch delay = new CountDownLatch(1);
 						VisualGraphNode.updateNodes(camera, 500,500);
-						//get copies of VGCs
+						//get copies of VGCs that need to be rendered
 						ArrayList<VisualGraphComponent> components = new ArrayList<>(VisualGraphComponent.getComponents());
 
 						//create a list of icons that were removed from the viewport
 						ArrayList<Group> invalidIcons = new ArrayList<>();
+						//Create a list of VGCs that are invalid. ic[i] -> ii[i], implicitly
 						ArrayList<VisualGraphComponent> invalidComponents = new ArrayList<>();
+						//Invalidate all VGCs that were deleted by the user in the last frame,
+						//and invalidate the icons of edges(the arrows for edges must be redrawn to reflect
+						//new node positions)
 						for(VisualGraphComponent c : drawnComponents.keySet()){
 							Boolean containsComp = components.contains(c);
 							if(!containsComp){
@@ -197,8 +207,13 @@ public class Viewport extends Pane{
 								}
 							}
 						}
+						//list of icons to add to the viewport
 						ArrayList<Group> newIcons = new ArrayList<>();
+						//Go through each no component, and add icons to the newIcons list
+					    //if the component's appearance has changed since the last frame
+						//or if the component was just created by the user
 						for(VisualGraphComponent c : components){
+							//Create a duplicate of the component
 							VisualGraphComponent newComp;
 							if(c instanceof VisualGraphEdge){
 								newComp = new VisualGraphEdge((VisualGraphEdge) c);
@@ -206,44 +221,50 @@ public class Viewport extends Pane{
 							else{
 								newComp = new VisualGraphNode((VisualGraphNode) c);
 							}
+							//update the icon of the duplicate
 							newComp.updateIcon(algorithm);
+							//Add the edge's icon to newIcon list
 							if(c instanceof VisualGraphEdge){
 								drawnComponents.put(c, newComp.getIcon());
 								newIcons.add(newComp.getIcon());
-								newComp.getIcon().setLayoutX((int) newComp.getRenderLocation().x);
-								newComp.getIcon().setLayoutY((int) newComp.getRenderLocation().y);
 							}
 							else{
 								//Add newly detected nodes
 								if(!drawnComponents.keySet().contains(c)){
-									//System.out.println("detected new node");
 									drawnComponents.put(c, newComp.getIcon());
 									newIcons.add(newComp.getIcon());
 								}
 								else{
+									//Update the icon if the VGN's appearance has changed
 									if(!newComp.iconsEqual(drawnComponents.get(c))){
 										Group old = drawnComponents.put(c, newComp.getIcon());
-										//drawnComponents.put(c, newComp.getIcon());
 										newIcons.add(newComp.getIcon());
 										invalidIcons.add(old);
 									}
 								}
 							}
 						}
+						//Create a list of components that should not be included in the viewport
+						//Due to the nature of the thread, it is possible that a node is missed when
+						//Removing invalid icons
+						ArrayList<Node> foreignComponents = new ArrayList<>(getChildren());
+						foreignComponents.removeAll(drawnComponents.values());
+						foreignComponents.removeAll(invalidIcons);
+
+						//Apply changes in the JavaFX Application thread
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-							    //clear the old frame
-								//getChildren().clear();
-								//add the close button
-								//Clear foreign elements from the screen
-								for(Node n : new ArrayList<>(getChildren())){
-									if(!drawnComponents.values().contains(n)){
-										getChildren().remove(n);
-									}
+								//Clear foreign elements from the screen, to ensure only up-t-date components
+								//are rendered
+								for(Node n : foreignComponents){
+									getChildren().remove(n);
 								}
+								//add the close button
 								createCloseButton();
-								//System.out.println(components.size());
+
+								//Update the drawn position of all VGC icons
+								//Unfortunately, this MUST be done here in the main thread
 								for(VisualGraphComponent c : components){
 									if(c instanceof VisualGraphEdge){
 										VisualGraphEdge edge = (VisualGraphEdge) c;
@@ -256,8 +277,18 @@ public class Viewport extends Pane{
 										VisualGraphNode node = (VisualGraphNode) c;
 										drawnComponents.get(c).setLayoutX((int) node.getRenderLocation().x);
 										drawnComponents.get(c).setLayoutY((int) node.getRenderLocation().y);
+										//Scale about the top right corner of the node, instead of it's default scale center
+										Scale scale = new Scale();
+										scale.setPivotX(0.0);
+										scale.setPivotY(0.0);
+										scale.setX(node.getRenderScale());
+										scale.setY(node.getRenderScale());
+										drawnComponents.get(c).getTransforms().clear();
+										drawnComponents.get(c).getTransforms().add(scale);
 									}
 								}
+								//Clear invalid icons from the viewport, and
+								//remove all references to deleted components
 								if(invalidIcons.size() > 0){
 							    	for(Group icon : invalidIcons){
 							    		getChildren().remove(icon);
@@ -266,12 +297,18 @@ public class Viewport extends Pane{
 										drawnComponents.remove(c);
 									}
 								}
+								//Draw all new VGC icons to the screen
 								if(newIcons.size() > 0){
 								    getChildren().addAll(newIcons);
 									//System.out.println("adding ndmoes");
 								}
+								//Update viewport details
 								viewportDetails.update(Viewport.this);
-								getChildren().add(viewportDetails);
+								//Threading can sometimes cause this component to not be erased at this stage
+								//So check before re adding it
+								if(viewportDetails.getParent() != Viewport.this){
+					    			getChildren().add(viewportDetails);
+								}
 							    delay.countDown();
                             }
                         });
