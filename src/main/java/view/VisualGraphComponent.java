@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Collections;
 
+import javafx.scene.paint.Color;
+
 import javafx.scene.Group;
 
 import javafx.event.EventHandler;
@@ -41,6 +43,12 @@ public abstract class VisualGraphComponent extends Actor{
 	protected transient boolean selected;
 
 	private static ArrayList<VisualGraphComponent> components = new ArrayList<>();
+
+    //Due to the way the viewport renders, css styles are not applied to components
+	//before rendering, which makes it impossible to detect when the viewport should
+	//render new nodes. This variable stores the intended colour of the component
+	//before it is added to the screen. I.e. the edge/node highlight colour
+	protected transient Color setColour;
 
 	public Vector getRenderLocation(){
 		return renderLocation;
@@ -108,7 +116,12 @@ public abstract class VisualGraphComponent extends Actor{
 		HashMap<VisualGraphComponent, Double> distances = new HashMap<>();
 		//To improve performance, only add components that are within the max view distance
         for(VisualGraphComponent comp : comps){
-			if(camera.isInViewRange(comp.getLocation()) || comp instanceof VisualGraphEdge){
+			if(comp.getLocation() == null){
+				//When loading graphs, the location of an edge is null because
+				//the renderLocation of a node is transient
+				distances.put(comp, -1.0);
+			}
+			else{
                 distances.put(comp, Vector.distance(comp.getLocation(), camera.getLocation()));
 			}
 		}
@@ -122,8 +135,14 @@ public abstract class VisualGraphComponent extends Actor{
 		components = comps;
 	}
 
-	public static ArrayList<VisualGraphComponent> getComponents(){
+	public static synchronized ArrayList<VisualGraphComponent> getComponents(){
 		return new ArrayList<VisualGraphComponent>(components);
+	}
+
+	public abstract boolean iconsEqual(Group other);
+
+	public Color getSetColour(){
+		return setColour;
 	}
 
 }

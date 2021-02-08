@@ -63,6 +63,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		icon = toCopy.getIcon();
 		clickEvent = toCopy.clickEvent;
 		selected = toCopy.selected;
+		location = toCopy.renderLocation;
 	}
 
 	/**
@@ -206,16 +207,18 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    The line is drawn by using the relative position of nodeB from nodeA,
 	**/
 	public void updateIcon(GraphAlgorithm algorithm){
-		Vector nodeALoc = VisualGraphNode.getNode(edge.nodeA).getRenderLocation();
+		VisualGraphNode nodeA = VisualGraphNode.getNode(edge.nodeA);
+		Vector nodeALoc = nodeA.getRenderLocation();
 		VisualGraphNode nodeB = VisualGraphNode.getNode(edge.nodeB);
 		Vector nodeBLoc = nodeB.getRenderLocation();
 		Vector difference = nodeBLoc.subtract(nodeALoc);
+		Vector nodeASize = difference.normalise().multiply(nodeA.getRenderScale()*26);
 		//How much space nodeB's circle radius takes up along the edge line
 		Vector nodeBSize = difference.normalise().multiply(nodeB.getRenderScale()*23);
 		//Subtract nodeB's circle radius, so that the arrow head ends at the boundary of the node
 		difference = difference.subtract(nodeBSize);
 		double gradient = -(difference.x / difference.y);
-		Line line = new Line(0, 0, (int) difference.x, (int) difference.y);
+		Line line = new Line(nodeASize.x, nodeBSize.y, (int) difference.x, (int) difference.y);
 		Polygon arrow = new Polygon();
 		double lineAngle = Math.atan2(difference.y, difference.x);
 		//How far up the line the arrow head ends
@@ -254,6 +257,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		}
 		//Override the css color property if the edge must be coloured differently
 		if(fillColour != null){
+			setColour = fillColour;
 			String selectedColour = String.format("rgba(%d, %d, %d, %f)", ((int) (255*fillColour.getRed())), ((int) (255*fillColour.getGreen())), ((int) (255*fillColour.getBlue())), fillColour.getOpacity());
 			line.setStyle("-colour: " + selectedColour + ";");
 		    line.setStroke(fillColour);
@@ -294,6 +298,10 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		    VisualGraphEdge other = (VisualGraphEdge) otherObject;
 			return edge.equals(other.getEdge());
 		}
+		return false;
+	}
+
+	public boolean iconsEqual(Group other){
 		return false;
 	}
 

@@ -48,7 +48,6 @@ public class VisualGraphNode extends VisualGraphComponent{
 
 	public static final DataFormat FORMAT = new DataFormat("VisualGraphNode");
 
-
 	/**
 	*    Create a VisualGraphNode at the given location that represents the given node
 	*    Only the create() function should be able to create GCNs
@@ -164,6 +163,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		if(selected){
 			background.setFill(Color.ORANGE);
 			background.setStyle("-fillColour: rgba(255, 140, 0, 1)");
+			setColour = Color.web("rgba(255, 140, 0, 1)");
 		}
 		else{
 			if(algorithm == null){
@@ -173,22 +173,27 @@ public class VisualGraphNode extends VisualGraphComponent{
 				if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
 					//LIME colour
 					background.setStyle("-fillColour: rgba(0, 255, 0, 1)");
+					setColour = Color.web("rgba(0, 255, 0, 1)");
         		}
         		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
         			//RED colour
 					background.setStyle("-fillColour: rgba(255, 0, 0, 1)");
+					setColour = Color.web("rgba(255, 0, 0, 1)");
 	        	}
 	        	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
 	        		//CYAN colour
 					background.setStyle("-fillColour: rgba(0, 255, 255, 1)");
+					setColour = Color.web("rgba(0, 255, 255, 1)");
 	        	}
 				else if(algorithm.getNodeState(node) == GraphComponentState.IN_TREE){
 					//CORNFLOWERBLUE colour
 					background.setStyle("-fillColour: rgba(100, 149, 237, 1)");
+					setColour = Color.web("rgba(100, 149, 237, 1)");
 				}
 			}
 		}
 		pane.getChildren().add(background);
+
 		//Only add the label if the node is close enough to the camera
 		if(renderScale >= 0.5){
 		    Label label;
@@ -201,6 +206,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	    	label.setId("nodeLabel");
     		pane.getChildren().add(label);
 		}
+
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
@@ -280,5 +286,34 @@ public class VisualGraphNode extends VisualGraphComponent{
 			return node.equals(other.getNode());
 		}
 		return false;
+	}
+
+	public boolean iconsEqual(Group other){
+		if(other == null || icon == null){
+			return false;
+		}
+		StackPane root = (StackPane) other.getChildren().get(0);
+		StackPane myRoot = (StackPane) icon.getChildren().get(0);
+		//System.out.println(((Circle) root.getChildren().get(0)).getFill());
+		//System.out.println(setColour);
+		Color circleCol = (Color) ((Circle) root.getChildren().get(0)).getFill();
+		Boolean blankColourCheck = (setColour == null && ((Color.web("rgba(37,37,37, 255)").equals(circleCol) || Color.web("rgba(255, 255, 255, 255)").equals(circleCol))));
+		if(blankColourCheck){
+
+		}
+		else if((! circleCol.equals(setColour))){
+			return false;
+		}
+		if(! ((Label) root.getChildren().get(1)).getText().equals(((Label) myRoot.getChildren().get(1)).getText())){
+			return false;
+		}
+		//if(((Label) other.getChildren().get(1)).getText() != ((Label) icon.getChildren().get(1)).getText()){
+		//	return false;
+		//}
+		return true;
+	}
+
+	public Color getSetColour(){
+		return setColour;
 	}
 }

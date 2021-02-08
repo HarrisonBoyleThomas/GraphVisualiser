@@ -17,6 +17,7 @@ import threads.AlgorithmRunner;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.application.Application;
 import javafx.scene.control.Button;
@@ -31,6 +32,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
+
+import javafx.scene.image.Image;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
@@ -60,6 +63,8 @@ public class Viewport extends Pane{
 	private ViewportDetails viewportDetails = new ViewportDetails();
 
 	private AlgorithmRunner algorithmRunner;
+
+	private HashMap<VisualGraphComponent, Group> drawnComponents = new HashMap<>();
 
 	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
 		setMinSize(width, height);
@@ -175,26 +180,53 @@ public class Viewport extends Pane{
                         CountDownLatch delay = new CountDownLatch(1);
 						VisualGraphNode.updateNodes(camera, 500,500);
 						//get copies of VGCs
-						ArrayList<VisualGraphComponent> components = VisualGraphComponent.getComponents();
+						ArrayList<VisualGraphComponent> components = new ArrayList<>(VisualGraphComponent.getComponents());
 
-						ArrayList<Node> icons = new ArrayList<>();
-						for(VisualGraphComponent c : components){
-							if(c.isOnScreen(width, height) || c instanceof VisualGraphEdge){
+						//create a list of icons that were removed from the viewport
+						ArrayList<Group> invalidIcons = new ArrayList<>();
+						ArrayList<VisualGraphComponent> invalidComponents = new ArrayList<>();
+						for(VisualGraphComponent c : drawnComponents.keySet()){
+							Boolean containsComp = components.contains(c);
+							if(!containsComp){
+								invalidIcons.add(drawnComponents.get(c));
+								invalidComponents.add(c);
+							}
+							else{
 								if(c instanceof VisualGraphEdge){
-									VisualGraphEdge edge = new VisualGraphEdge((VisualGraphEdge) c);
-									if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
-										edge.updateIcon(algorithm);
-										icons.add(edge.getIcon());
-										edge.getIcon().setLayoutX((int) edge.getRenderLocation().x);
-										edge.getIcon().setLayoutY((int) edge.getRenderLocation().y);
-									}
+									invalidIcons.add(drawnComponents.get(c));
+								}
+							}
+						}
+						ArrayList<Group> newIcons = new ArrayList<>();
+						for(VisualGraphComponent c : components){
+							VisualGraphComponent newComp;
+							if(c instanceof VisualGraphEdge){
+								newComp = new VisualGraphEdge((VisualGraphEdge) c);
+							}
+							else{
+								newComp = new VisualGraphNode((VisualGraphNode) c);
+							}
+							newComp.updateIcon(algorithm);
+							if(c instanceof VisualGraphEdge){
+								drawnComponents.put(c, newComp.getIcon());
+								newIcons.add(newComp.getIcon());
+								newComp.getIcon().setLayoutX((int) newComp.getRenderLocation().x);
+								newComp.getIcon().setLayoutY((int) newComp.getRenderLocation().y);
+							}
+							else{
+								//Add newly detected nodes
+								if(!drawnComponents.keySet().contains(c)){
+									//System.out.println("detected new node");
+									drawnComponents.put(c, newComp.getIcon());
+									newIcons.add(newComp.getIcon());
 								}
 								else{
-									VisualGraphNode node = new VisualGraphNode((VisualGraphNode) c);
-									node.updateIcon(algorithm);
-                                    icons.add(node.getIcon());
-									node.getIcon().setLayoutX((int) node.getRenderLocation().x);
-									node.getIcon().setLayoutY((int) node.getRenderLocation().y);
+									if(!newComp.iconsEqual(drawnComponents.get(c))){
+										Group old = drawnComponents.put(c, newComp.getIcon());
+										//drawnComponents.put(c, newComp.getIcon());
+										newIcons.add(newComp.getIcon());
+										invalidIcons.add(old);
+									}
 								}
 							}
 						}
@@ -202,10 +234,42 @@ public class Viewport extends Pane{
                             @Override
                             public void run() {
 							    //clear the old frame
-								getChildren().clear();
+								//getChildren().clear();
 								//add the close button
+								//Clear foreign elements from the screen
+								for(Node n : new ArrayList<>(getChildren())){
+									if(!drawnComponents.values().contains(n)){
+										getChildren().remove(n);
+									}
+								}
 								createCloseButton();
-								getChildren().addAll(icons);
+								//System.out.println(components.size());
+								for(VisualGraphComponent c : components){
+									if(c instanceof VisualGraphEdge){
+										VisualGraphEdge edge = (VisualGraphEdge) c;
+										if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
+											drawnComponents.get(c).setLayoutX((int) edge.getRenderLocation().x);
+											drawnComponents.get(c).setLayoutY((int) edge.getRenderLocation().y);
+										}
+									}
+									else{
+										VisualGraphNode node = (VisualGraphNode) c;
+										drawnComponents.get(c).setLayoutX((int) node.getRenderLocation().x);
+										drawnComponents.get(c).setLayoutY((int) node.getRenderLocation().y);
+									}
+								}
+								if(invalidIcons.size() > 0){
+							    	for(Group icon : invalidIcons){
+							    		getChildren().remove(icon);
+								    }
+									for(VisualGraphComponent c : invalidComponents){
+										drawnComponents.remove(c);
+									}
+								}
+								if(newIcons.size() > 0){
+								    getChildren().addAll(newIcons);
+									//System.out.println("adding ndmoes");
+								}
 								viewportDetails.update(Viewport.this);
 								getChildren().add(viewportDetails);
 							    delay.countDown();
