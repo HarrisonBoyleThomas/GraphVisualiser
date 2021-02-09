@@ -1,0 +1,40 @@
+GraphVisualiser is a small app that allows you to create directed graphs in 3D space, and run a wide range of algorithms one created graphs. 
+
+
+MAINWINDOW
+
+The main window consists of several key components
+
+    The MENU is available along the top of the main window, and includes many common sections such as file, and edit
+    
+    The DETAILS PANEL is along the left of the main window. It displays useful information about selected nodes, and also contains useful graph creation controls
+    
+    The right panel is divided into 3 parts. The CAMERA DETAILS is at the top of the right panel. The ALGORITHM DETAILS is in the middle of the right panel, and the GRAPH DETAILS are at the bottom of the right panel
+    
+    The middle of the main window contains up to four VIEWPORTS. The viewports allow you to view created graphs, and explore it through the use of a camera.
+
+
+VIEWPORTS
+
+By default, one viewport exist in the viewport section of the main window. Up to FOUR viewports can be added through the view tab. Viewports each run their own selected algorithm when you decide to run algorithms on your graph, so that you can see their execution/output in parallel.
+
+
+ALGORITHMS
+
+In order to run algorithms, you must first select an algorithm in each available viewport, and then use the algorithm details panel on the right of the main window to initialise the algorithms. For example, if you wanted to run a shortest path algorithm, you will specify the start node here. 
+Once this is done, you may start all algorithms. You will not be able to edit graphs while algorithms are running.
+You can step through algorithms one cycle of their mainloops at a time with the STEP button, or automatically execute algorithms with the EXECUTE button. You can adjust the execution speed with the speed slider. Executing algorithms can be paused and unpaused with the PAUSE button. If you wish to stop running algorithms so that you can go back to editing your graph, hit the TERMINATE button. You can inspect the details of algorithms by clickin the INSPECT button in the corresponding viewport, which will open a window that contains useful information about the given algorithm, such as the contents of it's variables, and it's pseudocode.
+
+If you wish to add you own algorithms, take a look at the source code and create your own subclass of GraphAlgorithm! More help is provided within the source code.
+
+
+GRAPH EDTITING
+
+There are many useful operations available, such as loading, saving, copying, pasting, dragging, and many key controls to speed up the creation of graphs. The controls are available in the CONTROLS page of the manual.
+
+
+3D space
+
+Nodes are represented in 3D space, to increase the number of applicaitons of your graphs. When a node is created, it is created 10 units in front of the camera, and it's position can be controlled by either dragging the node, or by manualy typing it's position in the details panel. Unfortunately, the DRAG operation can be a inaccurate, and tries to position dragged nodes as close to where they were dragged as possible. The DRAG operation also rotates nodes around the camera, so repeated drag operations may cause intended 2D graphs to become 3D.
+
+
