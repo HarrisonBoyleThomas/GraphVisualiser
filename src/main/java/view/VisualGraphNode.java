@@ -29,6 +29,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.SnapshotParameters;
 
 import javafx.scene.input.MouseEvent;
 
@@ -244,7 +245,9 @@ public class VisualGraphNode extends VisualGraphComponent{
                 ClipboardContent content = new ClipboardContent();
 				content.put(FORMAT, VisualGraphNode.this);
                 db.setContent(content);
-				db.setDragView(icon.snapshot(null, null));
+				SnapshotParameters parameters = new SnapshotParameters();
+				parameters.setFill(Color.TRANSPARENT);
+				db.setDragView(icon.snapshot(parameters, null));
 				MainWindow.get().addClickedComponent(VisualGraphNode.getNode(getNode()), true);
 
                 event.consume();
