@@ -10,7 +10,6 @@ import model.GraphNode;
 import model.GraphEdge;
 import threads.AlgorithmRunner;
 import data.Data;
-import threads.RenderThread;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -103,7 +102,6 @@ public class MainWindow extends BorderPane{
 		initialiseRightDetailsPanel();
 		setTop(new MenuHeader());
 		initialiseTheme();
-        RenderThread.startRenderThread();
 	}
 
     /**

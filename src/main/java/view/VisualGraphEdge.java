@@ -289,6 +289,20 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	private Vector getCenter(Vector a, Vector b){
 		return Vector.multiply(b.subtract(a), 0.5);
 	}
+    /**
+	*    @return the midpoint of the edge
+	*    @return null if one of the nodes is invalid
+	**/
+	public Vector getWorldMidpoint(){
+		VisualGraphNode nodeA = VisualGraphNode.getNode(edge.nodeA);
+		VisualGraphNode nodeB = VisualGraphNode.getNode(edge.nodeB);
+		if(nodeA == null || nodeB == null){
+			return null;
+		}
+		Vector a = nodeA.getLocation();
+		Vector b = nodeB.getLocation();
+		return new Vector((a.x + b.x) /2, (a.y + b.y) / 2, (a.z + b.z)/2);
+	}
 
 	/**
 	*    @Return true if the other VGE represents the same edge, false otherwise

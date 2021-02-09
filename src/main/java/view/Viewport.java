@@ -33,6 +33,7 @@ import javafx.concurrent.Task;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
 import javafx.scene.transform.Scale;
+import javafx.collections.FXCollections;
 
 import javafx.scene.image.Image;
 
@@ -251,6 +252,11 @@ public class Viewport extends Pane{
 						foreignComponents.removeAll(drawnComponents.values());
 						foreignComponents.removeAll(invalidIcons);
 
+						HashMap<Node, VisualGraphComponent> iconMap = new HashMap<>();
+						for(VisualGraphComponent c : drawnComponents.keySet()){
+							iconMap.put(drawnComponents.get(c), c);
+						}
+
 						//Apply changes in the JavaFX Application thread
                         Platform.runLater(new Runnable() {
                             @Override
@@ -268,9 +274,13 @@ public class Viewport extends Pane{
 								for(VisualGraphComponent c : components){
 									if(c instanceof VisualGraphEdge){
 										VisualGraphEdge edge = (VisualGraphEdge) c;
-										if(camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeA))  || camera.isInFront(VisualGraphNode.getNode(edge.getEdge().nodeB))){
-											drawnComponents.get(c).setLayoutX((int) edge.getRenderLocation().x);
-											drawnComponents.get(c).setLayoutY((int) edge.getRenderLocation().y);
+										VisualGraphNode nodeA = VisualGraphNode.getNode(edge.getEdge().nodeA);
+										VisualGraphNode nodeB = VisualGraphNode.getNode(edge.getEdge().nodeB);
+										if(nodeA !=  null && nodeB != null){
+										    if(camera.isInFront(nodeA)  || camera.isInFront(nodeB)){
+										    	drawnComponents.get(c).setLayoutX((int) edge.getRenderLocation().x);
+										    	drawnComponents.get(c).setLayoutY((int) edge.getRenderLocation().y);
+										    }
 										}
 									}
 									else{
@@ -301,6 +311,9 @@ public class Viewport extends Pane{
 								if(newIcons.size() > 0){
 								    getChildren().addAll(newIcons);
 									//System.out.println("adding ndmoes");
+								}
+								if(iconMap.size() > 0){
+							    	FXCollections.sort(getChildren(), new ComponentDistanceComparator(camera, iconMap));
 								}
 								//Update viewport details
 								viewportDetails.update(Viewport.this);
@@ -369,6 +382,8 @@ public class Viewport extends Pane{
 				draw();
 				if(algorithmRunner == null || !algorithmRunner.isRunning()){
 					stop();
+					draw();
+					//Draw twice just incase the draw thread failed to clear parts of the screen
 					draw();
 					MainWindow.get().updateWindowStatus();
 					terminateAlgorithm();

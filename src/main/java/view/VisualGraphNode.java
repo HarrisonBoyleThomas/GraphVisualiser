@@ -232,8 +232,8 @@ public class VisualGraphNode extends VisualGraphComponent{
         //create and add the label to the node
 		Label label = new Label(number);
 		label.setId("nodeLabel");
-		label.setLayoutX(30*renderScale);
-		label.setLayoutY(-15*renderScale);
+		label.setLayoutX(40*renderScale);
+		label.setLayoutY(-20*renderScale);
 		icon.getChildren().add(label);
 	}
 

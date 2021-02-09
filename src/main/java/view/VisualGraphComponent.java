@@ -42,8 +42,6 @@ public abstract class VisualGraphComponent extends Actor{
     //true if the component has been clicked by the user
 	protected transient boolean selected;
 
-	private static ArrayList<VisualGraphComponent> components = new ArrayList<>();
-
     //Due to the way the viewport renders, css styles are not applied to components
 	//before rendering, which makes it impossible to detect when the viewport should
 	//render new nodes. This variable stores the intended colour of the component
@@ -108,35 +106,14 @@ public abstract class VisualGraphComponent extends Actor{
 		selected = selectedIn;
 	}
 
-	public static synchronized void updateComponents(Camera camera){
-		ArrayList<VisualGraphComponent> comps = new ArrayList<>();
-		comps.addAll(VisualGraphNode.getNodes());
-		comps.addAll(VisualGraphEdge.getEdges());
-
-		HashMap<VisualGraphComponent, Double> distances = new HashMap<>();
-		//To improve performance, only add components that are within the max view distance
-        for(VisualGraphComponent comp : comps){
-			if(comp.getLocation() == null){
-				//When loading graphs, the location of an edge is null because
-				//the renderLocation of a node is transient
-				distances.put(comp, -1.0);
-			}
-			else{
-                distances.put(comp, Vector.distance(comp.getLocation(), camera.getLocation()));
-			}
-		}
-		ArrayList<Entry<VisualGraphComponent, Double>> list = new ArrayList<>(distances.entrySet());
-		list.sort(Entry.comparingByValue());
-		Collections.reverse(list);
-		comps = new ArrayList<>();
-		for(Entry<VisualGraphComponent, Double> e : list){
-			comps.add(e.getKey());
-		}
-		components = comps;
-	}
-
-	public static synchronized ArrayList<VisualGraphComponent> getComponents(){
-		return new ArrayList<VisualGraphComponent>(components);
+    /**
+	*    @return an array list of all VGNs and VGEs
+	**/
+	public static ArrayList<VisualGraphComponent> getComponents(){
+		ArrayList<VisualGraphComponent> components = new ArrayList<VisualGraphComponent>();
+		components.addAll(VisualGraphNode.getNodes());
+		components.addAll(VisualGraphEdge.getEdges());
+		return components;
 	}
 
     /**
