@@ -68,6 +68,8 @@ public class Viewport extends Pane{
 
 	private HashMap<VisualGraphComponent, Group> drawnComponents = new HashMap<>();
 
+	Service<Void> renderTask;
+
 	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
 		setMinSize(width, height);
 		setMaxSize(width, height);
@@ -178,7 +180,11 @@ public class Viewport extends Pane{
 	*    current valid icon for the component.
 	**/
 	public void draw(){
-		new Service<Void>() {
+		if(renderTask != null){
+			//Remove any previously running services, to prevent deadlocks
+			renderTask.cancel();
+		}
+		renderTask = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
     			return new Task<Void>() {
@@ -330,7 +336,8 @@ public class Viewport extends Pane{
                     }
                 };
             }
-	    }.start();
+	    };
+		renderTask.start();
 	}
 
 	public Camera getCamera(){
@@ -358,6 +365,9 @@ public class Viewport extends Pane{
 		close.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 MainWindow.get().deleteViewport(Viewport.this);
+				if(renderTask != null){
+					renderTask.cancel();
+				}
 				terminateAlgorithm();
             }
         });
