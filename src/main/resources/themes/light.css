@@ -22,6 +22,14 @@ Circle {
     -fx-fill: -fillColour
 }
 
+#manualHeader {
+    -fx-font-weight: bold;
+}
+
+#manualLine {
+    -fx-font-weight: normal;
+}
+
 #edgeLabel {
     -fx-background-color: #ffffff;
     -fx-text-color: #000000;

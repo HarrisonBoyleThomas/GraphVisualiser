@@ -1,24 +1,23 @@
 CONTROLS
 
-Below is a list of controls, and their corresponding function
+Below is a list of controls and their corresponding function
 
-W, MOVE FORWARD: Move the camera relatively forward in the world
-S, MOVE BACKWARD: Move the camera relatively backward in the world
-A, MOVE LEFT: Move the camera relatively left in the world
-D, MOVE RIGHT: Move the camera relatively right in the world
-Q, MOVE UPWARD: Move the camera relatively updwards in the world
-Z, MOVE DOWNWARD: Move the camera relatively downwards in the world
-UP ARROW, PITCH DOWNWARD: Pitch the camera downwards from the current position
-DOWN ARROW, PITCH UPWARD: Pitch the camera upwards from the current position
-LEFT ARROW, YAW LEFT: Yaw the camera left of it's current position
-RIGHT ARROW, YAW RIGHT: Yaw the camera right of it's current position
-<, ROLL LEFT, ROLL LEFT: Roll the camera left of it's current position. This is not a very useful transformation
->, ROLL RIGHT, ROll RIGHT: Roll the camera right of it's current position. This is not a very useful transformation
-F, CREATE: If 0 or 1 nodes are selected, create a node in front of the camera. If multiple nodes are created then create a path from the first selected node to the last selected node through all intermediate selected nodes
-M, SELECT ALL: Select all nodes in the viewport if they are not selected. If all nodes are selected then deselect all
-TAB, SELECT NEXT: Select the next created node
-CLICK, SELECT: Select a single component
-CLICK+CTRL, MULTI SELECT: Add the chosen componet to a list of selected components to apply future operations on the seleted components
-CTRL+C, COPY: Copy selected components to a buffer. ONLY the selected components are copied
-CTRL+V, PASTE: Paste the copied components. Pasted nodes are pasted at their original positions but are all selected
-
+W,MOVE FORWARD:Move the camera relatively forward in the world
+S,MOVE BACKWARD:Move the camera relatively backward in the world
+A,MOVE LEFT:Move the camera relatively left in the world
+D,MOVE RIGHT:Move the camera relatively right in the world
+Q,MOVE UPWARD:Move the camera relatively updwards in the world
+Z,MOVE DOWNWARD:Move the camera relatively downwards in the world
+↑,PITCH DOWNWARD:Pitch the camera downwards from the current position
+↓,PITCH UPWARD:Pitch the camera upwards from the current position
+←,YAW LEFT:Yaw the camera left of it's current position
+→,YAW RIGHT:Yaw the camera right of it's current position
+<,ROLL LEFT:Roll the camera left of it's current position. This is not a very useful transformation
+>,ROLL RIGHT:Roll the camera right of it's current position. This is not a very useful transformation
+F,CREATE:If 0 or 1 nodes are selected, create a node in front of the camera. If multiple nodes are created then create a path from the first selected node to the last selected node through all intermediate selected nodes
+M,SELECT ALL:Select all nodes in the viewport if they are not selected. If all nodes are selected then deselect all
+TAB,SELECT NEXT:Select the next created node
+CLICK,SELECT:Select a single component
+CLICK+CTRL,MULTI SELECT:Add the chosen componet to a list of selected components to apply future operations on the seleted components
+CTRL+C,COPY:Copy selected components to a buffer. ONLY the selected components are copied
+CTRL+V,PASTE:Paste the copied components. Pasted nodes are pasted at their original positions but are all selected

@@ -1198,5 +1198,9 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
+	protected String getThemeStyleSheet(){
+		return getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm();
+	}
+
 
 }

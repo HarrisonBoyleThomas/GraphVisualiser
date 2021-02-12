@@ -1,40 +1,139 @@
-GraphVisualiser is a small app that allows you to create directed graphs in 3D space, and run a wide range of algorithms one created graphs. 
+GraphVisualiser is a small app that allows you to create directed
+graphs in 3D space, and run a wide range of algorithms on created
+ graphs.
 
 
-MAINWINDOW
+MAIN WINDOW
 
-The main window consists of several key components
+    The main window consists of several key components
 
-    The MENU is available along the top of the main window, and includes many common sections such as file, and edit
-    
-    The DETAILS PANEL is along the left of the main window. It displays useful information about selected nodes, and also contains useful graph creation controls
-    
-    The right panel is divided into 3 parts. The CAMERA DETAILS is at the top of the right panel. The ALGORITHM DETAILS is in the middle of the right panel, and the GRAPH DETAILS are at the bottom of the right panel
-    
-    The middle of the main window contains up to four VIEWPORTS. The viewports allow you to view created graphs, and explore it through the use of a camera.
+        •The MENU is available along the top of the main window, and
+            includes many common sections such as file, and edit
 
+        •The DETAILS PANEL is along the left of the main window. It
+            displays useful information about selected nodes, and
+            also contains useful graph creation controls
+
+        •The right panel is divided into 3 parts. The CAMERA DETAILS
+            is at the top of the right panel. The ALGORITHM DETAILS
+            is in the middle of the right panel, and the GRAPH
+            DETAILS are at the bottom of the right panel
+
+        •The middle of the main window contains up to four VIEWPORTS.
+            The viewports allow you to view created graphs, and explore
+            it through the use of a camera.
+
+DETAILS PANEL
+
+    The details panel displays useful information about nodes that
+    have been selected. There are three states for the details panel
+        •Single node selected
+            Display information about the clicked node, and allow the
+            node's name and location to be edited. A list of edges
+            from the node is also available here
+        •Single edge selected
+            Display information about the clicked edge, and allow the
+            edge's name and weight to be edited. The two nodes between
+            the edge are available here
+        •Double node selected
+            Display buttons to allow for the creation and deletion of
+            edges between the two selected nodes
+        •Multiple selected
+            Display a list of each type of selected component
+
+    Regardless of the current mode, operations such as creating nodes
+    will always be available
 
 VIEWPORTS
 
-By default, one viewport exist in the viewport section of the main window. Up to FOUR viewports can be added through the view tab. Viewports each run their own selected algorithm when you decide to run algorithms on your graph, so that you can see their execution/output in parallel.
+    By default, one viewport exist in the viewport section of the main
+    window. Up to FOUR viewports can be added through the view tab.
+    Viewports each run their own selected algorithm when you decide to
+    run algorithms on your graph, so that you can see their execution/
+    output in parallel. Algorithms can be selected from a drop down box
+    in the top left corner of each viewport. Viewports can also be
+    deleted by clicking the X button in the top right of the viewport.
+    Once algorithms are running, an inspect button will become available
+    at the top of each viewport to allow you to view the state of the
+    algorithm.
 
+CAMERA DETAILS
+
+    This small box displays information about the camera's location and
+    orientation
 
 ALGORITHMS
 
-In order to run algorithms, you must first select an algorithm in each available viewport, and then use the algorithm details panel on the right of the main window to initialise the algorithms. For example, if you wanted to run a shortest path algorithm, you will specify the start node here. 
-Once this is done, you may start all algorithms. You will not be able to edit graphs while algorithms are running.
-You can step through algorithms one cycle of their mainloops at a time with the STEP button, or automatically execute algorithms with the EXECUTE button. You can adjust the execution speed with the speed slider. Executing algorithms can be paused and unpaused with the PAUSE button. If you wish to stop running algorithms so that you can go back to editing your graph, hit the TERMINATE button. You can inspect the details of algorithms by clickin the INSPECT button in the corresponding viewport, which will open a window that contains useful information about the given algorithm, such as the contents of it's variables, and it's pseudocode.
+    In order to run algorithms, you must first select an algorithm in each
+    available viewport, and then use the algorithm details panel on the
+    right of the main window to initialise the algorithms. For example, if
+    you wanted to run a shortest path algorithm, you will specify the start
+    node here. Once this is done, you may start all algorithms. You will
+    not be able to edit graphs while algorithms are running. You can step
+    through algorithms one cycle of their mainloops at a time with the STEP
+    button, or automatically execute algorithms with the EXECUTE button. You
+    can adjust the execution speed with the speed slider. Executing
+    algorithms can be paused and unpaused with the PAUSE button. If you wish
+    to stop running algorithms so that you can go back to editing your graph,
+    hit the TERMINATE button. You can inspect the details of algorithms by
+    clicking the INSPECT button in the corresponding viewport, which will
+    open a window that contains useful information about the given algorithm,
+    such as the contents of it's variables, and it's pseudocode.
 
-If you wish to add you own algorithms, take a look at the source code and create your own subclass of GraphAlgorithm! More help is provided within the source code.
+    If you wish to add you own algorithms, take a look at the source code and
+    create your own subclass of GraphAlgorithm! More help is provided within
+    the source code.
 
 
-GRAPH EDTITING
+GRAPH EDITING
 
-There are many useful operations available, such as loading, saving, copying, pasting, dragging, and many key controls to speed up the creation of graphs. The controls are available in the CONTROLS page of the manual.
-
-
-3D space
-
-Nodes are represented in 3D space, to increase the number of applicaitons of your graphs. When a node is created, it is created 10 units in front of the camera, and it's position can be controlled by either dragging the node, or by manualy typing it's position in the details panel. Unfortunately, the DRAG operation can be a inaccurate, and tries to position dragged nodes as close to where they were dragged as possible. The DRAG operation also rotates nodes around the camera, so repeated drag operations may cause intended 2D graphs to become 3D.
+    There are many useful operations available, such as loading, saving,
+    copying, pasting, dragging, and many key controls to speed up the creation
+    of graphs. The controls are available in the CONTROLS page of the manual.
+    Graphs can only be edited if algorithms are not running or have terminated
 
 
+3D SPACE
+
+    Nodes are represented in 3D space, to increase the number of applications
+    of your graphs. When a node is created, it is created 10 units in front of
+    the camera, and it's position can be controlled by either dragging the node,
+    or by manually typing it's position in the details panel. Unfortunately, the
+    DRAG operation can be a inaccurate, and tries to position dragged nodes as
+    close to where they were dragged as possible. The DRAG operation also
+    rotates nodes around the camera, so repeated drag operations may cause
+    intended 2D graphs to become 3D. You may drag and drop multiple nodes at
+    once.
+
+    conventions
+        •Locations consist of three components
+            -x
+            -y
+            -z
+        •Orientation consists of three components in degrees in the range 0 to 360 inclusive
+            -roll
+            -pitch
+            -yaw
+        All representations are with respect to the world origin (0,0,0) at orientation (0,0,0)
+
+
+HOW TO USE THE APP
+    •Create a graph
+        Use the graph creation controls to create a graph
+    •(Optional) add viewports using the view tab
+    •Select an algorithm to run in each viewport using the drop-down box in the top left
+        corner
+    •Initialise the algorithm using the algorithm setup panel in the right of the main
+     window
+        -For example, select a start node for a shortest path algorithm
+    •Click the run button once initialised to start the algorithms
+    •Use the step or execute buttons to control algorithm execution
+    •Once all algorithms have terminated, the result of the algorithm will be visible in it's
+     viewport
+    •Repeat.
+
+
+TIPS AND TRICKS
+
+    •To keep graphs in 2D space, do not use the roll pitch yaw controls available
+     to the camera

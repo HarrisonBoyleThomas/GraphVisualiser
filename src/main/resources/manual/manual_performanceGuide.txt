@@ -1,0 +1,45 @@
+PERFORMANCE GUIDE
+
+
+•It is recommended not to exceed a total component count of over 100 components
+
+    -GraphVisualiser can handle graphs of 300+ components, however performance
+     may become inconsistent past the 100 mark, particularly if many of the
+     components are edges
+
+    -Each viewport only draws changed component icons, so if the icon changes, for
+     example, if a node's colour changes, then it is redrawn. Operations such as
+     "select all" on a large graph take a considerable amount of time to render
+     for graphs with many nodes. Edges also have a larger performance impact than
+     nodes, because the line representing the edge must be redrawn to reflect
+     a change in perspective. Alongside this, the expensive rendering operations
+     cannot be threaded due to restrictions in the implementation API.
+
+•For large graphs, avoid using multiple viewports when editing the graph
+
+    -Each viewport is threaded, so the performance impact of each viewport
+     is minimal, however as stated above, rendering a new component in a viewport
+     cannot be threaded and must be handled by a single thread. For large graphs
+     this can incur a significant cost, which is multiplied by the number of
+     viewports.
+
+    -Using multiple viewports when running algorithms should have a small
+     performance impact
+
+•For large graphs, try not to move the camera around the world too much
+
+    -Of course, this is not avoidable when editing the graph, however when
+     running algorithms this can help improve performance by quite a lot
+
+
+
+•About the renderer
+
+    -Each viewport only updates it's content if there is either a change in the
+     graph, a change in algorithm states, or if the camera's position has changed.
+     Each viewport handles rendering logic in it's own thread. This includes
+     ordering components such that distant components are rendered behind closer
+     components, and drawing components. However, adding new components to the
+     viewport may only be handled by the main app thread, which is a bottleneck
+     in performance which unfortunately cannot be resolved without using a
+     different API.

@@ -7,6 +7,9 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
@@ -24,6 +27,7 @@ public class MenuHeader extends MenuBar{
 		initialiseEditMenu();
 	    initialiseAlgorithmMenu();
 		initialiseViewMenu();
+		initialiseHelpMenu();
 
 	}
 
@@ -163,5 +167,26 @@ public class MenuHeader extends MenuBar{
 
 
 		getMenus().add(view);
+	}
+
+	private void initialiseHelpMenu(){
+		Menu help = new Menu("Help");
+		Tooltip manualTooltip = new Tooltip("Copy the selected nodes to a buffer");
+		Label manualLabel = new Label("Manual");
+		Tooltip.install(manualLabel, manualTooltip);
+		CustomMenuItem manual = new CustomMenuItem(manualLabel);
+		manual.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent e){
+				Stage popup = new Stage();
+				popup.initOwner(MenuHeader.this.getScene().getWindow());
+				popup.setResizable(false);
+				popup.setTitle("Manual");
+				Scene scene = new Scene(new ManualPanel(), 600, 400);
+				popup.setScene(scene);
+				popup.show();
+			}
+		});
+		help.getItems().add(manual);
+		getMenus().add(help);
 	}
 }

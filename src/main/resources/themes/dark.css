@@ -25,6 +25,14 @@ Circle {
     -fx-fill: -fillColour
 }
 
+#manualHeader {
+    -fx-font-weight: bold;
+}
+
+#manualLine {
+    -fx-font-weight: normal;
+}
+
 #viewport {
     -fx-background-color: #333333;
 }
