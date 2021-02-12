@@ -137,3 +137,13 @@ TIPS AND TRICKS
 
     •To keep graphs in 2D space, do not use the roll pitch yaw controls available
      to the camera
+
+
+DISCLAIMER
+    •Please do not rely on GraphVisualiser for important applications. Software is
+     rarely free from errors, and it is possible that there are undiscovered errors
+     in GraphVisualiser.
+
+CREDITS
+    •Developed by Harrison Boyle-Thomas
+    •Supervised by Tomasz Radzik
