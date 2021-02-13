@@ -1,6 +1,6 @@
 plugins{
     id  'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 application {
     mainClassName = "GraphVisualiser"
@@ -9,6 +9,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("org.testfx:testfx-core:4.0.16-alpha")
     testImplementation("org.testfx:testfx-junit5:4.0.16-alpha")
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testCompile "org.testfx:testfx-junit5:4.0.16-alpha"
+    compile group: 'org.loadui', name: 'testFx', version: '3.1.2'
 }
 repositories {
   mavenCentral()
@@ -20,6 +24,8 @@ javafx {
 }
 
 test {
+    testLogging.showStandardStreams = true
+    maxHeapSize = "1024m"
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
     }

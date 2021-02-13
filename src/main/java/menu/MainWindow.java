@@ -1178,7 +1178,7 @@ public class MainWindow extends BorderPane{
 	*    Set the theme of the app, and save this to the theme file in the config
 	*    folder
 	**/
-	protected void setTheme(ThemeState stateIn){
+	public void setTheme(ThemeState stateIn){
         theme = stateIn;
 		getStylesheets().clear();
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
@@ -1198,7 +1198,7 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
-	protected String getThemeStyleSheet(){
+	public String getThemeStyleSheet(){
 		return getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm();
 	}
 

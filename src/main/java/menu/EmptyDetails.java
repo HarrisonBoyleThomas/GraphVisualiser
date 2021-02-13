@@ -34,6 +34,7 @@ public class EmptyDetails extends DetailsPanel{
 	**/
 	private void addCreateNodeButton(){
 		Button createButton = new Button("CREATE NODE");
+		createButton.setId("createButton");
 		Tooltip tooltip = new Tooltip("Create a node in front of the camera");
 		Tooltip.install(createButton, tooltip);
 

@@ -69,8 +69,10 @@ public class Viewport extends Pane{
 	private HashMap<VisualGraphComponent, Group> drawnComponents = new HashMap<>();
 
 	Service<Void> renderTask;
+	ArrayList<Service<Void>> renderTasks = new ArrayList<>();
 
 	public Viewport(Camera cameraIn, GraphAlgorithm algorithmIn){
+		setId(this.toString());
 		setMinSize(width, height);
 		setMaxSize(width, height);
 		setId("viewport");
@@ -180,10 +182,6 @@ public class Viewport extends Pane{
 	*    current valid icon for the component.
 	**/
 	public void draw(){
-		if(renderTask != null){
-			//Remove any previously running services, to prevent deadlocks
-			renderTask.cancel();
-		}
 		renderTask = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -203,6 +201,9 @@ public class Viewport extends Pane{
 						//and invalidate the icons of edges(the arrows for edges must be redrawn to reflect
 						//new node positions)
 						for(VisualGraphComponent c : drawnComponents.keySet()){
+							if(isCancelled()){
+								throw new InterruptedException();
+							}
 							Boolean containsComp = components.contains(c);
 							if(!containsComp){
 								invalidIcons.add(drawnComponents.get(c));
@@ -220,6 +221,9 @@ public class Viewport extends Pane{
 					    //if the component's appearance has changed since the last frame
 						//or if the component was just created by the user
 						for(VisualGraphComponent c : components){
+							if(isCancelled()){
+								throw new InterruptedException();
+							}
 							//Create a duplicate of the component
 							VisualGraphComponent newComp;
 							if(c instanceof VisualGraphEdge){
@@ -257,9 +261,13 @@ public class Viewport extends Pane{
 						ArrayList<Node> foreignComponents = new ArrayList<>(getChildren());
 						foreignComponents.removeAll(drawnComponents.values());
 						foreignComponents.removeAll(invalidIcons);
+						foreignComponents.remove(viewportDetails);
 
 						HashMap<Node, VisualGraphComponent> iconMap = new HashMap<>();
 						for(VisualGraphComponent c : drawnComponents.keySet()){
+							if(isCancelled()){
+								throw new InterruptedException();
+							}
 							iconMap.put(drawnComponents.get(c), c);
 						}
 
@@ -328,6 +336,10 @@ public class Viewport extends Pane{
 								if(viewportDetails.getParent() != Viewport.this){
 					    			getChildren().add(viewportDetails);
 								}
+								//Remove any previous services to prevent deadlock
+								while(renderTasks.size() > 0){
+									renderTasks.remove(0).cancel();
+								}
 							    delay.countDown();
                             }
                         });
@@ -337,6 +349,7 @@ public class Viewport extends Pane{
                 };
             }
 	    };
+		renderTasks.add(renderTask);
 		renderTask.start();
 	}
 
@@ -450,6 +463,10 @@ public class Viewport extends Pane{
 			System.out.println("Algorithm terminated!");
 			algorithmRunner = null;
 		}
+	}
+
+	public ViewportDetails getViewportDetails(){
+		return viewportDetails;
 	}
 
 }

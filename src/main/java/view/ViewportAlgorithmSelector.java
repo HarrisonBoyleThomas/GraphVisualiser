@@ -25,6 +25,7 @@ public class ViewportAlgorithmSelector extends ComboBox{
 	private Viewport viewport;
 
 	public ViewportAlgorithmSelector(Viewport viewportIn){
+		setId(viewportIn.getId() + "algorithmSelector");
 		Tooltip tooltip = new Tooltip("Select an algorithm to run in this viewport");
 		Tooltip.install(this, tooltip);
 		viewport = viewportIn;

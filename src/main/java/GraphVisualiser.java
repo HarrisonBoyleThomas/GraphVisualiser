@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.*;
 import javafx.stage.Stage;
+import javafx.scene.Parent;
 
 import menu.*;
 import data.Data;
@@ -62,6 +63,10 @@ public class GraphVisualiser extends Application{
 		});
 
 
+	}
+
+	public Parent getRoot(){
+		return MainWindow.get();
 	}
 
 
