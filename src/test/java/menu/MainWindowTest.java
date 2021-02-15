@@ -620,7 +620,52 @@ public class MainWindowTest extends ApplicationTest{
 
     @Test
     public void addClickedComponentTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.createNode();
+        mw.createNode();
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+        VisualGraphNode nodeB = VisualGraphNode.getNodes().get(1);
+        mw.createEdge(nodeA, nodeB);
+        VisualGraphEdge edge = VisualGraphEdge.getEdges().get(0);
 
+        mw.setState(MainWindowState.RUNNING);
+        mw.addClickedComponent(nodeA);
+        assertEquals(0, mw.getClickedNodes().size(), "Should not add if not in edit mode");
+
+        mw.setState(MainWindowState.EDIT);
+
+        mw.addClickedComponent(nodeA);
+        assertEquals(1, mw.getClickedNodes().size(), "Node should be added if clicked");
+
+        mw.addClickedComponent(nodeB);
+        assertEquals(1, mw.getClickedNodes().size(), "Node should be replaced if clicked without multiselect");
+
+        handleMovementInput(KeyCode.CONTROL);
+
+        mw.addClickedComponent(nodeA);
+        assertEquals(2, mw.getClickedNodes().size(), "Node should be added if multi selecting");
+
+        handleMovementInput(null);
+
+        mw.addClickedComponent(edge);
+        assertEquals(0, mw.getClickedNodes().size(), "Node list should be cleared without multiselect");
+        assertEquals(1, mw.getClickedEdges().size(), "Edge list should include the edge");
+
+        mw.addClickedComponent(nodeA, true);
+        mw.addClickedComponent(nodeB, true);
+        assertEquals(1, mw.getClickedEdges().size(), "Edge list must be unaltered with multiselect override");
+        assertEquals(2, mw.getClickedNodes().size(), "Node list must contain 2 nodes with multiselect override");
+
+        mw.addClickedComponent(nodeA, true);
+        assertEquals(nodeA, mw.getClickedNodes().get(0), "Node list should contain the newest element");
+
+        //teardown
+        mw.addClickedComponent(null);
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
     }
 
     @Test

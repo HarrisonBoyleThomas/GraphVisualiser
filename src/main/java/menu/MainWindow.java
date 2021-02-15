@@ -802,7 +802,9 @@ public class MainWindow extends BorderPane{
 			addClickedComponent(VisualGraphNode.getNodes().get(index));
 		}
 		else{
-			addClickedComponent(VisualGraphNode.getNodes().get(0));
+			if(VisualGraphNode.getNodes().size() > 0){
+		    	addClickedComponent(VisualGraphNode.getNodes().get(0));
+			}
 		}
 	}
 
