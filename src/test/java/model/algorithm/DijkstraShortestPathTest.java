@@ -4,12 +4,14 @@ import model.GraphEdge;
 import model.GraphNode;
 import model.GraphComponentState;
 
+import java.lang.ReflectiveOperationException;
 
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import static org.junit.Assert.fail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -22,11 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 *    @Date: 02.11.2020
 **/
 public class DijkstraShortestPathTest{
-
-	private static final String RED = "\u001B[31m";
-    private static final String GREEN = "\u001B[32m";
-	private static final String RESET = "\u001B[0m";
-	private static final String YELLOW = "\u001B[33m";
 
 	private static Class[] algorithms = {
 		ArrayBasedDijkstra.class,
@@ -81,7 +78,6 @@ public class DijkstraShortestPathTest{
 	@Test
 	public void fourNodeGraph(){
 		for(Class algorithm : algorithms){
-			System.out.print(RESET + "Running for: " + algorithm + ": ");
 			try{
 				dsp = (DijkstraShortestPath) algorithm.getConstructor(GraphNode.class).newInstance((Object) null);
 				//    B
@@ -118,11 +114,11 @@ public class DijkstraShortestPathTest{
 				dsp.initialise(nodes);
 				dsp.run();
 
-				assertEquals(14, dsp.getDistance(nodeD), "expect 14, got: " + dsp.getDistance(nodeD));
-				assertEquals(dsp.getPredecessor(nodeD), nodeC);
-				assertEquals(dsp.getDistance(nodeB), 5);
-				assertEquals(dsp.getDistance(nodeC), 2);
-				assertEquals(3, dsp.getShortestPath(nodeD).size());
+				assertEquals(14, dsp.getDistance(nodeD), algorithm + " expect 14, got: " + dsp.getDistance(nodeD));
+				assertEquals(dsp.getPredecessor(nodeD), nodeC, algorithm + " predecessor should be nodeC");
+				assertEquals(dsp.getDistance(nodeB), 5, algorithm + " distance should be 5");
+				assertEquals(dsp.getDistance(nodeC), 2, algorithm + " distance should be 2");
+				assertEquals(3, dsp.getShortestPath(nodeD).size(), algorithm + " shortest path should have 3 nodes");
 
 
 				//now add a short edge from A to D in the original graph
@@ -135,25 +131,19 @@ public class DijkstraShortestPathTest{
 				dsp.initialise(nodes);
 				dsp.run();
 
-				assertEquals(1, dsp.getDistance(nodeD));
-				assertEquals(nodeA, dsp.getPredecessor(nodeD));
-				assertEquals(2, dsp.getShortestPath(nodeD).size());
-				System.out.print(GREEN + "PASSED");
+				assertEquals(1, dsp.getDistance(nodeD), algorithm + " Distance should be 1");
+				assertEquals(nodeA, dsp.getPredecessor(nodeD), algorithm + " predecessor should be nodeA");
+				assertEquals(2, dsp.getShortestPath(nodeD).size(), algorithm + " Distance should be 2");
 			}
-			catch(AssertionError e){
-				System.out.print(RED + "FAILED");
+			catch(ReflectiveOperationException e){
+				fail("Failed to instantiate " + algorithm);
 			}
-			catch(Exception e){
-				System.out.println(YELLOW + "INVALID ALGORITHM-SKIPPING");
-			}
-			System.out.println(RESET);
 		}
 	}
 
 	@Test
 	public void largeGraphTest(){
 		for(Class algorithm : algorithms){
-			System.out.print(RESET + "Running for: " + algorithm + ": ");
 			try{
 				dsp = (DijkstraShortestPath) algorithm.getConstructor(GraphNode.class).newInstance((Object) null);
 				//Create a graph with two routes
@@ -219,37 +209,32 @@ public class DijkstraShortestPathTest{
 				for(int i=1; i< indexOfTarget; i++){
 					GraphNode next = nodes.get(i);
 					cumulativeDistance += (i*2);
-					assertEquals(prev, dsp.getPredecessor(next), "Expected " + prev.getName() + ", got: " + dsp.getPredecessor(next).getName());
-					assertEquals(cumulativeDistance, dsp.getDistance(next), "Expected " + cumulativeDistance + ", got: " + dsp.getDistance(next));
+					assertEquals(prev, dsp.getPredecessor(next), algorithm + " Expected " + prev.getName() + ", got: " + dsp.getPredecessor(next).getName());
+					assertEquals(cumulativeDistance, dsp.getDistance(next), algorithm + " Expected " + cumulativeDistance + ", got: " + dsp.getDistance(next));
 					prev = next;
 				}
 
 				//Test that the correct distances/predecessors are generated for the cheap route
 				cumulativeDistance = 0;
 				prev = root;
-				assertEquals(2, root.getEdges().size(), "expect size to be 2, got: " + root.getEdges().size());
+				assertEquals(2, root.getEdges().size(), algorithm + " expect size to be 2, got: " + root.getEdges().size());
 				for(int i = indexOfTarget + 1; i < nodes.size(); i++){
 					GraphNode next = nodes.get(i);
 					cumulativeDistance += prev.getEdge(next).getLength();
-					assertEquals(prev, dsp.getPredecessor(next), "Expected predecessor of" + prev.getName() + " for node: " + next.getName() + ", got: " + dsp.getPredecessor(next).getName());
-					assertEquals(cumulativeDistance, dsp.getDistance(next), "Expected " + cumulativeDistance + ", got: " + dsp.getDistance(next));
+					assertEquals(prev, dsp.getPredecessor(next), algorithm + " Expected predecessor of" + prev.getName() + " for node: " + next.getName() + ", got: " + dsp.getPredecessor(next).getName());
+					assertEquals(cumulativeDistance, dsp.getDistance(next), algorithm + " Expected " + cumulativeDistance + ", got: " + dsp.getDistance(next));
 					prev = next;
 				}
 
 				//Test that the shortest path found is through the cheap route, and
 				//the correct distance is calculated
-				assertEquals(prev, dsp.getPredecessor(target));
-				assertEquals(cumulativeDistance + prev.getEdge(target).getLength(), dsp.getDistance(target));
-				assertEquals(20, dsp.getShortestPath(target).size());
-				System.out.print(GREEN + "PASSED");
+				assertEquals(prev, dsp.getPredecessor(target), "" + algorithm);
+				assertEquals(cumulativeDistance + prev.getEdge(target).getLength(), dsp.getDistance(target), "" + algorithm);
+				assertEquals(20, dsp.getShortestPath(target).size(), "" + algorithm);
 			}
-			catch(AssertionError e){
-				System.out.print(RED + "FAILED");
+			catch(ReflectiveOperationException e){
+				fail("Failed to instantiate: " + algorithm);
 			}
-			catch(Exception e){
-				System.out.print(YELLOW + "INVALID ALGORITHM-SKIPPING");
-			}
-			System.out.println(RESET);
 		}
 	}
 }

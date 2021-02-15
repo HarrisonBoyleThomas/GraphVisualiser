@@ -21,6 +21,8 @@ import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
+import javafx.application.Platform;
+
 import java.io.*;
 import java.nio.file.Paths;
 
@@ -465,10 +467,15 @@ public class MainWindow extends BorderPane{
 	*    @param error the error that caused the message(skipped if null)
 	**/
 	public void displayErrorMessage(String title, String message, Exception error){
-        Alert alert = new Alert(AlertType.ERROR, message);
-		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
-		alert.setHeaderText(title);
-		alert.showAndWait();
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+                Alert alert = new Alert(AlertType.ERROR, message);
+        		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
+        		alert.setHeaderText(title);
+	        	alert.showAndWait();
+			}
+		});
 	}
 
 
@@ -575,7 +582,7 @@ public class MainWindow extends BorderPane{
     		    	clickedEdges.add((VisualGraphEdge) c);
     			}
 				else{
-					//ADd the newest element to the front of the list
+					//Add the newest element to the front of the list
 					clickedEdges.remove((VisualGraphEdge) c);
 					clickedEdges.add((VisualGraphEdge) c);
 				}
@@ -628,6 +635,9 @@ public class MainWindow extends BorderPane{
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge created between " + nodeA.getNode().getName() + " and " + nodeB.getNode().getName() + "\n");
             GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
+			if(edge == null){
+				return false;
+			}
             edge.setName("");
             VisualGraphEdge.create(edge);
             updateDetailsPanel();
@@ -1202,5 +1212,11 @@ public class MainWindow extends BorderPane{
 		return getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm();
 	}
 
+	public boolean getMultiSelect(){
+		return multiSelect;
+	}
 
+	public ArrayList<VisualGraphNode> getCopiedNodes(){
+		return new ArrayList<VisualGraphNode>(copiedNodes);
+	}
 }

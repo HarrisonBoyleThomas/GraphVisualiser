@@ -297,7 +297,7 @@ public class Viewport extends Pane{
 										    }
 										}
 									}
-									else{
+									else if (c instanceof VisualGraphNode){
 										VisualGraphNode node = (VisualGraphNode) c;
 										drawnComponents.get(c).setLayoutX((int) node.getRenderLocation().x);
 										drawnComponents.get(c).setLayoutY((int) node.getRenderLocation().y);

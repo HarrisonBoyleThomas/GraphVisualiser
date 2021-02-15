@@ -37,14 +37,13 @@ public class ViewportAlgorithmSelector extends ComboBox{
 			getSelectionModel().select((new ArrayList<Class>(Arrays.asList(algorithmList))).indexOf(viewport.getAlgorithm().getClass()));
 		}
 
-		setOnAction((event) -> {
+		valueProperty().addListener((event) -> {
 			if(viewport.getAlgorithm() == null || (viewport.getAlgorithm() != null && !viewport.getAlgorithm().isRunning())){
 				//get the algorithm class chosen by the user
                 Class selectedClass = algorithmList[getSelectionModel().getSelectedIndex()];
     			try{
 					//Crate an instance of the chosen algorithm
     			    GraphAlgorithm instance = (GraphAlgorithm) selectedClass.getConstructor(GraphNode.class).newInstance((Object) null);
-					System.out.println("try set algorithm");
 					//Add the algorithm to the viewport
     				viewport.setAlgorithm(instance);
     			}
