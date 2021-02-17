@@ -15,6 +15,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 
+import java.io.*;
+import java.nio.file.Paths;
+
 import javafx.scene.Parent;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -79,6 +82,11 @@ public class MainWindowTest extends ApplicationTest{
     @Test
     public void createViewportTest(){
         GridPane view = (GridPane) mw.getCenter();
+        //ensure no viewports exist initially
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
         assertEquals(1, view.getChildren().size(), "MainWindow did not have correct initial viewport count");
         mw.createViewport();
         assertEquals(2, view.getChildren().size(), "MainWindow did not create a viewport");
@@ -150,7 +158,9 @@ public class MainWindowTest extends ApplicationTest{
         mw.createViewport();
         assertEquals(null, mw.getStartNode(), "Start node should be null when no algorithm is set");
         //Viewports update in their own threads, give them time to update
-        sleep(1000);
+        sleep(500);
+        mw.updateViewport();
+        sleep(500);
         for(Node n : view.getChildren()){
             Viewport v = (Viewport) n;
             ViewportAlgorithmSelector selector = (ViewportAlgorithmSelector) v.getViewportDetails().getAlgorithmDetails().getChildren().get(0);
@@ -379,6 +389,10 @@ public class MainWindowTest extends ApplicationTest{
     //Handle single movement input tests
     @Test
     public void deleteKeyPressed(){
+        //Delete all created nodes and edges
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
         mw.createNode();
         VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
         mw.createNode();
@@ -401,6 +415,10 @@ public class MainWindowTest extends ApplicationTest{
 
     @Test
     public void fKeyPressed(){
+        //Delete all created nodes and edges
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
         int originalCount = VisualGraphNode.getNodes().size();
         //clear multiselect
         handleMovementInput(null);
@@ -670,89 +688,439 @@ public class MainWindowTest extends ApplicationTest{
 
     @Test
     public void createNodeTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        GridPane view = (GridPane) mw.getCenter();
+        while(view.getChildren().size() < 1){
+            mw.createViewport();
+        }
+        sleep(500);
+        mw.updateViewport();
+        sleep(500);
+        //viewport should contain no nodes
+        assertEquals(2, ((Viewport) view.getChildren().get(0)).getChildren().size(), "Initial size should be 2");
 
+
+        mw.setState(MainWindowState.RUNNING);
+        mw.createNode();
+        assertEquals(0, VisualGraphNode.getNodes().size(), "Should not create node when not in EDIT mode");
+
+        mw.setState(MainWindowState.EDIT);
+
+        mw.createNode();
+        assertEquals(1, VisualGraphNode.getNodes().size(), "New node should be created");
+        //viewport should now contain a new child node
+        sleep(500);
+        assertEquals(3, ((Viewport) view.getChildren().get(0)).getChildren().size(), "New node should be added to viewport");
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.updateViewport();
     }
 
     @Test
     public void createEdgeTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
 
+        assertEquals(0, VisualGraphEdge.getEdges().size(), "There should be no edges initially");
+        mw.createNode();
+        mw.createNode();
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+        VisualGraphNode nodeB = VisualGraphNode.getNodes().get(1);
+
+        mw.setState(MainWindowState.RUNNING);
+        assertFalse(mw.createEdge(nodeA, nodeB));
+        assertEquals(0, VisualGraphEdge.getEdges().size(), "No edge should be created when not in EDIT mode");
+
+        mw.setState(MainWindowState.EDIT);
+
+        assertTrue(mw.createEdge(nodeA, nodeB));
+
+        assertEquals(1, VisualGraphEdge.getEdges().size(), "Edge should be created");
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.updateViewport();
     }
 
     @Test
     public void deleteNodeTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        assertEquals(0, VisualGraphNode.getNodes().size(), "There should be no nodes initially");
 
+        mw.createNode();
+        VisualGraphNode toDelete = VisualGraphNode.getNodes().get(0);
+
+        mw.setState(MainWindowState.RUNNING);
+        mw.deleteNode(toDelete);
+        assertEquals(1, VisualGraphNode.getNodes().size(), "Node should not be deleted when not in EDIT mode");
+
+        mw.setState(MainWindowState.EDIT);
+
+        mw.deleteNode(toDelete);
+        assertEquals(0, VisualGraphNode.getNodes().size(), "Node should be deleted in EDIT mode");
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.updateViewport();
     }
 
     @Test
     public void deleteEdgeTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+
+        mw.createNode();
+        mw.createNode();
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+        VisualGraphNode nodeB = VisualGraphNode.getNodes().get(1);
+
+        mw.createEdge(nodeA,nodeB);
+        mw.createEdge(nodeB, nodeA);
+
+        VisualGraphEdge edgeAB = VisualGraphEdge.getEdge(nodeA.getNode().getEdges().get(0));
+        VisualGraphEdge edgeBA = VisualGraphEdge.getEdge(nodeB.getNode().getEdges().get(0));
+
+        mw.setState(MainWindowState.RUNNING);
+        assertFalse(mw.deleteEdge(edgeAB));
+        assertEquals(2, VisualGraphEdge.getEdges().size(), "Should not delete when not in EDIT mode");
+        assertFalse(mw.deleteEdge(edgeAB.getEdge()));
+        assertEquals(2, VisualGraphEdge.getEdges().size(), "Should not delete model.edge when not in EDIT mode");
+
+        mw.setState(MainWindowState.EDIT);
+        assertTrue(mw.deleteEdge(edgeAB));
+        assertEquals(1, VisualGraphEdge.getEdges().size(), "Edge should be deleted");
+
+        assertTrue(mw.deleteEdge(edgeBA.getEdge()));
+        assertEquals(0, VisualGraphEdge.getEdges().size(), "Edge should be deleted");
+        //teardown
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.updateViewport();
 
     }
 
     @Test
     public void setStateTest(){
+        mw.setState(MainWindowState.EDIT);
+        assertEquals(MainWindowState.EDIT, mw.getState(), "Should set to EDIT mode");
+
+        mw.setState(MainWindowState.RUNNING);
+        assertEquals(MainWindowState.RUNNING, mw.getState(), "Should set to RUNNING mode");
+
+        //teardown, but test again just for the sake of it
+        mw.setState(MainWindowState.EDIT);
+        assertEquals(MainWindowState.EDIT, mw.getState(), "Should set to EDIT mode");
 
     }
 
     @Test
     public void startAlgorithmsTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
+        assertEquals(null, mw.getStartNode(), "Start node should be null when no algorithm is set");
+        //Viewports update in their own threads, give them time to update
+        sleep(500);
 
+        mw.createNode();
+
+        mw.setState(MainWindowState.RUNNING);
+        assertFalse(mw.startAlgorithms(), "Shouldn't start algorithms if already in RUNNING state");
+        mw.setState(MainWindowState.EDIT);
+        assertFalse(mw.startAlgorithms(), "Shouldn't start algorithms when algorithms not initialised");
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        //initialise the algorithm
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        assertTrue(mw.startAlgorithms(), "Algorithms should be started if conditions met");
+        assertEquals(MainWindowState.RUNNING, mw.getState(), "MainWindow should be in running state after starting");
+
+        mw.terminateAlgorithms();
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
     }
 
     @Test
     public void executeAlgorithmsTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
+        assertEquals(null, mw.getStartNode(), "Start node should be null when no algorithm is set");
+        //Viewports update in their own threads, give them time to update
+        sleep(500);
 
+        mw.createNode();
+
+        assertFalse(mw.startAlgorithms(), "Shouldn't start algorithms when algorithms not initialised");
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        //initialise the algorithm
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        assertTrue(mw.startAlgorithms(), "Algorithms should be started if conditions met");
+        assertEquals(MainWindowState.RUNNING, mw.getState(), "MainWindow should be in running state after starting");
+
+        mw.terminateAlgorithms();
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
     }
 
+    /*
+    Cannot be tested because this is essentially a cascaded method call
     @Test
     public void updateAlgorithmSpeedTest(){
 
     }
+    */
 
     @Test
     public void terminateAlgorithmsTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
+        assertEquals(null, mw.getStartNode(), "Start node should be null when no algorithm is set");
+        //Viewports update in their own threads, give them time to update
+        sleep(500);
+
+        mw.createNode();
+
+        assertFalse(mw.startAlgorithms(), "Shouldn't start algorithms when algorithms not initialised");
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        //initialise the algorithm
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        mw.startAlgorithms();
+        assertEquals(MainWindowState.RUNNING, mw.getState(), "MUST be RUNNING for the test to be correct");
+        mw.terminateAlgorithms();
+        assertEquals(MainWindowState.EDIT, mw.getState(), "Terminate must return the state to EDIT");
+
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
 
     }
 
+    /*
+    Cannot be tested because it is a cascaded method call
+    Also, this is heavily thread dependent and cannot be accurately tested
     @Test
     public void areAlgorithmsExecutingTest(){
 
     }
+    */
 
     @Test
-    public void areAlgorithmsPausedTest(){
+    public void algorithmPauseTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
+        //Viewports update in their own threads, give them time to update
+        sleep(500);
 
-    }
+        mw.createNode();
 
-    @Test
-    public void pauseAlgorithmsTest(){
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        //initialise the algorithm
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        assertFalse(mw.pauseAlgorithms(), "Should not be able to pause an algorithm when in EDIT state");
+        mw.executeAlgorithms();
+        assertTrue(mw.pauseAlgorithms(), "Should successfully toggle pause");
+        assertTrue(mw.areAlgorithmsPaused(), "Algorithms should be paused");
+        assertTrue(mw.pauseAlgorithms(), "Should successfully toggle pause");
+        assertFalse(mw.areAlgorithmsPaused(), "Algorithms should be unpaused");
+
+        mw.terminateAlgorithms();
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
 
     }
 
     @Test
     public void initialiseAlgorithmsTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
+
+        mw.createNode();
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        //initialise the algorithm
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        mw.initialiseAlgorithms();
+        assertTrue(((Viewport) view.getChildren().get(0)).getAlgorithm().getNodes().size() > 0, "The algorithm's node list should not be empty");
+
+        mw.deleteNode(nodeA);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
 
     }
 
     @Test
     public void stepAlgorithmsTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        mw.createViewport();
+
+        mw.createNode();
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        //initialise the algorithm
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        mw.startAlgorithms();
+        assertEquals(MainWindowState.RUNNING, mw.getState(), "Must be RUNNING to make the test accurate");
+        mw.stepAlgorithms();
+        mw.stepAlgorithms();
+        assertTrue(((Viewport) view.getChildren().get(0)).getAlgorithm().isFinished(), "Algorithm should be finished");
+        assertEquals(MainWindowState.EDIT, mw.getState());
+
+        mw.terminateAlgorithms();
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
 
     }
 
     @Test
     public void canRunAlgorithmsTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        assertFalse(mw.canRunAlgorithms(), "Should return false if there are no viewports");
+
+        mw.createNode();
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        mw.createViewport();
+        assertFalse(mw.canRunAlgorithms(), "Should return false if algorithm not set up");
+
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+        assertTrue(mw.canRunAlgorithms(), "Should return true if viewport's algorithm can run");
+
+        mw.terminateAlgorithms();
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
 
     }
 
     @Test
     public void areAlgorithmsFinishedTest(){
+        GridPane view = (GridPane) mw.getCenter();
+        //initialise one viewport
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
+        assertTrue(mw.areAlgorithmsFinished(), "SHould return true if there are no viewpoorts");
 
+        mw.createNode();
+
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+
+        mw.createViewport();
+        ((Viewport) view.getChildren().get(0)).setAlgorithm(new ArrayBasedDijkstra(nodeA.getNode()));
+
+        mw.startAlgorithms();
+        assertFalse(mw.areAlgorithmsFinished(), "Should be false if algorithms are running");
+        mw.stepAlgorithms();
+        mw.stepAlgorithms();
+        assertTrue(mw.areAlgorithmsFinished(), "Should be true when finished");
+
+        mw.terminateAlgorithms();
+        mw.deleteNode(nodeA);
+        mw.setState(MainWindowState.EDIT);
+
+        //teardown
+        while(view.getChildren().size() > 0){
+            mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
+        }
     }
 
+
+    /*
+    Cannot be tested, because step() and executed algorithms handle their own
+    states independently, so manually testing this method would only be possible
+    in a state whose change cannot be correctly detected
     @Test
     public void updateWindowStatusTest(){
 
     }
+    */
 
+
+    /*
+    Cannot be tested
+    unit test implementation means that MainWindow does not have a parent, which is
+    required to open a save/load dialog
     @Test
     public void saveGraphTest(){
 
@@ -762,15 +1130,71 @@ public class MainWindowTest extends ApplicationTest{
     public void loadGraphTest(){
 
     }
+    */
 
     @Test
-    public void copySelectedTest(){
+    public void loadAndSaveTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.createNode();
+        mw.createNode();
+        mw.createNode();
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+        VisualGraphNode nodeB = VisualGraphNode.getNodes().get(1);
+        VisualGraphNode nodeC = VisualGraphNode.getNodes().get(2);
+        mw.createEdge(nodeA, nodeB);
+        mw.createEdge(nodeA, nodeC);
+        mw.addClickedComponent(nodeA);
+        mw.addClickedComponent(nodeB, true);
+
+        File saveLoc = new File(Paths.get(".").toAbsolutePath().normalize().toString() + "/savedGraphs/testGraph.graph");
+        assertFalse(mw.save(null), "Should abort save if invalid location passed to save()");
+        assertTrue(mw.save(saveLoc), "Should successfully save to the location");
+
+        assertFalse(mw.load(null));
+        assertTrue(mw.load(saveLoc), "Should successfully load the graph");
+
+        assertEquals(5, VisualGraphNode.getNodes().size(), "Should have loaded only 2 new nodes");
+        assertEquals(3, VisualGraphEdge.getEdges().size(), "Should have loaded only 1 edge");
+
+        //teardown
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
 
     }
 
     @Test
-    public void pasteSelectedTest(){
+    public void copyAndPasteTest(){
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
+        mw.createNode();
+        mw.createNode();
+        mw.createNode();
+        VisualGraphNode nodeA = VisualGraphNode.getNodes().get(0);
+        VisualGraphNode nodeB = VisualGraphNode.getNodes().get(1);
+        VisualGraphNode nodeC = VisualGraphNode.getNodes().get(2);
+        mw.createEdge(nodeA, nodeB);
+        mw.createEdge(nodeA, nodeC);
+        mw.addClickedComponent(nodeA);
+        mw.addClickedComponent(nodeB, true);
+        mw.copySelected();
+        assertTrue(mw.getCopiedNodes().size() > 0, "Copy buffer must be more than 0 for anything to have been copied");
 
+        mw.pasteSelected();
+        assertEquals(5, VisualGraphNode.getNodes().size(), "5 nodes should exist after pasting 2 nodes");
+        assertEquals(3, VisualGraphEdge.getEdges().size(), "2 edges should exist after pasting. Invalid edge from A to C should not have been duplicated");
+
+        assertEquals(nodeA.getLocation(), VisualGraphNode.getNodes().get(3).getLocation(), "Node A should have a duplicate");
+        assertEquals(nodeB.getLocation(), VisualGraphNode.getNodes().get(4).getLocation(), "Node B should have a duplicate");
+
+
+        //teardown
+        while(VisualGraphNode.getNodes().size() > 0){
+            VisualGraphNode.delete(VisualGraphNode.getNodes().get(0));
+        }
     }
 
     @Test

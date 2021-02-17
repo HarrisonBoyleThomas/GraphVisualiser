@@ -155,4 +155,8 @@ public abstract class GraphAlgorithm{
 	public int[] getCurrentPseudocodeLines(){
 		return currentPseudocodeLines;
 	}
+
+	public ArrayList<GraphNode> getNodes(){
+		return new ArrayList<GraphNode>(nodes);
+	}
 }

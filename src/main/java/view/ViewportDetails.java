@@ -21,7 +21,9 @@ public class ViewportDetails extends VBox{
 		getChildren().clear();
 
 		algorithmDetails.update(viewport);
-		getChildren().add(algorithmDetails);
+		if(!getChildren().contains(algorithmDetails)){
+		    getChildren().add(algorithmDetails);
+		}
 	}
 
 	public AlgorithmDetails getAlgorithmDetails(){

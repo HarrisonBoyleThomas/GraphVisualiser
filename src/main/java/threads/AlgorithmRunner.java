@@ -15,6 +15,7 @@ import maths.Functions;
 public class AlgorithmRunner extends Thread{
     boolean running = true;
     boolean paused = false;
+    boolean terminated = false;
     GraphAlgorithm algorithm;
     //delay in milliseconds
     int sleepDelay;
@@ -34,7 +35,7 @@ public class AlgorithmRunner extends Thread{
         if(algorithm == null){
             return;
         }
-        while(running && !algorithm.isFinished() && algorithm.isRunning()){
+        while(running && !algorithm.isFinished() && algorithm.isRunning() && !terminated){
             while(paused){
                 try{
                     wait();
@@ -81,5 +82,10 @@ public class AlgorithmRunner extends Thread{
     **/
     public boolean isPaused(){
         return paused;
+    }
+
+    public void stopThread(){
+        paused = false;
+        terminated = true;
     }
 }

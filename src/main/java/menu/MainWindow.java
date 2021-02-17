@@ -1029,23 +1029,9 @@ public class MainWindow extends BorderPane{
 		dialog.setInitialDirectory(new File(initialPath));
 		dialog.setInitialFileName("newGraph.graph");
 		File saveFile = dialog.showSaveDialog(getScene().getWindow());
-		if(saveFile != null){
-			try{
-    			FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
-    			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-    			objectOutputStream.writeObject(clickedNodes);
-    			objectOutputStream.close();
-    			fileOutputStream.close();
-				displayMessage("Save successful", "Successfully saved graph to " + saveFile);
-				System.out.println("Successfully saved graph to " + saveFile + "\n");
-			}
-			catch(Exception e){
-				displayErrorMessage("Unable to save graph", "", e);
-				System.out.println("Unable to save\n");
-			}
-		}
-		else{
-			System.out.println("No file selected to save to, aborting save\n");
+		if(save(saveFile)){
+			displayMessage("Save successful", "Successfully saved graph to " + saveFile);
+
 		}
 	}
 
@@ -1060,56 +1046,87 @@ public class MainWindow extends BorderPane{
 		FileChooser.ExtensionFilter extensions = new FileChooser.ExtensionFilter("GRAPH files (*.graph)", "*.graph");
         dialog.getExtensionFilters().add(extensions);
 		File selectedFile = dialog.showOpenDialog(getScene().getWindow());
-		if(selectedFile != null){
+		load(selectedFile);
+	}
+
+	public boolean save(File saveLocation){
+		boolean successful = false;
+		if(saveLocation != null){
 			try{
-				System.out.println("Begin load operation");
-                FileInputStream fileStream = new FileInputStream(selectedFile);
-				ObjectInputStream objectStream = new ObjectInputStream(fileStream);
-				ArrayList<VisualGraphNode> nodes = (ArrayList<VisualGraphNode>) objectStream.readObject();
-				objectStream.close();
-				fileStream.close();
-				System.out.println("    -Successful read. Creating nodes");
-				ArrayList<GraphNode> createdNodes = new ArrayList<>();
-				//Create nodes in front of the camera, instead of their original position
-				Vector basePosition = camera.getLocation().add(camera.getForwardVector().multiply(10));
-				for(VisualGraphNode n : nodes){
-					GraphNode node = n.getNode();
-					createdNodes.add(n.getNode());
-				    VisualGraphNode vgn = VisualGraphNode.create(n.getLocation().subtract(nodes.get(0).getLocation()).add(basePosition), node);
-				}
-				System.out.println("    -All nodes generated. Creating edges");
-				//The serialised object is an array list of only the selected nodes, however by
-				//definition of serialised, this will essentially include all reachable nodes through references
-				//Only create edges for the nodes that were explicitly selected by the user. Remove the redundant edges
-				for(GraphNode n : createdNodes){
-					ArrayList<GraphEdge> invalidEdges = new ArrayList<>();
-					for(GraphEdge e : n.getEdges()){
-						if(createdNodes.contains(e.nodeB)){
-			                VisualGraphEdge.create(e);
-						}
-						else{
-							invalidEdges.add(e);
-						}
-					}
-					for(GraphEdge e : invalidEdges){
-						n.removeEdge(e, false);
-					}
-				}
-				System.out.println("    -All edges generated");
-				updateDetailsPanel();
-				updateViewport();
-				System.out.println("Successfully loaded " + selectedFile + "!");
+    			FileOutputStream fileOutputStream = new FileOutputStream(saveLocation);
+    			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+    			objectOutputStream.writeObject(clickedNodes);
+    			objectOutputStream.close();
+    			fileOutputStream.close();
+				System.out.println("Successfully saved graph to " + saveLocation + "\n");
+				successful = true;
 			}
 			catch(Exception e){
-				displayErrorMessage("Failed to load graph", "Unable to load " + selectedFile + ". The file may be corrupted", e);
-				System.out.println("Unable to load " + selectedFile + ". The file may be corrupted");
-				//e.printStackTrace();
+				displayErrorMessage("Unable to save graph", "", e);
+				System.out.println("Unable to save\n");
 			}
 		}
 		else{
-			System.out.println("No file selected to load, aborting load");
+			System.out.println("No file selected to save to, aborting save\n");
+		}
+		System.out.println(successful);
+		return successful;
+	}
+
+	public boolean load(File loadLocation){
+		boolean successful = false;
+		if(loadLocation != null){
+    		try{
+    			System.out.println("Begin load operation");
+    			FileInputStream fileStream = new FileInputStream(loadLocation);
+    			ObjectInputStream objectStream = new ObjectInputStream(fileStream);
+    			ArrayList<VisualGraphNode> nodes = (ArrayList<VisualGraphNode>) objectStream.readObject();
+    			objectStream.close();
+    			fileStream.close();
+    			System.out.println("    -Successful read. Creating nodes");
+    			ArrayList<GraphNode> createdNodes = new ArrayList<>();
+    			//Create nodes in front of the camera, instead of their original position
+    			Vector basePosition = camera.getLocation().add(camera.getForwardVector().multiply(10));
+	   	    	for(VisualGraphNode n : nodes){
+	    			GraphNode node = n.getNode();
+    				createdNodes.add(n.getNode());
+    				VisualGraphNode vgn = VisualGraphNode.create(n.getLocation().subtract(nodes.get(0).getLocation()).add(basePosition), node);
+    			}
+    			System.out.println("    -All nodes generated. Creating edges");
+    			//The serialised object is an array list of only the selected nodes, however by
+    			//definition of serialised, this will essentially include all reachable nodes through references
+    			//Only create edges for the nodes that were explicitly selected by the user. Remove the redundant edges
+    			for(GraphNode n : createdNodes){
+    				ArrayList<GraphEdge> invalidEdges = new ArrayList<>();
+	    			for(GraphEdge e : n.getEdges()){
+	    				if(createdNodes.contains(e.nodeB)){
+	    					VisualGraphEdge.create(e);
+	    				}
+	    				else{
+	    					invalidEdges.add(e);
+		    			}
+		    		}
+    				for(GraphEdge e : invalidEdges){
+    					n.removeEdge(e, false);
+    				}
+	    		}
+	    		System.out.println("    -All edges generated");
+	    		updateDetailsPanel();
+	    		updateViewport();
+	    		System.out.println("Successfully loaded " + loadLocation + "!");
+				successful = true;
+	    	}
+	    	catch(Exception e){
+	    		displayErrorMessage("Failed to load graph", "Unable to load " + loadLocation + ". The file may be corrupted", e);
+	    		System.out.println("Unable to load " + loadLocation + ". The file may be corrupted");
+	    		//e.printStackTrace();
+	    	}
+		}
+		else{
+            System.out.println("No file selected to load, aborting load");
 		}
 		System.out.println("\n");
+		return successful;
 	}
 
 

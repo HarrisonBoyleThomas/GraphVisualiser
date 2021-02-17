@@ -452,7 +452,9 @@ public class Viewport extends Pane{
 	**/
 	public void terminateAlgorithm(){
 		if(algorithmRunner != null){
-			algorithmRunner.stop();
+			if(algorithmRunner.isAlive()){
+		    	algorithmRunner.stopThread();
+			}
 			try{
 				algorithmRunner.join();
 			}
