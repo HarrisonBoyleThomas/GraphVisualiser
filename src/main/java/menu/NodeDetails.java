@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.geometry.Pos;
 
+import javafx.application.Platform;
+
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
@@ -36,21 +38,31 @@ public class NodeDetails extends DetailsPanel{
 	**/
 	public void setNode(GraphNode nodeIn){
 		node = nodeIn;
+		update();
+	}
+
+	public GraphNode getNode(){
+		return node;
 	}
 
 	public void update(){
-		if(node == null){
-			return;
-		}
-		getChildren().clear();
-		Tooltip tooltip = new Tooltip("The details panel now contains the details of the currently selected node");
-		Label title = new Label("NODE DETAILS");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+        		if(node == null){
+	        		return;
+        		}
+	        	getChildren().clear();
+        		Tooltip tooltip = new Tooltip("The details panel now contains the details of the currently selected node");
+        		Label title = new Label("NODE DETAILS");
+        		Tooltip.install(title, tooltip);
+        		getChildren().add(title);
 
-		addNameSection();
-		addValueSection();
-		addEdgeButtons();
+         		addNameSection();
+        		addValueSection();
+	        	addEdgeButtons();
+	        }
+		});
 	}
 
     /**
@@ -67,6 +79,7 @@ public class NodeDetails extends DetailsPanel{
 		nameSection.getChildren().add(title);
 
 		TextField name = new TextField(node.getName());
+		name.setId("name");
 		Tooltip.install(name, tooltip);
 		nameSection.getChildren().add(name);
 		getChildren().add(nameSection);
@@ -90,6 +103,7 @@ public class NodeDetails extends DetailsPanel{
 		valueSection.getChildren().add(title);
 
 		TextField value = new TextField("" + node.getValue());
+		value.setId("value");
 		Tooltip.install(value, tooltip);
 		valueSection.getChildren().add(value);
 		getChildren().add(valueSection);
@@ -115,6 +129,7 @@ public class NodeDetails extends DetailsPanel{
 		ScrollPane pane = new ScrollPane();
 		pane.setFitToWidth(true);
 		VBox edges = new VBox(2);
+		edges.setId("edges");
 		edges.setAlignment(Pos.TOP_CENTER);
 
 		Label title = new Label("OUTGOING EDGES");
@@ -124,6 +139,7 @@ public class NodeDetails extends DetailsPanel{
 
         for(GraphEdge edge : node.getEdges()){
             Button button = new Button(edge.nodeB.getName());
+			button.setId(edge.nodeB.getName());
             button.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override public void handle(ActionEvent e) {
 	                MainWindow.get().addClickedComponent(VisualGraphEdge.getEdge(edge));

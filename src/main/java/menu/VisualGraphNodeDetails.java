@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 
+import javafx.application.Platform;
+
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
 import javafx.scene.control.Tooltip;
@@ -39,27 +41,34 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 	**/
 	public void setNode(VisualGraphNode nodeIn){
 		node = nodeIn;
+		update();
+	}
+
+	public VisualGraphNode getNode(){
+		return node;
 	}
 
 	public void update(){
-		if(node == null){
-			return;
-		}
-		getChildren().clear();
-		Tooltip tooltip = new Tooltip("The details panel allows you to view and edit the details of selected graph components");
-		Label title = new Label("DETAILS PANEL");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
-		getChildren().add(new NodeDetails(node.getNode()));
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+        		if(node == null){
+	        		return;
+        		}
+        		getChildren().clear();
+       	    	Tooltip tooltip = new Tooltip("The details panel allows you to view and edit the details of selected graph components");
+        		Label title = new Label("DETAILS PANEL");
+        		Tooltip.install(title, tooltip);
+         		getChildren().add(title);
+        		getChildren().add(new NodeDetails(node.getNode()));
 
-		addLocationSection();
+        		addLocationSection();
 
-		addDeleteButton();
+	        	addDeleteButton();
 
-		getChildren().add(new EmptyDetails());
-
-
-
+        		getChildren().add(new EmptyDetails());
+			}
+		});
 	}
 
     /**
@@ -69,6 +78,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 	**/
 	private void addLocationSection(){
 		HBox locationSection = new HBox();
+		locationSection.setId("location");
 		locationSection.setAlignment(Pos.TOP_CENTER);
 		Tooltip tooltip = new Tooltip("The location of the node in world space. This is an x-y-z vector");
 
@@ -82,6 +92,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 		Label xLabel = new Label("X:");
 		TextField xCoord = new TextField("" + node.getLocation().x);
+		xCoord.setId("xCoord");
 		xCoord.setMaxWidth(50);
 		xCoord.textProperty().addListener((observable, oldCoord, newCoord) -> {
 			double newX = 0.0;
@@ -112,6 +123,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 		Label yLabel = new Label("Y:");
 		TextField yCoord = new TextField("" + node.getLocation().y);
+		yCoord.setId("yCoord");
 		yCoord.setMaxWidth(50);
 		yCoord.textProperty().addListener((observable, oldCoord, newCoord) -> {
 			double newY = 0.0;
@@ -142,6 +154,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 		Label zLabel = new Label("Z:");
 		TextField zCoord = new TextField("" + node.getLocation().z);
+		zCoord.setId("zCoord");
 		zCoord.setMaxWidth(50);
 		zCoord.textProperty().addListener((observable, oldCoord, newCoord) -> {
 			double newZ = 0.0;
@@ -178,6 +191,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 	private void addDeleteButton(){
 		Tooltip tooltip = new Tooltip("Delete the selected node");
 		Button delete = new Button("DELETE NODE");
+		delete.setId("delete");
 		Tooltip.install(delete, tooltip);
 		getChildren().add(delete);
 		delete.setOnAction(new EventHandler<ActionEvent>() {
