@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.nio.file.Paths;
+import java.io.InputStream;
 
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
@@ -93,7 +94,7 @@ public class ManualPanel extends VBox{
         updateStyle();
         getChildren().clear();
         ScrollPane sp = new ScrollPane();
-        VBox content = createPage("/src/main/resources/manual/manual_about.txt");
+        VBox content = createPage("/manual/manual_about.txt");
         sp.prefViewportHeightProperty().bind(content.heightProperty());
         sp.setContent(content);
         getChildren().add(sp);
@@ -111,7 +112,7 @@ public class ManualPanel extends VBox{
         updateStyle();
         getChildren().clear();
         ScrollPane sp = new ScrollPane();
-        ArrayList<String> data = readFile("/src/main/resources/manual/manual_controls.txt");
+        ArrayList<String> data = readFile("/manual/manual_controls.txt");
 
         VBox content = new VBox();
         content.setAlignment(Pos.CENTER);
@@ -193,7 +194,7 @@ public class ManualPanel extends VBox{
         updateStyle();
         getChildren().clear();
         ScrollPane sp = new ScrollPane();
-        VBox content = createPage("/src/main/resources/manual/manual_performanceGuide.txt");
+        VBox content = createPage("/manual/manual_performanceGuide.txt");
         sp.prefViewportHeightProperty().bind(content.heightProperty());
         sp.setContent(content);
         getChildren().add(sp);
@@ -211,14 +212,13 @@ public class ManualPanel extends VBox{
     private ArrayList<String> readFile(String fileName){
         ArrayList<String> output = new ArrayList<>();
         try{
-            File toOpen = new File(Paths.get(".").toAbsolutePath().normalize().toString() + fileName);
-            Scanner reader = new Scanner(toOpen);
+            Scanner reader = new Scanner(new File(getClass().getResource(fileName).toURI()));
             while(reader.hasNextLine()){
                 output.add(reader.nextLine());
             }
             reader.close();
         }
-        catch(FileNotFoundException e){
+        catch(Exception e){
             e.printStackTrace();
         }
         return output;

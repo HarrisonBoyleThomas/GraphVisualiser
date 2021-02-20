@@ -16,7 +16,7 @@ public class Data{
 
     private static int EXECUTION_SLEEP_DELAY = 500;
 
-    public static String THEME_CONFIG_PATH = "config/theme";
+    public static String THEME_CONFIG_PATH = "/config/theme";
 
     private static long DELTA_TIME;
 

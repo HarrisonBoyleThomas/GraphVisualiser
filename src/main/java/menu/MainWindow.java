@@ -1013,8 +1013,13 @@ public class MainWindow extends BorderPane{
 	**/
 	public void saveGraph(){
         FileChooser dialog = new FileChooser();
-		String initialPath = Paths.get(".").toAbsolutePath().normalize().toString() + "/savedGraphs";
-		dialog.setInitialDirectory(new File(initialPath));
+		String initialPath = "/savedGraphs";
+		try{
+		    dialog.setInitialDirectory(new File(getClass().getResource(initialPath).toURI()));
+		}
+		catch(Exception e){
+			dialog.setInitialDirectory(new File(""));
+		}
 		dialog.setInitialFileName("newGraph.graph");
 		File saveFile = dialog.showSaveDialog(getScene().getWindow());
 		if(saveFile != null){
@@ -1162,7 +1167,8 @@ public class MainWindow extends BorderPane{
 	private void initialiseTheme(){
 		ThemeState themeIn = ThemeState.LIGHT;
 		try{
-    		FileInputStream fileStream = new FileInputStream(Data.THEME_CONFIG_PATH);
+			File config = new File(getClass().getResource(Data.THEME_CONFIG_PATH).toURI());
+    		FileInputStream fileStream = new FileInputStream(config);
     		ObjectInputStream objectStream = new ObjectInputStream(fileStream);
     		themeIn = (ThemeState) objectStream.readObject();
     		objectStream.close();
@@ -1183,7 +1189,8 @@ public class MainWindow extends BorderPane{
 		getStylesheets().clear();
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
 		try{
-		    FileOutputStream fileOutputStream = new FileOutputStream(Data.THEME_CONFIG_PATH);
+			File config = new File(getClass().getResource(Data.THEME_CONFIG_PATH).toURI());
+		    FileOutputStream fileOutputStream = new FileOutputStream(config);
     		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
     		objectOutputStream.writeObject(theme);
     		objectOutputStream.close();

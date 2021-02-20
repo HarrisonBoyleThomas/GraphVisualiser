@@ -1,10 +1,20 @@
 plugins{
     id  'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'java'
 }
 application {
-    mainClassName = "GraphVisualiser"
+    mainClassName = "Launcher"
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources", "config", "savedGraphs"
+        }
+    }
+}
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("org.testfx:testfx-core:4.0.16-alpha")
@@ -13,6 +23,7 @@ dependencies {
 repositories {
   mavenCentral()
 }
+
 
 javafx {
     version = '15.0.1'
@@ -30,5 +41,24 @@ test {
 
     if (project.hasProperty('excludeTests')) {
         exclude project.property('excludeTests')
+    }
+}
+
+task uberJar(type: Jar) {
+    archiveClassifier = 'uber'
+
+    from('src/main/resources') {
+      include '**/*.*'
+    }
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'Launcher'
     }
 }
