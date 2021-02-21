@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -22,9 +23,23 @@ import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.Slider;
+
+import javafx.util.Duration;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.Observable;
 
 import java.nio.file.Paths;
 import java.io.InputStream;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.scene.media.MediaPlayer.Status;
 
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
@@ -85,6 +100,16 @@ public class ManualPanel extends VBox{
             }
         });
         content.getChildren().add(performanceConsiderations);
+
+        Tooltip tutorialTooltip = new Tooltip("View a tutorial video explaining how to use GraphVisualiser");
+        Button tutorial = new Button("Tutorial");
+        Tooltip.install(tutorial, tutorialTooltip);
+        tutorial.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createTutorialPage();
+            }
+        });
+        content.getChildren().add(tutorial);
 
         getChildren().add(content);
 
@@ -198,6 +223,74 @@ public class ManualPanel extends VBox{
         sp.prefViewportHeightProperty().bind(content.heightProperty());
         sp.setContent(content);
         getChildren().add(sp);
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createContentsPage();
+            }
+        });
+        getChildren().add(back);
+    }
+
+    private void createTutorialPage(){
+        updateStyle();
+        getChildren().clear();
+        try{
+            VBox content = new VBox();
+
+            Media media = new Media(getClass().getResource("/tutorialVideos/gvt.mp4").toExternalForm());
+            MediaPlayer player = new MediaPlayer(media);
+            player.setAutoPlay(true);
+            MediaView mediaView = new MediaView (player);
+            mediaView.fitWidthProperty().bind(this.widthProperty().multiply(0.95));
+            content.getChildren().add(mediaView);
+
+            HBox controlBar = new HBox();
+
+            Button pauseButton = new Button("Pause");
+            pauseButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    if(player.getStatus().equals(Status.PLAYING)){
+                        pauseButton.setText("Play");
+                        player.pause();
+                    }
+                    else if(player.getStatus().equals(Status.PAUSED)){
+                        pauseButton.setText("Pause");
+                        player.play();
+                    }
+                }
+            });
+            controlBar.getChildren().add(pauseButton);
+
+            Slider timeSlider = new Slider(0.0, 9.36, 0.0);
+            timeSlider.setMinorTickCount(5);
+            timeSlider.setShowTickLabels(true);
+            timeSlider.setShowTickMarks(true);
+            timeSlider.prefWidthProperty().bind(this.widthProperty().multiply(0.6));
+            timeSlider.valueProperty().addListener(new InvalidationListener(){
+                public void invalidated(Observable observable){
+    				player.seek(player.getTotalDuration().multiply(timeSlider.getValue() / 100.0));
+                }
+            });
+            controlBar.getChildren().add(timeSlider);
+
+            player.currentTimeProperty().addListener(new InvalidationListener(){
+                public void invalidated(Observable observable){
+                    timeSlider.setValue(player.getCurrentTime().divide(player.getTotalDuration()).toMillis() * 100.0);
+                }
+            });
+
+
+            content.getChildren().add(controlBar);
+
+            getChildren().add(content);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            Label error = new Label("Unable to load video, check that tutorialVideos/gvt.mp4 exists");
+            getChildren().add(error);
+        }
 
         Button back = new Button("Back");
         back.setOnAction(new EventHandler<ActionEvent>() {
