@@ -321,9 +321,9 @@ public class VisualGraphNode extends VisualGraphComponent{
 	*    Since the click list MUST contain a VGC from the static VGC list, search for
 	*   the corresponding VGC from this list by comparing the node the VGN represents
 	**/
-	protected void handleClick(VisualGraphComponent toAdd){
+	protected void handleClick(VisualGraphComponent toAdd, boolean doubleClick){
 		if(toAdd == null){
-		    super.handleClick(VisualGraphNode.getNode(this.getNode()));
+		    super.handleClick(VisualGraphNode.getNode(this.getNode()), doubleClick);
 		}
 	}
 }

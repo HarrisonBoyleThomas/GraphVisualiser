@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.Group;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -295,31 +296,34 @@ public class MainWindow extends BorderPane{
 	*    @param k the key that was pressed
 	**/
 	public void handleSingleInput(KeyCode k){
-		if(k == KeyCode.DELETE){
-			deleteAllSelected();
-		}
-		if(k == KeyCode.F){
-			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
-				addPathBetweenSelected();
-			}
-			else{
-				createNode();
-			}
-		}
-		if(k == KeyCode.M){
-			selectAll();
-		}
-		if(k == KeyCode.TAB){
-			selectNextNode();
-		}
-		if(multiSelect){
-			//copy
-			if(k == KeyCode.C){
-                copySelected();
-			}
-			//paste
-			if(k == KeyCode.V){
-                pasteSelected();
+		Node focusOwner = getScene().focusOwnerProperty().get();
+		if(focusOwner instanceof Viewport || focusOwner instanceof Group){
+    		if(k == KeyCode.DELETE){
+    			deleteAllSelected();
+    		}
+    		if(k == KeyCode.F){
+    			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
+    				addPathBetweenSelected();
+    			}
+    			else{
+    				createNode();
+    			}
+    		}
+    		if(k == KeyCode.M){
+    			selectAll();
+    		}
+    		if(k == KeyCode.TAB){
+    			selectNextNode();
+    		}
+    		if(multiSelect){
+    			//copy
+    			if(k == KeyCode.C){
+                    copySelected();
+	    		}
+	    		//paste
+	    		if(k == KeyCode.V){
+                    pasteSelected();
+	    		}
 			}
 		}
 	}
@@ -596,6 +600,11 @@ public class MainWindow extends BorderPane{
 		multiSelect = true;
 		addClickedComponent(c);
 		multiSelect = multiSelectBefore;
+	}
+
+	public void addClickedComponentDoubleClick(VisualGraphComponent c){
+		addClickedComponent(c);
+		((DetailsPanel) getLeft()).highlightFirstAttribute();
 	}
 
 

@@ -41,6 +41,12 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		node = nodeIn;
 	}
 
+	public void highlightFirstAttribute(){
+		if(getChildren().size() > 0){
+			((DetailsPanel) getChildren().get(1)).highlightFirstAttribute();
+		}
+	}
+
 	public void update(){
 		if(node == null){
 			return;

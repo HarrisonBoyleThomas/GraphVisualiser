@@ -331,9 +331,9 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    Since the click list MUST contain a VGC from the static VGC list, search for
 	*   the corresponding VGC from this list by comparing the edge the VGE represents
 	**/
-	protected void handleClick(VisualGraphComponent toAdd){
+	protected void handleClick(VisualGraphComponent toAdd, boolean doubleClick){
 		if(toAdd == null){
-		    super.handleClick(VisualGraphEdge.getEdge(this.getEdge()));
+		    super.handleClick(VisualGraphEdge.getEdge(this.getEdge()), doubleClick);
 		}
 	}
 

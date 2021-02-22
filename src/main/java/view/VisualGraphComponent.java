@@ -99,15 +99,20 @@ public abstract class VisualGraphComponent extends Actor{
             @Override
             public void handle(MouseEvent e) {
                 e.consume();
-                handleClick(null);
+                handleClick(null, e.getClickCount() == 2);
             }
         };
 	}
 
 
-    protected void handleClick(VisualGraphComponent toAdd){
+    protected void handleClick(VisualGraphComponent toAdd, boolean doubleClick){
 		if(toAdd != null){
-		    MainWindow.get().addClickedComponent(toAdd);
+			if(doubleClick){
+				MainWindow.get().addClickedComponentDoubleClick(toAdd);
+			}
+			else{
+		        MainWindow.get().addClickedComponent(toAdd);
+			}
 		}
 	}
 
