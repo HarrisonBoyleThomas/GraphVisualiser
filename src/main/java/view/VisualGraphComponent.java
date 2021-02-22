@@ -13,6 +13,11 @@ import java.util.Map.Entry;
 import java.util.Collections;
 
 import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
+import javafx.scene.Node;
+import javafx.scene.shape.Shape;
+import javafx.geometry.Bounds;
+
 
 import javafx.scene.Group;
 
@@ -93,13 +98,16 @@ public abstract class VisualGraphComponent extends Actor{
             @Override
             public void handle(MouseEvent e) {
                 e.consume();
-                handleClick();
+                handleClick(null);
             }
         };
 	}
 
-    protected void handleClick(){
-		MainWindow.get().addClickedComponent(this);
+
+    protected void handleClick(VisualGraphComponent toAdd){
+		if(toAdd != null){
+		    MainWindow.get().addClickedComponent(toAdd);
+		}
 	}
 
 	public void setSelected(boolean selectedIn){

@@ -78,13 +78,22 @@ public class Viewport extends Pane{
 		camera = cameraIn;
 		algorithm = algorithmIn;
 		draw();
-		setOnMouseClicked(e -> {requestFocus(); MainWindow.get().addClickedComponent(null, false);});
+
+		setPickOnBounds(false);
+		setOnMouseClicked(e -> {handleClick();
+		});
 
 		//set the clipping rectangle to hide VGCs that are off screen
 		Rectangle clip = new Rectangle(width, height);
         setClip(clip);
 		addDragAndDropEvents();
 		createCloseButton();
+	}
+
+	private void handleClick(){
+		requestFocus();
+		MainWindow.get().addClickedComponent(null, false);
+
 	}
     /**
 	*    Add drag and drop events so that nodes can be dragged onto the viewport
