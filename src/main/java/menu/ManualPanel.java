@@ -1,8 +1,12 @@
 package menu;
 
+import data.Data;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Arrays;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +29,10 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ComboBox;
+import javafx.scene.input.KeyCode;
+
+import java.lang.reflect.Field;
 
 import javafx.util.Duration;
 
@@ -151,17 +159,48 @@ public class ManualPanel extends VBox{
                 Insets descriptionInset = new Insets(10.0, 2.0, 10.0, 2.0);
                 GridPane grid = new GridPane();
                 int controlNumber = 0;
+                //List of all possible keys
+                Object[] keys = KeyCode.values();
                 for(String line : data){
                     String[] split = line.split(",");
                     if(split.length == 2){
                         Tooltip keyTooltip = new Tooltip(split[0]);
-                        Label key = new Label(split[0]);
-                        Tooltip.install(key, keyTooltip);
-                        key.setId("manualLine");
-                        key.setMinWidth(55);
-                        key.setWrapText(true);
-                        grid.add(key, 0, controlNumber);
-                        grid.setMargin(key, keyInset);
+                        //If a control name is specified on this line, then the control binding
+                        //can be changed - add a combobox to change the controls instead of a label
+                        if(split[1].split(":").length > 2){
+                            Field field = Data.CAMERA_CONTROLS.getClass().getField(split[1].split(":")[2]);
+                            keyTooltip = new Tooltip("Key: " + field.get(Data.CAMERA_CONTROLS));
+                            ComboBox keySelection = new ComboBox();
+                            for(Object key : keys){
+                                keySelection.getItems().add(key.toString());
+                            }
+                            keySelection.getSelectionModel().select(new ArrayList<Object>(Arrays.asList(keys)).indexOf(field.get(Data.CAMERA_CONTROLS)));
+                            grid.add(keySelection, 0, controlNumber);
+
+                            keySelection.setOnAction((event) -> {
+                                try{
+                                    KeyCode selectedKey = ((KeyCode) new ArrayList<Object>(Arrays.asList(keys)).get(keySelection.getSelectionModel().getSelectedIndex()));
+                                    field.set(Data.CAMERA_CONTROLS, selectedKey);
+                                    if(Data.CAMERA_CONTROLS.save()){
+                                        MainWindow.get().displayMessage("Control binding changed!", "The control binding has been successfully changed for " + split[1].split(":")[0]);
+                                    }
+                                    Tooltip.install(keySelection, new Tooltip("Key: " + selectedKey));
+                                }
+                                catch(Exception illegalAccessException){
+                                    MainWindow.get().displayErrorMessage("Unable to edit controls", "There was an error when trying to change the control binding", null);
+                                }
+                            });
+                            Tooltip.install(keySelection, keyTooltip);
+                        }
+                        else{
+                            Label key = new Label(split[0]);
+                            Tooltip.install(key, keyTooltip);
+                            key.setId("manualLine");
+                            key.setMinWidth(55);
+                            key.setWrapText(true);
+                            grid.add(key, 0, controlNumber);
+                            grid.setMargin(key, keyInset);
+                        }
 
                         Tooltip nameTooltip = new Tooltip(split[1].split(":")[0]);
                         Label controlName = new Label(split[1].split(":")[0]);
@@ -197,12 +236,26 @@ public class ManualPanel extends VBox{
                 content.getChildren().add(grid);
             }
             catch(Exception e){
+                e.printStackTrace();
                 content.getChildren().add(new Label("Bad format for manual_controls.txt. Ensure the format of each line is <keyCode, controlName:description>"));
             }
         }
         else{
             content.getChildren().add(new Label("Error loading manual_controls.txt"));
         }
+        //Add controls reset button
+        Button resetControls = new Button("Reset controls");
+        Tooltip resetTooltip = new Tooltip("Reset all controls to their default values");
+        Tooltip.install(resetControls, resetTooltip);
+        resetControls.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Data.CAMERA_CONTROLS.reset();
+                MainWindow.get().displayMessage("Controls reset", "Successfully restored controls to their default values");
+                createControlsPage();
+            }
+        });
+        content.getChildren().add(resetControls);
+
         sp.setContent(content);
         getChildren().add(sp);
 

@@ -230,51 +230,51 @@ public class MainWindow extends BorderPane{
 		boolean moved = false;
 		multiSelect = false;
 		for(KeyCode k : keys){
-	    	if(k == KeyCode.UP){
+	    	if(k == Data.CAMERA_CONTROLS.PITCH_UP_KEY){
 		    	camera.pitchRelative(-0.1);
 				moved = true;
 		    }
-			if(k == KeyCode.DOWN){
+			if(k == Data.CAMERA_CONTROLS.PITCH_DOWN_KEY){
 				camera.pitchRelative(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.LEFT){
+			if(k == Data.CAMERA_CONTROLS.YAW_LEFT_KEY){
 				camera.yawRelative(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.RIGHT){
+			if(k == Data.CAMERA_CONTROLS.YAW_RIGHT_KEY){
 			    camera.yawRelative(0.1);
 				moved = true;
 	    	}
-			if(k == KeyCode.W){
+			if(k == Data.CAMERA_CONTROLS.MOVE_FORWARD_KEY){
 				camera.moveForward(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.S){
+			if(k == Data.CAMERA_CONTROLS.MOVE_BACKWARD_KEY){
 				camera.moveForward(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.A){
+			if(k == Data.CAMERA_CONTROLS.MOVE_LEFT_KEY){
 				camera.moveSideways(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.D){
+			if(k == Data.CAMERA_CONTROLS.MOVE_RIGHT_KEY){
 				camera.moveSideways(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.Q){
+			if(k == Data.CAMERA_CONTROLS.MOVE_UP_KEY){
 				camera.moveUpwards(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.Z){
+			if(k == Data.CAMERA_CONTROLS.MOVE_DOWN_KEY){
 				camera.moveUpwards(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.COMMA){
+			if(k == Data.CAMERA_CONTROLS.ROLL_LEFT_KEY){
 				camera.roll(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.PERIOD){
+			if(k == Data.CAMERA_CONTROLS.ROLL_RIGHT_KEY){
 				camera.roll(0.1);
 				moved = true;
 			}

@@ -2,18 +2,18 @@ CONTROLS
 
 Below is a list of controls and their corresponding function
 
-W,MOVE FORWARD:Move the camera relatively forward in the world
-S,MOVE BACKWARD:Move the camera relatively backward in the world
-A,MOVE LEFT:Move the camera relatively left in the world
-D,MOVE RIGHT:Move the camera relatively right in the world
-Q,MOVE UPWARD:Move the camera relatively updwards in the world
-Z,MOVE DOWNWARD:Move the camera relatively downwards in the world
-↑,PITCH DOWNWARD:Pitch the camera downwards from the current position
-↓,PITCH UPWARD:Pitch the camera upwards from the current position
-←,YAW LEFT:Yaw the camera left of it's current position
-→,YAW RIGHT:Yaw the camera right of it's current position
-<,ROLL LEFT:Roll the camera left of it's current position. This is not a very useful transformation
->,ROLL RIGHT:Roll the camera right of it's current position. This is not a very useful transformation
+W,MOVE FORWARD:Move the camera relatively forward in the world:MOVE_FORWARD_KEY
+S,MOVE BACKWARD:Move the camera relatively backward in the world:MOVE_BACKWARD_KEY
+A,MOVE LEFT:Move the camera relatively left in the world:MOVE_LEFT_KEY
+D,MOVE RIGHT:Move the camera relatively right in the world:MOVE_RIGHT_KEY
+Q,MOVE UPWARD:Move the camera relatively updwards in the world:MOVE_UP_KEY
+Z,MOVE DOWNWARD:Move the camera relatively downwards in the world:MOVE_DOWN_KEY
+↑,PITCH DOWNWARD:Pitch the camera downwards from the current position:PITCH_DOWN_KEY
+↓,PITCH UPWARD:Pitch the camera upwards from the current position:PITCH_UP_KEY
+←,YAW LEFT:Yaw the camera left of it's current position:YAW_LEFT_KEY
+→,YAW RIGHT:Yaw the camera right of it's current position:YAW_RIGHT_KEY
+<,ROLL LEFT:Roll the camera left of it's current position. This is not a very useful transformation:ROLL_LEFT_KEY
+>,ROLL RIGHT:Roll the camera right of it's current position. This is not a very useful transformation:ROLL_RIGHT_KEY
 F,CREATE:If 0 or 1 nodes are selected, create a node in front of the camera. If multiple nodes are created then create a path from the first selected node to the last selected node through all intermediate selected nodes
 M,SELECT ALL:Select all nodes in the viewport if they are not selected. If all nodes are selected then deselect all
 TAB,SELECT NEXT:Select the next created node

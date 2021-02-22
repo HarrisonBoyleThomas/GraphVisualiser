@@ -20,6 +20,8 @@ public class Data{
 
     private static long DELTA_TIME;
 
+    public static final CameraControlData CAMERA_CONTROLS = new CameraControlData();
+
     public static void updateSleepDelay(int newValue){
         EXECUTION_SLEEP_DELAY = (int) Functions.clamp(newValue, 0, 1000);
     }
@@ -42,5 +44,4 @@ public class Data{
         }
         return (int) (1000000000.0/DELTA_TIME) ;
     }
-
 }

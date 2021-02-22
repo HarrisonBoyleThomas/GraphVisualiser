@@ -35,7 +35,7 @@ import javafx.scene.input.MouseEvent;
 public abstract class VisualGraphComponent extends Actor{
 	//The icon for the VGC that will be rendered at the renderLocation
 	protected transient Group icon;
-	static final long serialVersionUID = 21L;
+	protected static final long serialVersionUID = 21L;
 
 	//where the VGC is meant to be rendered on-screen. A 2D vector
 	protected transient Vector renderLocation;
