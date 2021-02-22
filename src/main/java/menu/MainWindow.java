@@ -262,11 +262,11 @@ public class MainWindow extends BorderPane{
 				moved = true;
 			}
 			if(k == KeyCode.Q){
-				camera.moveUpwards(-0.1);
+				camera.moveUpwards(0.1);
 				moved = true;
 			}
 			if(k == KeyCode.Z){
-				camera.moveUpwards(0.1);
+				camera.moveUpwards(-0.1);
 				moved = true;
 			}
 			if(k == KeyCode.COMMA){
