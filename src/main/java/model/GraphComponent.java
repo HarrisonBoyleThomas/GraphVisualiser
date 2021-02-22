@@ -11,6 +11,7 @@ import java.io.*;
 abstract class GraphComponent implements Serializable{
 	private GraphComponentState state;
 	private String name;
+	static final long serialVersionUID = 21L;
 
 	public GraphComponent(){
 		initialiseState();

@@ -8,17 +8,17 @@ package model;
 *    @Date 30/10/2020
 **/
 public class GraphEdge extends GraphComponent{
-	
+
 	public final GraphNode nodeA;
 	public final GraphNode nodeB;
 	private int length;
-	
+
 	public GraphEdge(GraphNode nodeAIn, GraphNode nodeBIn, int lengthIn){
 		nodeA = nodeAIn;
 		nodeB = nodeBIn;
 		length = setLength(lengthIn);
 	}
-	
+
 	/**
 	*    update the length of the edge. Clamped between 0 and 100000
 	*    @param lengthIn: the new length
@@ -36,21 +36,21 @@ public class GraphEdge extends GraphComponent{
 		}
 		return length;
 	}
-    
+
 	/**
 	*    @return the length of the edge
 	**/
     public int getLength(){
         return  length;
 	}
-	
+
 	/**
 	*    @return a GraphNode[] of the endpoints of the edge
 	**/
 	public GraphNode[] getNodes(){
 		return new GraphNode[]{nodeA, nodeB};
 	}
-	
+
 	/**
 	*    Only 1 edge is allowed between nodes
 	*    @Return true if the endpoints of the edge are the same, false otherwise
@@ -62,5 +62,5 @@ public class GraphEdge extends GraphComponent{
 		}
 		return false;
 	}
-		
-}	
+
+}
