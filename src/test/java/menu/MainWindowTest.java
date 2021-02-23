@@ -3,6 +3,7 @@ import menu.*;
 import viewport.*;
 import model.*;
 import model.algorithm.*;
+import data.*;
 
 import maths.Vector;
 import maths.Rotator;
@@ -49,6 +50,7 @@ public class MainWindowTest extends ApplicationTest{
 
     @Override
     public void start(Stage stage){
+        Data.CAMERA_CONTROLS.reset();
         Scene scene = MainWindow.get().getScene();
         mw = MainWindow.get();
         stage.setScene(scene);

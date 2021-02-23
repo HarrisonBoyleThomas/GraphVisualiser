@@ -55,7 +55,7 @@ public class NodeDetailsTest extends ApplicationTest{
     @Test
     public void editNameTest(){
         try{
-            TextField name = (TextField) scene.lookup("#name");
+            TextField name = (TextField) TestHelper.findNodeById(details, "name");
             String oldName = details.getNode().getName();;
             name.setText("testName");
             assertEquals("testName", details.getNode().getName(), "Name should be changed by typing into the text box");
@@ -70,7 +70,7 @@ public class NodeDetailsTest extends ApplicationTest{
     @Test
     public void editValueTest(){
         try{
-            TextField value = (TextField) scene.lookup("#value");
+            TextField value = (TextField) TestHelper.findNodeById(details, "value");
             int oldValue = details.getNode().getValue();;
             value.setText("42");
             assertEquals(42, details.getNode().getValue(), "Value should be changed by typing into the text box");

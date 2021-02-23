@@ -393,7 +393,9 @@ public class Viewport extends Pane{
 				terminateAlgorithm();
             }
         });
-		getChildren().add(close);
+		if(!getChildren().contains(close)){
+		    getChildren().add(close);
+		}
 		//Position in the top right corner
 		close.setLayoutX(width - 30);
 	}

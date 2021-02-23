@@ -231,6 +231,9 @@ public class MainWindow extends BorderPane{
 	public void handleMovementInput(ArrayList<KeyCode> keys){
 		boolean moved = false;
 		multiSelect = false;
+		if(keys == null){
+			return;
+		}
 		for(KeyCode k : keys){
 	    	if(k == Data.CAMERA_CONTROLS.PITCH_UP_KEY){
 		    	camera.pitchRelative(-0.1);
@@ -298,8 +301,13 @@ public class MainWindow extends BorderPane{
 	*    @param k the key that was pressed
 	**/
 	public void handleSingleInput(KeyCode k){
-		Node focusOwner = getScene().focusOwnerProperty().get();
-		if(focusOwner instanceof Viewport || focusOwner instanceof Group){
+		Node focusOwner = null;
+		if(getScene() != null){
+			if(getScene().focusOwnerProperty() != null){
+				focusOwner = getScene().focusOwnerProperty().get();
+			}
+		}
+		if(focusOwner instanceof Viewport || focusOwner instanceof Group || focusOwner == null){
     		if(k == KeyCode.DELETE){
     			deleteAllSelected();
     		}

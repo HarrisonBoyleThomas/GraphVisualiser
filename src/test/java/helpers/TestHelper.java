@@ -3,6 +3,7 @@ package helpers;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.Parent;
 
 import javafx.event.Event;
 import javafx.scene.input.KeyEvent;
@@ -72,5 +73,37 @@ public class TestHelper{
             }
         }
         return matches;
+    }
+
+    public static Node getNodeById(ObservableList<Node> collection, String id){
+        if(id == null){
+            return null;
+        }
+        for(Node n : collection){
+            if(id.equals(n.getId())){
+                return n;
+            }
+        }
+        return null;
+    }
+
+    public static Node findNodeById(Parent root, String id){
+        if(id.equals(root.getId())){
+            return root;
+        }
+        for(Node n : root.getChildrenUnmodifiable()){
+            if(n instanceof Parent){
+                Node found = findNodeById((Parent) n, id);
+                if(found != null){
+                    return found;
+                }
+            }
+            else{
+                if(id.equals(n.getId())){
+                    return n;
+                }
+            }
+        }
+        return null;
     }
 }

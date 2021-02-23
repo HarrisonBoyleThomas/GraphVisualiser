@@ -10,6 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
+import javafx.application.Platform;
+
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
 import javafx.scene.control.Tooltip;
@@ -36,21 +38,26 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 	}
 
 	public void update(){
-		if(nodeA == null || nodeB == null){
-			return;
-		}
-		getChildren().clear();
-		Tooltip tooltip = new Tooltip("The details panel allows you to view and edit the details of selected graph components");
-		Label title = new Label("DETAILS PANEL");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+        		if(nodeA == null || nodeB == null){
+        			return;
+        		}
+    	    	getChildren().clear();
+        		Tooltip tooltip = new Tooltip("The details panel allows you to view and edit the details of selected graph components");
+        		Label title = new Label("DETAILS PANEL");
+        		Tooltip.install(title, tooltip);
+	        	getChildren().add(title);
 
 
-		addCreateEdgeButtons();
+        		addCreateEdgeButtons();
 
-		addDeleteButton();
+        		addDeleteButton();
 
-		getChildren().add(new EmptyDetails());
+        		getChildren().add(new EmptyDetails());
+			}
+		});
 
 
 	}
@@ -80,10 +87,12 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		GraphEdge targetEdgeOne = canAddEdge(nodeA.getNode(), nodeB.getNode());
 		if(targetEdgeOne == null){
 	    	aToB = new Button("CREATE EDGE FROM" + nodeA.getNode().getName() + " TO " + nodeB.getNode().getName());
-	    	aToB.setOnAction(new EventHandler<ActionEvent>() {
+            aToB.setId("atob");
+			aToB.setOnAction(new EventHandler<ActionEvent>() {
 	    		@Override public void handle(ActionEvent e){
 					if(canAddEdge(nodeA.getNode(), nodeB.getNode()) == null){
 	    			    MainWindow.get().createEdge(nodeA, nodeB);
+						update();
 					}
 	    		}
 	    	});
@@ -91,9 +100,11 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		}
 		else{
 			aToB = new Button("DELETE EDGE FROM" + nodeA.getNode().getName() + " TO " + nodeB.getNode().getName());
-	    	aToB.setOnAction(new EventHandler<ActionEvent>() {
+            aToB.setId("atobdelete");
+			aToB.setOnAction(new EventHandler<ActionEvent>() {
 	    		@Override public void handle(ActionEvent e){
 	    	    	MainWindow.get().deleteEdge(targetEdgeOne);
+					update();
 	    		}
 	    	});
 	    	Tooltip.install(aToB, deleteTooltip);
@@ -103,10 +114,12 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		GraphEdge targetEdgeTwo = canAddEdge(nodeB.getNode(), nodeA.getNode());
 		if(targetEdgeTwo == null){
     		bToA = new Button("CREATE EDGE FROM" + nodeB.getNode().getName() + " TO " + nodeA.getNode().getName());
-    		bToA.setOnAction(new EventHandler<ActionEvent>() {
+            bToA.setId("btoa");
+			bToA.setOnAction(new EventHandler<ActionEvent>() {
     			@Override public void handle(ActionEvent e){
 					if(canAddEdge(nodeB.getNode(), nodeA.getNode()) == null){
     				    MainWindow.get().createEdge(nodeB, nodeA);
+						update();
 					}
     			}
     		});
@@ -114,9 +127,11 @@ public class DoubleNodeSelectedDetails extends DetailsPanel{
 		}
 		else{
 			bToA = new Button("DELETE EDGE FROM" + nodeB.getNode().getName() + " TO " + nodeA.getNode().getName());
-    		bToA.setOnAction(new EventHandler<ActionEvent>() {
+            bToA.setId("btoadelete");
+			bToA.setOnAction(new EventHandler<ActionEvent>() {
     			@Override public void handle(ActionEvent e){
     				MainWindow.get().deleteEdge(targetEdgeTwo);
+					update();
     			}
     		});
     		Tooltip.install(bToA, deleteTooltip);
