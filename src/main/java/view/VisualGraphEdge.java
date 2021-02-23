@@ -31,6 +31,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
+import javafx.scene.Node;
+
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -61,7 +63,8 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		renderLocation = toCopy.getRenderLocation();
 		renderScale = toCopy.renderScale;
 		icon = toCopy.getIcon();
-		clickEvent = toCopy.clickEvent;
+		//clickEvent = toCopy.clickEvent;
+		addEvents();
 		selected = toCopy.selected;
 		location = toCopy.renderLocation;
 	}
@@ -282,6 +285,11 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		icon = new Group();
 		icon.getChildren().add(pane);
 		icon.addEventFilter(MouseEvent.MOUSE_CLICKED, clickEvent);
+		icon.setPickOnBounds(false);
+		for(Node n : pane.getChildren()){
+			n.setPickOnBounds(false);
+		}
+		pane.setPickOnBounds(false);
 		//Tooltip tooltip = new Tooltip("Click to edit edge");
 		//Tooltip.install(icon, tooltip);
 	}
@@ -317,6 +325,16 @@ public class VisualGraphEdge extends VisualGraphComponent{
 
 	public boolean iconsEqual(Group other){
 		return false;
+	}
+
+    /**
+	*    Since the click list MUST contain a VGC from the static VGC list, search for
+	*   the corresponding VGC from this list by comparing the edge the VGE represents
+	**/
+	protected void handleClick(VisualGraphComponent toAdd, boolean doubleClick){
+		if(toAdd == null){
+		    super.handleClick(VisualGraphEdge.getEdge(this.getEdge()), doubleClick);
+		}
 	}
 
 

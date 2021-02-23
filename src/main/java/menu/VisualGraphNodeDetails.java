@@ -47,6 +47,11 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 	public VisualGraphNode getNode(){
 		return node;
 	}
+	public void highlightFirstAttribute(){
+		if(getChildren().size() > 0){
+			((DetailsPanel) getChildren().get(1)).highlightFirstAttribute();
+		}
+	}
 
 	public void update(){
 		Platform.runLater(new Runnable() {

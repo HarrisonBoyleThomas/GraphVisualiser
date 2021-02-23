@@ -13,6 +13,11 @@ import java.util.Map.Entry;
 import java.util.Collections;
 
 import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
+import javafx.scene.Node;
+import javafx.scene.shape.Shape;
+import javafx.geometry.Bounds;
+
 
 import javafx.scene.Group;
 
@@ -30,6 +35,7 @@ import javafx.scene.input.MouseEvent;
 public abstract class VisualGraphComponent extends Actor{
 	//The icon for the VGC that will be rendered at the renderLocation
 	protected transient Group icon;
+	protected static final long serialVersionUID = 21L;
 
 	//where the VGC is meant to be rendered on-screen. A 2D vector
 	protected transient Vector renderLocation;
@@ -93,13 +99,21 @@ public abstract class VisualGraphComponent extends Actor{
             @Override
             public void handle(MouseEvent e) {
                 e.consume();
-                handleClick();
+                handleClick(null, e.getClickCount() == 2);
             }
         };
 	}
 
-    protected void handleClick(){
-		MainWindow.get().addClickedComponent(this);
+
+    protected void handleClick(VisualGraphComponent toAdd, boolean doubleClick){
+		if(toAdd != null){
+			if(doubleClick){
+				MainWindow.get().addClickedComponentDoubleClick(toAdd);
+			}
+			else{
+		        MainWindow.get().addClickedComponent(toAdd);
+			}
+		}
 	}
 
 	public void setSelected(boolean selectedIn){

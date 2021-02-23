@@ -70,7 +70,8 @@ public class VisualGraphNode extends VisualGraphComponent{
 		renderLocation = toCopy.getRenderLocation();
 		renderScale = toCopy.renderScale;
 		icon = toCopy.getIcon();
-		clickEvent = toCopy.clickEvent;
+		//clickEvent = toCopy.clickEvent;
+		addEvents();
 		selected = toCopy.selected;
 	}
 
@@ -236,6 +237,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		label.setLayoutX(40*renderScale);
 		label.setLayoutY(-20*renderScale);
 		icon.getChildren().add(label);
+		icon.setPickOnBounds(true);
 	}
 
 	private void addDragEvents(){
@@ -248,7 +250,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 				SnapshotParameters parameters = new SnapshotParameters();
 				parameters.setFill(Color.TRANSPARENT);
 				db.setDragView(icon.snapshot(parameters, null));
-				MainWindow.get().addClickedComponent(VisualGraphNode.getNode(getNode()), true);
+				MainWindow.get().addClickedComponentDragged(VisualGraphNode.getNode(getNode()));
 
                 event.consume();
             }
@@ -313,5 +315,15 @@ public class VisualGraphNode extends VisualGraphComponent{
 
 	public Color getSetColour(){
 		return setColour;
+	}
+
+	/**
+	*    Since the click list MUST contain a VGC from the static VGC list, search for
+	*   the corresponding VGC from this list by comparing the node the VGN represents
+	**/
+	protected void handleClick(VisualGraphComponent toAdd, boolean doubleClick){
+		if(toAdd == null){
+		    super.handleClick(VisualGraphNode.getNode(this.getNode()), doubleClick);
+		}
 	}
 }

@@ -1,5 +1,11 @@
 package menu;
 
+import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+
+import java.util.ArrayList;
+
 /**
 *    The DetailsPanel is used to display information about selected graph
 *    components. Subclasses exist to represent different combinations of
@@ -17,4 +23,31 @@ public abstract class DetailsPanel extends DetailsComponent{
 	*    Refresh the component
 	**/
 	public abstract void update();
+
+    /**
+	*    Select and highlight the first textfield in the panel
+	**/
+	public void highlightFirstAttribute(){
+		for(Node n : getAllChildren(this)){
+			if(n instanceof TextField){
+				n.requestFocus();
+				((TextField) n).selectAll();
+				return;
+			}
+		}
+	}
+
+    /**
+	*    Run a DFS to collect all children of the given node
+	**/
+	private ArrayList<Node> getAllChildren(Parent node){
+		ArrayList<Node> children = new ArrayList<>();
+		for(Node n : node.getChildrenUnmodifiable()){
+			children.add(n);
+            if(n instanceof Parent){
+                children.addAll(getAllChildren((Parent) n));
+			}
+		}
+		return children;
+	}
 }

@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.Group;
 
 import javafx.application.Platform;
 
@@ -231,51 +232,51 @@ public class MainWindow extends BorderPane{
 		boolean moved = false;
 		multiSelect = false;
 		for(KeyCode k : keys){
-	    	if(k == KeyCode.UP){
+	    	if(k == Data.CAMERA_CONTROLS.PITCH_UP_KEY){
 		    	camera.pitchRelative(-0.1);
 				moved = true;
 		    }
-			if(k == KeyCode.DOWN){
+			if(k == Data.CAMERA_CONTROLS.PITCH_DOWN_KEY){
 				camera.pitchRelative(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.LEFT){
+			if(k == Data.CAMERA_CONTROLS.YAW_LEFT_KEY){
 				camera.yawRelative(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.RIGHT){
+			if(k == Data.CAMERA_CONTROLS.YAW_RIGHT_KEY){
 			    camera.yawRelative(0.1);
 				moved = true;
 	    	}
-			if(k == KeyCode.W){
+			if(k == Data.CAMERA_CONTROLS.MOVE_FORWARD_KEY){
 				camera.moveForward(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.S){
+			if(k == Data.CAMERA_CONTROLS.MOVE_BACKWARD_KEY){
 				camera.moveForward(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.A){
+			if(k == Data.CAMERA_CONTROLS.MOVE_LEFT_KEY){
 				camera.moveSideways(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.D){
+			if(k == Data.CAMERA_CONTROLS.MOVE_RIGHT_KEY){
 				camera.moveSideways(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.Q){
-				camera.moveUpwards(-0.1);
-				moved = true;
-			}
-			if(k == KeyCode.Z){
+			if(k == Data.CAMERA_CONTROLS.MOVE_UP_KEY){
 				camera.moveUpwards(0.1);
 				moved = true;
 			}
-			if(k == KeyCode.COMMA){
+			if(k == Data.CAMERA_CONTROLS.MOVE_DOWN_KEY){
+				camera.moveUpwards(-0.1);
+				moved = true;
+			}
+			if(k == Data.CAMERA_CONTROLS.ROLL_LEFT_KEY){
 				camera.roll(-0.1);
 				moved = true;
 			}
-			if(k == KeyCode.PERIOD){
+			if(k == Data.CAMERA_CONTROLS.ROLL_RIGHT_KEY){
 				camera.roll(0.1);
 				moved = true;
 			}
@@ -297,31 +298,34 @@ public class MainWindow extends BorderPane{
 	*    @param k the key that was pressed
 	**/
 	public void handleSingleInput(KeyCode k){
-		if(k == KeyCode.DELETE){
-			deleteAllSelected();
-		}
-		if(k == KeyCode.F){
-			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
-				addPathBetweenSelected();
-			}
-			else{
-				createNode();
-			}
-		}
-		if(k == KeyCode.M){
-			selectAll();
-		}
-		if(k == KeyCode.TAB){
-			selectNextNode();
-		}
-		if(multiSelect){
-			//copy
-			if(k == KeyCode.C){
-                copySelected();
-			}
-			//paste
-			if(k == KeyCode.V){
-                pasteSelected();
+		Node focusOwner = getScene().focusOwnerProperty().get();
+		if(focusOwner instanceof Viewport || focusOwner instanceof Group){
+    		if(k == KeyCode.DELETE){
+    			deleteAllSelected();
+    		}
+    		if(k == KeyCode.F){
+    			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
+    				addPathBetweenSelected();
+    			}
+    			else{
+    				createNode();
+    			}
+    		}
+    		if(k == KeyCode.M){
+    			selectAll();
+    		}
+    		if(k == KeyCode.TAB){
+    			selectNextNode();
+    		}
+    		if(multiSelect){
+    			//copy
+    			if(k == KeyCode.C){
+                    copySelected();
+	    		}
+	    		//paste
+	    		if(k == KeyCode.V){
+                    pasteSelected();
+	    		}
 			}
 		}
 	}
@@ -603,6 +607,25 @@ public class MainWindow extends BorderPane{
 		multiSelect = true;
 		addClickedComponent(c);
 		multiSelect = multiSelectBefore;
+	}
+
+    /**
+	*    Handle double clicking a component, which will auto highlight a textbox in a
+	*    details panel for convenience
+	**/
+	public void addClickedComponentDoubleClick(VisualGraphComponent c){
+		addClickedComponent(c);
+		((DetailsPanel) getLeft()).highlightFirstAttribute();
+	}
+
+    /**
+	*    Handle the logic for handling when a node detects it was dragged
+	*    If the node wasn't selected already, then make it the only selected node
+	**/
+	public void addClickedComponentDragged(VisualGraphComponent c){
+		if(!clickedNodes.contains(c)){
+			addClickedComponent(c);
+		}
 	}
 
 
@@ -1025,8 +1048,13 @@ public class MainWindow extends BorderPane{
 	**/
 	public void saveGraph(){
         FileChooser dialog = new FileChooser();
-		String initialPath = Paths.get(".").toAbsolutePath().normalize().toString() + "/savedGraphs";
-		dialog.setInitialDirectory(new File(initialPath));
+		String initialPath = "/savedGraphs";
+		try{
+		    dialog.setInitialDirectory(new File(getClass().getResource(initialPath).toURI()));
+		}
+		catch(Exception e){
+			dialog.setInitialDirectory(new File(""));
+		}
 		dialog.setInitialFileName("newGraph.graph");
 		File saveFile = dialog.showSaveDialog(getScene().getWindow());
 		if(save(saveFile)){
@@ -1191,11 +1219,9 @@ public class MainWindow extends BorderPane{
 	private void initialiseTheme(){
 		ThemeState themeIn = ThemeState.LIGHT;
 		try{
-    		FileInputStream fileStream = new FileInputStream(Data.THEME_CONFIG_PATH);
-    		ObjectInputStream objectStream = new ObjectInputStream(fileStream);
+    		ObjectInputStream objectStream = new ObjectInputStream(getClass().getResourceAsStream(Data.THEME_CONFIG_PATH));
     		themeIn = (ThemeState) objectStream.readObject();
     		objectStream.close();
-	    	fileStream.close();
 			setTheme(themeIn);
 		}
 		catch(Exception e){
@@ -1212,7 +1238,9 @@ public class MainWindow extends BorderPane{
 		getStylesheets().clear();
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
 		try{
-		    FileOutputStream fileOutputStream = new FileOutputStream(Data.THEME_CONFIG_PATH);
+			File configFolder = new File(getClass().getResource("/config/").toURI());
+            File config = new File(configFolder, "theme");
+		    FileOutputStream fileOutputStream = new FileOutputStream(config);
     		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
     		objectOutputStream.writeObject(theme);
     		objectOutputStream.close();

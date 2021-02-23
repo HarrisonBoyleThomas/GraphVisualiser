@@ -181,7 +181,7 @@ public class MenuHeader extends MenuBar{
 				popup.initOwner(MenuHeader.this.getScene().getWindow());
 				popup.setResizable(false);
 				popup.setTitle("Manual");
-				Scene scene = new Scene(new ManualPanel(), 600, 400);
+				Scene scene = new Scene(new ManualPanel(), 600, 450);
 				popup.setScene(scene);
 				popup.show();
 			}
