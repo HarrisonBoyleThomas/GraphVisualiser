@@ -53,6 +53,7 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 public class ManualPanel extends VBox{
+    ArrayList<MediaPlayer> players = new ArrayList<>();
     public ManualPanel(){
         super(20);
         setMinHeight(500);
@@ -289,11 +290,15 @@ public class ManualPanel extends VBox{
     private void createTutorialPage(){
         updateStyle();
         getChildren().clear();
+        if(players.size() > 0){
+            players.get(0).stop();
+        }
         try{
             VBox content = new VBox();
 
             Media media = new Media(getClass().getResource("/tutorialVideos/gvt.mp4").toExternalForm());
             MediaPlayer player = new MediaPlayer(media);
+            players.add(player);
             player.setAutoPlay(true);
             MediaView mediaView = new MediaView (player);
             mediaView.fitWidthProperty().bind(this.widthProperty().multiply(0.95));
@@ -348,6 +353,9 @@ public class ManualPanel extends VBox{
         Button back = new Button("Back");
         back.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
                 createContentsPage();
             }
         });
@@ -358,7 +366,7 @@ public class ManualPanel extends VBox{
     private ArrayList<String> readFile(String fileName){
         ArrayList<String> output = new ArrayList<>();
         try{
-            Scanner reader = new Scanner(new File(getClass().getResource(fileName).toURI()));
+            Scanner reader = new Scanner(getClass().getResourceAsStream(fileName));
             while(reader.hasNextLine()){
                 output.add(reader.nextLine());
             }
