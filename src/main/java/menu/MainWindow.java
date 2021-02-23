@@ -602,9 +602,23 @@ public class MainWindow extends BorderPane{
 		multiSelect = multiSelectBefore;
 	}
 
+    /**
+	*    Handle double clicking a component, which will auto highlight a textbox in a
+	*    details panel for convenience
+	**/
 	public void addClickedComponentDoubleClick(VisualGraphComponent c){
 		addClickedComponent(c);
 		((DetailsPanel) getLeft()).highlightFirstAttribute();
+	}
+
+    /**
+	*    Handle the logic for handling when a node detects it was dragged
+	*    If the node wasn't selected already, then make it the only selected node
+	**/
+	public void addClickedComponentDragged(VisualGraphComponent c){
+		if(!clickedNodes.contains(c)){
+			addClickedComponent(c);
+		}
 	}
 
 

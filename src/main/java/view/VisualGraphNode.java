@@ -250,7 +250,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 				SnapshotParameters parameters = new SnapshotParameters();
 				parameters.setFill(Color.TRANSPARENT);
 				db.setDragView(icon.snapshot(parameters, null));
-				MainWindow.get().addClickedComponent(VisualGraphNode.getNode(getNode()), true);
+				MainWindow.get().addClickedComponentDragged(VisualGraphNode.getNode(getNode()));
 
                 event.consume();
             }
