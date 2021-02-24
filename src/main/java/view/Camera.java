@@ -204,7 +204,7 @@ public class Camera extends Actor{
 	**/
 	public Vector moveUpwards(double inputAxis){
 		Vector magnitude = getUpVector();
-		magnitude = magnitude.multiply(inputAxis * xSensitivity);
+		magnitude = magnitude.multiply((-inputAxis) * xSensitivity);
 
 		return addLocation(magnitude);
 	}

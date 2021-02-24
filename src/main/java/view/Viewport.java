@@ -299,10 +299,14 @@ public class Viewport extends Pane{
 										VisualGraphEdge edge = (VisualGraphEdge) c;
 										VisualGraphNode nodeA = VisualGraphNode.getNode(edge.getEdge().nodeA);
 										VisualGraphNode nodeB = VisualGraphNode.getNode(edge.getEdge().nodeB);
-										if(nodeA !=  null && nodeB != null){
-										    if(camera.isInFront(nodeA)  || camera.isInFront(nodeB)){
-										    	drawnComponents.get(c).setLayoutX((int) edge.getRenderLocation().x);
-										    	drawnComponents.get(c).setLayoutY((int) edge.getRenderLocation().y);
+										if(edge != null && edge.getRenderLocation() != null){
+								    		if(nodeA !=  null && nodeB != null){
+									    	    if(camera.isInFront(nodeA)  || camera.isInFront(nodeB)){
+													if(drawnComponents.get(c) != null){
+									    	        	drawnComponents.get(c).setLayoutX((int) edge.getRenderLocation().x);
+									    	    	    drawnComponents.get(c).setLayoutY((int) edge.getRenderLocation().y);
+                                                    }
+												}
 										    }
 										}
 									}
@@ -347,7 +351,10 @@ public class Viewport extends Pane{
 								}
 								//Remove any previous services to prevent deadlock
 								while(renderTasks.size() > 0){
-									renderTasks.remove(0).cancel();
+									Service<Void> task = renderTasks.remove(0);
+									if(!isCancelled()){
+								    	task.cancel();
+									}
 								}
 							    delay.countDown();
                             }

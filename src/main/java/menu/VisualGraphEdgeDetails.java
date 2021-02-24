@@ -13,6 +13,8 @@ import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
 import javafx.scene.control.Tooltip;
 
+import javafx.application.Platform;
+
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
@@ -45,21 +47,30 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		update();
 	}
 
+	public VisualGraphEdge getEdge(){
+		return edge;
+	}
+
 	public void update(){
-		if(edge == null){
-			return;
-		}
-		getChildren().clear();
-		Tooltip tooltip =new Tooltip("The details panel allows you to view and edit the details of selected graph components");
-		Label title = new Label("DETAILS PANEL");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+        		if(edge == null){
+        			return;
+        		}
+        		getChildren().clear();
+        		Tooltip tooltip =new Tooltip("The details panel allows you to view and edit the details of selected graph components");
+        		Label title = new Label("DETAILS PANEL");
+         		Tooltip.install(title, tooltip);
+        		getChildren().add(title);
 
-		addEdgeSection();
+        		addEdgeSection();
 
-		addDeleteButton();
+        		addDeleteButton();
 
-		getChildren().add(new EmptyDetails());
+    	    	getChildren().add(new EmptyDetails());
+			}
+		});
 
 	}
 
@@ -86,6 +97,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		Tooltip.install(nameTitle, nameTooltip);
 		Tooltip.install(nameSection, nameTooltip);
 		TextField name = new TextField(edge.getEdge().getName());
+		name.setId("name");
 		Tooltip.install(name, nameTooltip);
 		nameSection.getChildren().add(name);
 		edgeSection.getChildren().add(nameSection);
@@ -93,6 +105,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		name.textProperty().addListener((observable, oldName, newName) -> {
 			if(newName.length() < 15){
 	    		edge.getEdge().setName(newName);
+				update();
 		    	MainWindow.get().updateViewport();
 			}
 			else{
@@ -109,6 +122,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		Tooltip.install(lengthTitle, lengthTooltip);
 		Tooltip.install(lengthSection, lengthTooltip);
 		TextField length = new TextField("" + edge.getEdge().getLength());
+		length.setId("length");
 		Tooltip.install(length, lengthTooltip);
 		lengthSection.getChildren().add(length);
 		edgeSection.getChildren().add(lengthSection);
@@ -123,6 +137,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 			}
 			if(value > 0 && value < 10000000){
 			    edge.getEdge().setLength(value);
+				update();
 			    MainWindow.get().updateViewport();
 			}
 			else{
@@ -139,6 +154,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 		Label nodeALabel = new Label("Origin");
 		Button nodeAButton = new Button(edge.getEdge().nodeA.getName());
+		nodeAButton.setId("nodea");
 		nodeAButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 MainWindow.get().addClickedComponent(VisualGraphNode.getNode(edge.getEdge().nodeA));
@@ -156,6 +172,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 		Label nodeBLabel = new Label("End");
 		Button nodeBButton = new Button(edge.getEdge().nodeB.getName());
+		nodeBButton.setId("nodeb");
 		nodeBButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 MainWindow.get().addClickedComponent(VisualGraphNode.getNode(edge.getEdge().nodeB));
@@ -179,6 +196,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 	private void addDeleteButton(){
 		Tooltip tooltip = new Tooltip("Delete the selected edge");
 		Button delete = new Button("DELETE EDGE");
+		delete.setId("delete");
 		Tooltip.install(delete, tooltip);
 		getChildren().add(delete);
 		delete.setOnAction(new EventHandler<ActionEvent>() {
