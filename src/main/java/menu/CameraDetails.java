@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Slider;
 
+import javafx.application.Platform;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -36,22 +38,29 @@ public class CameraDetails extends DetailsPanel{
 	}
 
 	public void update(){
-		if(camera == null){
-			return;
-		}
-		getChildren().clear();
-		Tooltip tooltip = new Tooltip("The details of the camera");
-		Label title = new Label("CAMERA DETAILS");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
+		Platform.runLater(new Runnable(){
+			@Override
+			public void run(){
+        		if(camera == null){
+        			return;
+        		}
+        		getChildren().clear();
+        		Tooltip tooltip = new Tooltip("The details of the camera");
+        		Label title = new Label("CAMERA DETAILS");
+        		Tooltip.install(title, tooltip);
+        		getChildren().add(title);
 
-		Label position = new Label("    Position: " + camera.getLocation().toStringNeat());
-		getChildren().add(position);
+        		Label position = new Label("    Position: " + camera.getLocation().toStringNeat());
+                position.setId("position");
+        		getChildren().add(position);
 
-		Label rotation = new Label("    Rotation: " + camera.getRotation().toStringNeat());
-		getChildren().add(rotation);
+        		Label rotation = new Label("    Rotation: " + camera.getRotation().toStringNeat());
+                rotation.setId("rotation");
+        		getChildren().add(rotation);
 
-		addViewDistanceDial();
+    	    	addViewDistanceDial();
+			}
+		});
 	}
 
     /**

@@ -18,6 +18,8 @@ import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
 import javafx.scene.control.Tooltip;
 
+import javafx.application.Platform;
+
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
@@ -38,17 +40,22 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 	}
 
 	public void update(){
-		getChildren().clear();
-		Tooltip tooltip = new Tooltip("Use this panel to control running algorithms");
-		Label title = new Label("ALGORITHM CONTROLS");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
+		Platform.runLater(new Runnable(){
+			@Override
+			public void run(){
+        		getChildren().clear();
+         		Tooltip tooltip = new Tooltip("Use this panel to control running algorithms");
+        		Label title = new Label("ALGORITHM CONTROLS");
+        		Tooltip.install(title, tooltip);
+        		getChildren().add(title);
 
-		createStepButton();
-		createExecuteButton();
-		createSpeedDial();
-		createPauseButton();
-		createTerminateButton();
+        		createStepButton();
+        		createExecuteButton();
+        		createSpeedDial();
+        		createPauseButton();
+	    	    createTerminateButton();
+			}
+		});
 	}
 
     /**
@@ -58,6 +65,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 	private void createStepButton(){
 		Tooltip tooltip = new Tooltip("Advance all algorithms one step");
 		Button step = new Button("Step");
+		step.setId("step");
 		Tooltip.install(step, tooltip);
 
 		step.setOnAction(new EventHandler<ActionEvent>() {
@@ -79,6 +87,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 		}
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, to quickly obtain their output without stepping");
 		Button button = new Button("Execute");
+		button.setId("execute");
 		Tooltip.install(button, tooltip);
 
         button.setOnAction(new EventHandler<ActionEvent>() {
@@ -95,6 +104,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 		}
 		Tooltip tooltip = new Tooltip("Toggle pause the execution of algorithms");
 		Button button = new Button("Pause");
+		button.setId("pause");
 		if(MainWindow.get().areAlgorithmsPaused()){
 			button = new Button("Unpause");
 		}
@@ -115,6 +125,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 	private void createTerminateButton(){
 		Tooltip tooltip = new Tooltip("Cancel the execution of all algorithms so you can make edits to the graph");
 		Button button = new Button("Terminate");
+		button.setId("terminate");
 		Tooltip.install(button, tooltip);
 
 		button.setOnAction(new EventHandler<ActionEvent>() {

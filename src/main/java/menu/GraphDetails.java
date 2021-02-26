@@ -12,6 +12,9 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tooltip;
 
+import javafx.application.Platform;
+
+
 /**
 *    The GraphDetails box displays useful information about the current graph,
 *    such as it's node count
@@ -24,12 +27,17 @@ public class GraphDetails extends DetailsPanel{
     }
 
     public void update(){
-        getChildren().clear();
-        Label title = new Label("GRAPH DETAILS");
-        getChildren().add(title);
-        createNodeCountSection();
-        createEdgeCountSection();
-        createTotalMemorySection();
+        Platform.runLater(new Runnable(){
+			@Override
+			public void run(){
+                getChildren().clear();
+                Label title = new Label("GRAPH DETAILS");
+                getChildren().add(title);
+                createNodeCountSection();
+                createEdgeCountSection();
+                createTotalMemorySection();
+            }
+        });
     }
 
     private void createNodeCountSection(){
@@ -38,6 +46,7 @@ public class GraphDetails extends DetailsPanel{
         Tooltip.install(section, tooltip);
         Label title = new Label("Node count: ");
         Label count = new Label("" + VisualGraphNode.getNodes().size());
+        count.setId("nodecount");
         section.getChildren().add(title);
         section.getChildren().add(count);
         section.setAlignment(Pos.TOP_CENTER);
@@ -50,6 +59,7 @@ public class GraphDetails extends DetailsPanel{
         Tooltip.install(section, tooltip);
         Label title = new Label("Edge count: ");
         Label count = new Label("" + VisualGraphEdge.getEdges().size());
+        count.setId("edgecount");
         section.getChildren().add(title);
         section.getChildren().add(count);
         section.setAlignment(Pos.TOP_CENTER);
