@@ -30,6 +30,8 @@ public class AlgorithmDetails extends VBox{
 		algorithmDetailsMap.put(DijkstraShortestPath.class, DijkstraDetails.class);
 		algorithmDetailsMap.put(ArrayBasedDijkstra.class, DijkstraDetails.class);
 		algorithmDetailsMap.put(HeapBasedDijkstra.class, DijkstraDetails.class);
+		algorithmDetailsMap.put(BreadthFirstSearch.class, SearchAlgorithmDetails.class);
+		algorithmDetailsMap.put(DepthFirstSearch.class, SearchAlgorithmDetails.class);
 	}
     //Popup window that displays information about a particular algorithm
 	private AlgorithmDetailsWindow detailsInstance;
@@ -78,7 +80,7 @@ public class AlgorithmDetails extends VBox{
 							update(viewport);
 		    			}
 		    			catch(Exception error){
-		    				System.out.println("Unable to load algorithm's details. This is caused by the algorithm not being defined in the algorithmDetailsMap in view/AlgorithmDetails.java");
+		    				System.out.println("Unable to load algorithm's details. This is caused by the algorithm not being defined in the algorithmDetailsMap in view/AlgorithmDetails.java, or if there is an error in the panel for this algorithm");
                             error.printStackTrace();
 		    			}
 	                }

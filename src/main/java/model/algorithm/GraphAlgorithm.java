@@ -142,6 +142,7 @@ public abstract class GraphAlgorithm{
 	**/
 	public void terminate(){
 		finished = true;
+		running = false;
 	}
 
     /**

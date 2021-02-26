@@ -172,7 +172,12 @@ public class Viewport extends Pane{
 	public void setAlgorithm(GraphAlgorithm algorithmIn){
 		//Copy the old start node to be the start node of the replacement algorithm
 		if(algorithm != null){
-		    ((ShortestPathAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
+			if(algorithmIn instanceof ShortestPathAlgorithm){
+		        ((ShortestPathAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
+			}
+			else if(algorithmIn instanceof SearchAlgorithm){
+		        ((SearchAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
+			}
 		}
 		algorithm = algorithmIn;
 		viewportDetails.update(this);
@@ -458,6 +463,9 @@ public class Viewport extends Pane{
 			}
 			System.out.println("Algorithm terminated!");
 			algorithmRunner = null;
+		}
+		else{
+			algorithm.terminate();
 		}
 	}
 

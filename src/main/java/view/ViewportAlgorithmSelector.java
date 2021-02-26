@@ -20,7 +20,9 @@ public class ViewportAlgorithmSelector extends ComboBox{
 	//A list of algorithms to choose from. If you wish to add more algorithms,
 	//It MUST be added here to be choosabkle within the app
 	private static Class[] algorithmList = {ArrayBasedDijkstra.class,
-	                                        HeapBasedDijkstra.class};
+	                                        HeapBasedDijkstra.class,
+										    BreadthFirstSearch.class,
+										    DepthFirstSearch.class};
 
 	private Viewport viewport;
 

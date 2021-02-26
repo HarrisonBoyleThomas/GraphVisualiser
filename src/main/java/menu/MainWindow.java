@@ -170,7 +170,12 @@ public class MainWindow extends BorderPane{
 	    GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
 			if(((Viewport) n).getAlgorithm() != null){
-		        ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+				if(((Viewport) n).getAlgorithm() instanceof ShortestPathAlgorithm){
+		            ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+				}
+				else if(((Viewport) n).getAlgorithm() instanceof SearchAlgorithm){
+		            ((SearchAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+				}
 			}
 			else{
 				if(newNode != null){
@@ -191,8 +196,13 @@ public class MainWindow extends BorderPane{
 	public GraphNode getStartNode(){
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof ShortestPathAlgorithm){
-		        return ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
+			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof ShortestPathAlgorithm || ((Viewport) n).getAlgorithm() instanceof SearchAlgorithm){
+                if(((Viewport) n).getAlgorithm() instanceof ShortestPathAlgorithm){
+				    return ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
+				}
+				else if(((Viewport) n).getAlgorithm() instanceof SearchAlgorithm){
+				    return ((SearchAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
+				}
 			}
 		}
 		return null;
