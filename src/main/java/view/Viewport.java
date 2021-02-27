@@ -396,7 +396,7 @@ public class Viewport extends Pane{
 	*    the algorithm
 	**/
 	public void executeAlgorithm(){
-		terminateAlgorithm();
+		//terminateAlgorithm();
 		algorithmRunner = new AlgorithmRunner(algorithm, 100);
 		//Extract the algorithm speed
 		updateAlgorithmSpeed();

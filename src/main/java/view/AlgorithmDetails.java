@@ -32,6 +32,7 @@ public class AlgorithmDetails extends VBox{
 		algorithmDetailsMap.put(HeapBasedDijkstra.class, DijkstraDetails.class);
 		algorithmDetailsMap.put(BreadthFirstSearch.class, SearchAlgorithmDetails.class);
 		algorithmDetailsMap.put(DepthFirstSearch.class, SearchAlgorithmDetails.class);
+		algorithmDetailsMap.put(BellmanFord.class, ShortestPathAlgorithmDetails.class);
 	}
     //Popup window that displays information about a particular algorithm
 	private AlgorithmDetailsWindow detailsInstance;

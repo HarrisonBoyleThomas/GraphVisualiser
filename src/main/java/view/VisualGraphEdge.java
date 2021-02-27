@@ -248,6 +248,18 @@ public class VisualGraphEdge extends VisualGraphComponent{
 				if(algorithm.getEdgeState(edge) == GraphComponentState.IN_TREE){
                     fillColour = Color.CORNFLOWERBLUE;
 				}
+				else if(algorithm.getEdgeState(edge) == GraphComponentState.IN_OPEN_LIST){
+                    fillColour = Color.RED;
+				}
+				else if(algorithm.getEdgeState(edge) == GraphComponentState.VISITED){
+                    fillColour = Color.LIME;
+				}
+				else if(algorithm.getEdgeState(edge) == GraphComponentState.CURRENT){
+					fillColour = Color.CYAN;
+				}
+				else if(algorithm.getEdgeState(edge) == GraphComponentState.UNVISITED){
+
+				}
     		    else if(algorithm.getNodeState(edge.nodeA) == GraphComponentState.CURRENT || algorithm.getNodeState(edge.nodeA) == GraphComponentState.VISITED){
     			    if(algorithm.getNodeState(edge.nodeB) == GraphComponentState.VISITED || algorithm.getNodeState(edge.nodeB) == GraphComponentState.CURRENT){
     				    fillColour = Color.LIME;

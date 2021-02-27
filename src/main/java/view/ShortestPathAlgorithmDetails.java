@@ -37,6 +37,8 @@ public class ShortestPathAlgorithmDetails extends AlgorithmDetailsWindow{
         Label title = new Label(algorithm.toString());
         Tooltip.install(title, titleTooltip);
         pane.getChildren().add(title);
+        Label stepCount = new Label("Step count: " + algorithm.getIterationStep());
+        pane.getChildren().add(stepCount);
 
         GridPane grid = new GridPane();
         int index = 1;
@@ -49,7 +51,7 @@ public class ShortestPathAlgorithmDetails extends AlgorithmDetailsWindow{
         for(GraphNode n : algorithm.getDistances().keySet()){
             Label nodeName = new Label(n.getName());
             grid.add(nodeName, index, 0);
-            int distance = algorithm.getDistance(n);
+            double distance = algorithm.getDistance(n);
             String distanceString = "" + distance;
             if(distance < 0){
                 distanceString = "" + '\u221e';

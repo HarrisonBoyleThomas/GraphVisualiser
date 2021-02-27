@@ -22,7 +22,8 @@ public class ViewportAlgorithmSelector extends ComboBox{
 	private static Class[] algorithmList = {ArrayBasedDijkstra.class,
 	                                        HeapBasedDijkstra.class,
 										    BreadthFirstSearch.class,
-										    DepthFirstSearch.class};
+										    DepthFirstSearch.class,
+										    BellmanFord.class};
 
 	private Viewport viewport;
 

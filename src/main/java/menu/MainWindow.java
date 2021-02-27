@@ -876,7 +876,7 @@ public class MainWindow extends BorderPane{
 			    startAlgorithms();
 			}
 			state = MainWindowState.RUNNING;
-			initialiseAlgorithms();
+			//initialiseAlgorithms();
 			GridPane view = (GridPane) getCenter();
 			for(Node n : view.getChildren()){
 				((Viewport) n).executeAlgorithm();
