@@ -53,7 +53,7 @@ public class ShortestPathAlgorithmDetails extends AlgorithmDetailsWindow{
             grid.add(nodeName, index, 0);
             double distance = algorithm.getDistance(n);
             String distanceString = "" + distance;
-            if(distance < 0){
+            if(distance < 0 || distance == Double.POSITIVE_INFINITY){
                 distanceString = "" + '\u221e';
             }
             grid.add(new Label(distanceString), index, 1);
