@@ -10,12 +10,11 @@ public abstract class SearchAlgorithm extends GraphAlgorithm {
     protected GraphNode startNode = null;
     protected ArrayList<GraphNode> openList = new ArrayList<>();
     protected ArrayList<GraphNode> closedList = new ArrayList<>();
-    protected GraphNode currentNode = null;
+    protected GraphNode currentNode;
     protected ArrayList<GraphEdge> currentNodeEdges = new ArrayList<>();
 
     public SearchAlgorithm(GraphNode initialStateIn){
-        startNode = initialStateIn;
-        currentNode = startNode;
+        setStartNode(initialStateIn);
         openList.clear();
         closedList.clear();
     }
@@ -58,6 +57,7 @@ public abstract class SearchAlgorithm extends GraphAlgorithm {
     public void initialise(ArrayList<GraphNode> nodesIn){
         currentPseudocodeLines = new int[] {1,2};
         nodeStates.clear();
+        currentNode = startNode;
         for(GraphNode n : nodesIn){
             nodeStates.put(n, GraphComponentState.UNVISITED);
         }
@@ -67,10 +67,15 @@ public abstract class SearchAlgorithm extends GraphAlgorithm {
         if(startNode != null){
             openList.add(startNode);
         }
+        running = false;
+        finished = false;
+        currentNodeEdges.clear();
+
     }
 
 
     public synchronized String step(){
+        running = true;
         if(currentNodeEdges.size() == 0){
             stepCount++;
             nodeStates.put(currentNode, GraphComponentState.VISITED);

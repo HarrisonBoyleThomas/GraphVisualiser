@@ -170,13 +170,22 @@ public class Viewport extends Pane{
 	*    to copy the start node from other existing shortest path algorithms to save the user time
 	**/
 	public void setAlgorithm(GraphAlgorithm algorithmIn){
-		//Copy the old start node to be the start node of the replacement algorithm
+		GraphNode oldStartNode = null;
 		if(algorithm != null){
+			if(algorithm instanceof ShortestPathAlgorithm){
+				oldStartNode = ((ShortestPathAlgorithm) algorithm).getStartNode();
+			}
+			else if(algorithm instanceof SearchAlgorithm){
+				oldStartNode = ((SearchAlgorithm) algorithm).getStartNode();
+			}
+		}
+		//Copy the old start node to be the start node of the replacement algorithm
+		if(oldStartNode != null){
 			if(algorithmIn instanceof ShortestPathAlgorithm){
-		        ((ShortestPathAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
+		        ((ShortestPathAlgorithm) algorithmIn).setStartNode(oldStartNode);
 			}
 			else if(algorithmIn instanceof SearchAlgorithm){
-		        ((SearchAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
+		        ((SearchAlgorithm) algorithmIn).setStartNode(oldStartNode);
 			}
 		}
 		algorithm = algorithmIn;

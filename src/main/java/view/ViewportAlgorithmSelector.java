@@ -23,7 +23,8 @@ public class ViewportAlgorithmSelector extends ComboBox{
 	                                        HeapBasedDijkstra.class,
 										    BreadthFirstSearch.class,
 										    DepthFirstSearch.class,
-										    BellmanFord.class};
+										    BellmanFord.class,
+										    KruskalsAlgorithm.class};
 
 	private Viewport viewport;
 
@@ -44,9 +45,15 @@ public class ViewportAlgorithmSelector extends ComboBox{
 				//get the algorithm class chosen by the user
                 Class selectedClass = algorithmList[getSelectionModel().getSelectedIndex()];
     			try{
+					GraphAlgorithm instance = null;
 					//Crate an instance of the chosen algorithm
-    			    GraphAlgorithm instance = (GraphAlgorithm) selectedClass.getConstructor(GraphNode.class).newInstance((Object) null);
-					System.out.println("try set algorithm");
+					if(SearchAlgorithm.class.isAssignableFrom(selectedClass) || ShortestPathAlgorithm.class.isAssignableFrom(selectedClass)){
+    			        instance = (GraphAlgorithm) selectedClass.getConstructor(GraphNode.class).newInstance((Object) null);
+					}
+					else if(MinimumSpanningTreeAlgorithm.class.isAssignableFrom(selectedClass)){
+						instance = (GraphAlgorithm) selectedClass.getConstructor(ArrayList.class).newInstance((Object) null);
+					}
+					System.out.println("Algorithm successfully changed");
 					//Add the algorithm to the viewport
     				viewport.setAlgorithm(instance);
     			}

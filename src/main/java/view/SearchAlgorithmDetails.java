@@ -54,7 +54,7 @@ public class SearchAlgorithmDetails extends AlgorithmDetailsWindow{
         index = 1;
         grid.add(new Label("Closed list"), 0, 1);
         for(GraphNode n : algorithm.getClosedList()){
-            grid.add(new Label(n.getName()), index, 1);
+            grid.add(new Label("" + n), index, 1);
             index++;
         }
 

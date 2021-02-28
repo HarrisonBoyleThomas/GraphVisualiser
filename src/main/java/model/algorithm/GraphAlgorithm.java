@@ -114,6 +114,10 @@ public abstract class GraphAlgorithm{
 	public String getDescription(){
 		return description;
 	}
+
+	public String getName(){
+		return name;
+	}
     /**
 	*    @return true if the algorithm is marked as running
 	**/

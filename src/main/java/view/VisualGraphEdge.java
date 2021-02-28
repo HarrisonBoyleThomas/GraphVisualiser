@@ -257,6 +257,10 @@ public class VisualGraphEdge extends VisualGraphComponent{
 				else if(algorithm.getEdgeState(edge) == GraphComponentState.CURRENT){
 					fillColour = Color.CYAN;
 				}
+				else if(algorithm.getEdgeState(edge) == GraphComponentState.INVALID){
+                    fillColour = Color.RED;
+					line.getStrokeDashArray().addAll(20.0, 20.0, 20.0, 20.0);
+				}
 				else if(algorithm.getEdgeState(edge) == GraphComponentState.UNVISITED){
 
 				}
