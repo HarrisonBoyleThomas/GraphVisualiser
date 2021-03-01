@@ -196,6 +196,7 @@ public class Viewport extends Pane{
 		}
 		algorithm = algorithmIn;
 		viewportDetails.update(this);
+		MainWindow.get().updateAlgorithmDetails();
 	}
 
     /**

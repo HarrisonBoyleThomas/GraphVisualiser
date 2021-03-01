@@ -13,7 +13,7 @@ import java.util.ArrayList;
 *    @Author Harrison Boyle-Thomas
 *    @Date 01/02/21
 **/
-public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
+public abstract class ShortestPathAlgorithm extends GraphAlgorithm implements RootNodeAlgorithm{
     //the node to find the distance from
 	protected GraphNode startNode;
 

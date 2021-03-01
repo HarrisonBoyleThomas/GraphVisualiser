@@ -11,7 +11,7 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm {
+public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements RootNodeAlgorithm{
     protected PriorityQueue<GraphEdge> edgeQueue;
     protected ArrayList<GraphEdge> evaluatedEdges = new ArrayList<>();
     protected GraphNode startNode;
@@ -38,8 +38,12 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm {
         return startNode;
     }
 
+    public PriorityQueue<GraphEdge> getEdges(){
+        return edgeQueue;
+    }
+
     public void initialise(ArrayList<GraphNode> nodesIn){
-        currentPseudocodeLines = new int[] {1};
+        currentPseudocodeLines = new int[] {1, 2, 3, 4};
         nodeStates.clear();
         edgeStates.clear();
         spanningTree.clear();
@@ -57,11 +61,13 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm {
 
     public synchronized String step(){
         if(edgeQueue.size() == 0){
+            currentPseudocodeLines = new int[] {1, 2, 3, 4};
             running = false;
             finished = true;
             return "Prims finished";
         }
         String output = "";
+        currentPseudocodeLines = new int[] {6, 7, 8, 9, 10};
         GraphEdge currentEdge = edgeQueue.peek();
         edgeStates.put(currentEdge, GraphComponentState.IN_OPEN_LIST);
         edgeQueue.remove(currentEdge);
@@ -135,7 +141,6 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm {
             return false;
         }
         return (tempTree.contains(nodeA) || tempTree.contains(nodeB));
-        //return (find(tempTree, nodeA, nodeB) || find(tempTree, nodeB, nodeA));
     }
 
     private boolean find(ArrayList<GraphNode> tempTree, GraphNode startNode, GraphNode targetNode){
@@ -166,12 +171,18 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm {
 
 
     public String[] getPseudocodeLines(){
-			return new String[]{"Prims(G, w)",
+			return new String[]{"Prims(G, w, startNode)",
 		            "    T <- ∅",
-				    "    while edges.length > 0",
-				    "        currentEdge <- edges.dequeue()",
-				    "        if no cycle exists in T U currentEdge:",
-                    "            T <- T U currentEdge"};
+                    "    Q <- priorityQueue()",
+                    "    for each edge from startNode",
+                    "        Q.add(edge)",
+				    "    while Q.length > 0",
+				    "        edge <- Q.dequeue()",
+				    "        if edge.nodeA and edge.nodeB disconnected in T",
+                    "            T <- T U edge",
+                    "            Q.addUnique(a.edges())",
+                    "            Q.addUnique(b.edges())"
+                };
 	}
 
     public boolean canRun(){

@@ -34,6 +34,7 @@ public class AlgorithmDetails extends VBox{
 		algorithmDetailsMap.put(DepthFirstSearch.class, SearchAlgorithmDetails.class);
 		algorithmDetailsMap.put(BellmanFord.class, ShortestPathAlgorithmDetails.class);
 		algorithmDetailsMap.put(KruskalsAlgorithm.class, KruskalDetails.class);
+		algorithmDetailsMap.put(PrimsAlgorithm.class, PrimDetails.class);
 	}
     //Popup window that displays information about a particular algorithm
 	private AlgorithmDetailsWindow detailsInstance;

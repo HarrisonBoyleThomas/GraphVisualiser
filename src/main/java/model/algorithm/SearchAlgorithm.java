@@ -6,7 +6,7 @@ import model.GraphComponentState;
 
 import java.util.ArrayList;
 
-public abstract class SearchAlgorithm extends GraphAlgorithm {
+public abstract class SearchAlgorithm extends GraphAlgorithm  implements RootNodeAlgorithm{
     protected GraphNode startNode = null;
     protected ArrayList<GraphNode> openList = new ArrayList<>();
     protected ArrayList<GraphNode> closedList = new ArrayList<>();
