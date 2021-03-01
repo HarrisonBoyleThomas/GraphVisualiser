@@ -12,14 +12,16 @@ import java.util.Collections;
 
 public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
     protected ArrayList<GraphEdge> sortedEdges = new ArrayList<>();
-    protected ArrayList<GraphEdge> spanningTree = new ArrayList<>();
 
     public KruskalsAlgorithm(ArrayList<GraphNode> nodesIn){
         name = "Kruskal";
+        description = "Kruskal's algorithm computes the edges required to form a minimum";
+        description += " spanning tree from an input graph";
         initialise(nodesIn);
     }
 
     public void initialise(ArrayList<GraphNode> nodesIn){
+        currentPseudocodeLines = new int[] {1};
         if(nodesIn == null){
             return;
         }
@@ -41,11 +43,13 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
 
     public synchronized String step(){
         if(sortedEdges.size() == 0){
+            currentPseudocodeLines = new int[] {1};
             finished = true;
             running = false;
             return "Kruskals finished";
         }
         GraphEdge currentEdge = sortedEdges.remove(0);
+        currentPseudocodeLines = new int[] {3,4,5};
         edgeStates.put(currentEdge, GraphComponentState.IN_OPEN_LIST);
         if(!containsCycle(currentEdge)){
             spanningTree.add(currentEdge);
@@ -62,19 +66,26 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
 
     public String[] getPseudocodeLines(){
 			return new String[]{"Kruskal(G, w)",
-		            "    T <- EMPTYSET",
+		            "    T <- ∅",
 				    "    while edges.length > 0",
 				    "        currentEdge <- edges.dequeue()",
-				    "        if no cycle exists in the T UNION currentEdge:",
-                    "            T ,_ T UNION currentEdge"};
+				    "        if no cycle exists in T U currentEdge:",
+                    "            T <- T U currentEdge"};
 	}
 
+    /**
+    *    @return true if a cycle exists in the spanning tree if the supplied edge is added to it
+    *    Constructs a temporary virtual graph with only the edges from the spanning tree, and the
+    *    new edge.
+    **/
     private boolean containsCycle(GraphEdge newEdge){
         //construct an mst copy out of the current mst
         HashMap<GraphNode, GraphNode> nodeCopyMap = new HashMap<>();
         ArrayList<GraphNode> nodeCopies = new ArrayList<>();
+        //Construct a temporary spanning tree with the new edge
         ArrayList<GraphEdge> newSpanningTree = new ArrayList<>(spanningTree);
         newSpanningTree.add(newEdge);
+        //Construct a virtual graph out of the spanning tree
         for(GraphEdge e : newSpanningTree){
             GraphNode nodeACopy = null;
             if(nodeCopyMap.keySet().contains(e.nodeA)){
@@ -98,9 +109,13 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
             }
             nodeACopy.addEdge(nodeBCopy, false);
         }
+        //If the new graph is empty, then there are no cycles
         if(nodeCopies.size() == 0){
             return false;
         }
+
+        //Perform a BFS on the virtual graph. If a previously discovered nodes is rediscovered,
+        //then there is a cycle
         GraphNode currentNode = null;
         ArrayList<GraphNode> openList = new ArrayList<>();
         ArrayList<GraphNode> closedList = new ArrayList<>();
@@ -126,8 +141,16 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
         return true;
     }
 
-    public String[] getDetails(){
+    public ArrayList<GraphEdge> getSortedEdges(){
+        return new ArrayList<GraphEdge>(sortedEdges);
+    }
 
-        return new String[]{"Distances:      "};
+    public String[] getDetails(){
+        String edgeString = "";
+        for(GraphEdge e : sortedEdges){
+            edgeString = edgeString += "(" + e.nodeA + "," + e.nodeB + "), ";
+        }
+
+        return new String[]{"Edge list:" + edgeString};
 	}
 }
