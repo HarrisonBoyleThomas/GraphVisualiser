@@ -24,7 +24,8 @@ public class ViewportAlgorithmSelector extends ComboBox{
 										    BreadthFirstSearch.class,
 										    DepthFirstSearch.class,
 										    BellmanFord.class,
-										    KruskalsAlgorithm.class};
+										    KruskalsAlgorithm.class,
+										    PrimsAlgorithm.class};
 
 	private Viewport viewport;
 

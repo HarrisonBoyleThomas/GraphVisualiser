@@ -176,6 +176,9 @@ public class MainWindow extends BorderPane{
 				else if(((Viewport) n).getAlgorithm() instanceof SearchAlgorithm){
 		            ((SearchAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
 				}
+				else if(((Viewport) n).getAlgorithm() instanceof PrimsAlgorithm){
+		            ((PrimsAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+				}
 			}
 			else{
 				if(newNode != null){
@@ -202,6 +205,9 @@ public class MainWindow extends BorderPane{
 				}
 				else if(((Viewport) n).getAlgorithm() instanceof SearchAlgorithm){
 				    return ((SearchAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
+				}
+				else if(((Viewport) n).getAlgorithm() instanceof PrimsAlgorithm){
+				    return ((PrimsAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
 				}
 			}
 		}

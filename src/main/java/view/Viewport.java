@@ -178,6 +178,9 @@ public class Viewport extends Pane{
 			else if(algorithm instanceof SearchAlgorithm){
 				oldStartNode = ((SearchAlgorithm) algorithm).getStartNode();
 			}
+			else if(algorithm instanceof PrimsAlgorithm){
+				oldStartNode = ((PrimsAlgorithm) algorithm).getStartNode();
+			}
 		}
 		//Copy the old start node to be the start node of the replacement algorithm
 		if(oldStartNode != null){
@@ -186,6 +189,9 @@ public class Viewport extends Pane{
 			}
 			else if(algorithmIn instanceof SearchAlgorithm){
 		        ((SearchAlgorithm) algorithmIn).setStartNode(oldStartNode);
+			}
+			else if(algorithmIn instanceof PrimsAlgorithm){
+				((PrimsAlgorithm) algorithmIn).setStartNode(oldStartNode);
 			}
 		}
 		algorithm = algorithmIn;

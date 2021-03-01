@@ -81,34 +81,9 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
     private boolean containsCycle(GraphEdge newEdge){
         //construct an mst copy out of the current mst
         HashMap<GraphNode, GraphNode> nodeCopyMap = new HashMap<>();
-        ArrayList<GraphNode> nodeCopies = new ArrayList<>();
-        //Construct a temporary spanning tree with the new edge
         ArrayList<GraphEdge> newSpanningTree = new ArrayList<>(spanningTree);
         newSpanningTree.add(newEdge);
-        //Construct a virtual graph out of the spanning tree
-        for(GraphEdge e : newSpanningTree){
-            GraphNode nodeACopy = null;
-            if(nodeCopyMap.keySet().contains(e.nodeA)){
-                nodeACopy = nodeCopyMap.get(e.nodeA);
-            }
-            else{
-                nodeACopy = new GraphNode(0);
-                nodeACopy.setName("copyname");
-                nodeCopyMap.put(e.nodeA, nodeACopy);
-                nodeCopies.add(nodeACopy);
-            }
-            GraphNode nodeBCopy = null;
-            if(nodeCopyMap.keySet().contains(e.nodeB)){
-                nodeBCopy = nodeCopyMap.get(e.nodeB);
-            }
-            else{
-                nodeBCopy = new GraphNode(0);
-                nodeBCopy.setName("copynodeb");
-                nodeCopyMap.put(e.nodeB, nodeBCopy);
-                nodeCopies.add(nodeBCopy);
-            }
-            nodeACopy.addEdge(nodeBCopy, false);
-        }
+        ArrayList<GraphNode> nodeCopies = getVirtualMinimumSpanningTreeGraph(newSpanningTree);
         //If the new graph is empty, then there are no cycles
         if(nodeCopies.size() == 0){
             return false;
