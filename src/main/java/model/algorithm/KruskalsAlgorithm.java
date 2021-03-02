@@ -109,6 +109,7 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
                 else{
                     if(!openList.contains(e.nodeB)){
                         openList.add(e.nodeB);
+                        e.nodeA.removeEdge(e.nodeB, true);
                     }
                 }
             }
