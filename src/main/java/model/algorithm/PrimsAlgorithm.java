@@ -25,7 +25,11 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
         edgeQueue = new PriorityQueue<GraphEdge>(initialSize, new EdgeComparator());
         name = "Prims";
         description = "Prim's algorithm computes the edges required to form a minimum";
-        description += " spanning tree from an input graph";
+        description += " spanning tree from an input graph.";
+        description += "Note: Prim's algorithm is intended for undirected graphs, so ";
+        description += "the provided implementation assumes that a single edge (a,b) also";
+        description += " has an edge (b,a). Please ensure all included bidirectional edges have";
+        description += " the same weight";
         initialise(nodesIn);
     }
 
@@ -109,7 +113,7 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
             }
             else{
                 nodeACopy = new GraphNode(0);
-                nodeACopy.setName("copyname");
+                nodeACopy.setName("copynode" + e.nodeA.getName());
                 nodeCopyMap.put(e.nodeA, nodeACopy);
                 nodeCopies.add(nodeACopy);
             }
@@ -119,19 +123,16 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
             }
             else{
                 nodeBCopy = new GraphNode(0);
-                nodeBCopy.setName("copynodeb");
+                nodeBCopy.setName("copynode:" + e.nodeB.getName());
                 nodeCopyMap.put(e.nodeB, nodeBCopy);
                 nodeCopies.add(nodeBCopy);
             }
-            nodeACopy.addEdge(nodeBCopy, false);
+            nodeACopy.addEdge(nodeBCopy, true);
         }
 
         ArrayList<GraphNode> tempTree = nodeCopies;
 
         String s = "St: ";
-        for(GraphNode n : tempTree){
-            System.out.print(n + ", ");
-        }
         if(tempTree.size() == 0){
             return false;
         }
@@ -140,13 +141,10 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
         if(nodeA == null || nodeB == null){
             return false;
         }
-        return (tempTree.contains(nodeA) || tempTree.contains(nodeB));
+        return (find(nodeA, nodeB) || find(nodeB, nodeA));
     }
 
-    private boolean find(ArrayList<GraphNode> tempTree, GraphNode startNode, GraphNode targetNode){
-        if(tempTree.size() == 0){
-            return false;
-        }
+    private boolean find(GraphNode startNode, GraphNode targetNode){
         if(startNode.equals(targetNode)){
             return true;
         }
@@ -155,7 +153,6 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
         openList.add(startNode);
         while(openList.size() > 0){
             GraphNode currentNode = openList.remove(0);
-            System.out.print(currentNode + ", ");
             for(GraphEdge e : currentNode.getEdges()){
                 if(e.nodeB.equals(targetNode)){
                     return true;

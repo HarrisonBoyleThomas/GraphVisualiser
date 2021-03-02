@@ -16,7 +16,11 @@ public class KruskalsAlgorithm extends MinimumSpanningTreeAlgorithm {
     public KruskalsAlgorithm(ArrayList<GraphNode> nodesIn){
         name = "Kruskal";
         description = "Kruskal's algorithm computes the edges required to form a minimum";
-        description += " spanning tree from an input graph";
+        description += " spanning tree from an input graph.";
+        description += "Note: Kruskal's algorithm is intended for undirected graphs, so ";
+        description += "the provided implementation assumes that a single edge (a,b) also";
+        description += " has an edge (b,a). Please ensure all included bidirectional edges have";
+        description += " the same weight";
         initialise(nodesIn);
     }
 

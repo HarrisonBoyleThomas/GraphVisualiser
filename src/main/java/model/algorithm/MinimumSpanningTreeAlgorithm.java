@@ -42,7 +42,7 @@ public abstract class MinimumSpanningTreeAlgorithm extends GraphAlgorithm {
                 nodeCopyMap.put(e.nodeB, nodeBCopy);
                 nodeCopies.add(nodeBCopy);
             }
-            nodeACopy.addEdge(nodeBCopy, false);
+            nodeACopy.addEdge(nodeBCopy, true);
         }
         return nodeCopies;
     }
