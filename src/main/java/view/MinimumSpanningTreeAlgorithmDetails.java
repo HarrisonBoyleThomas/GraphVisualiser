@@ -43,7 +43,7 @@ public class MinimumSpanningTreeAlgorithmDetails extends AlgorithmDetailsWindow 
 
         //Add shortest path algorithm details
         for(GraphEdge e : algorithm.getSpanningTree()){
-            Label edgeName = new Label("(" + e.nodeA + "," + e.nodeB + ")");
+            Label edgeName = new Label("(" + e.nodeA + "," + e.nodeB + "):" + e.getLength());
             grid.add(edgeName, index, 0);
             index++;
         }

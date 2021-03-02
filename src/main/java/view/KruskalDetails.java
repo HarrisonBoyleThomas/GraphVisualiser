@@ -33,7 +33,7 @@ public class KruskalDetails extends MinimumSpanningTreeAlgorithmDetails {
         grid.add(new Label("Edge list"), 0, 0);
         int index = 1;
         for(GraphEdge e : algorithm.getSortedEdges()){
-            grid.add(new Label("(" + e.nodeA + "," + e.nodeB + ")"), index, 0);
+            grid.add(new Label("(" + e.nodeA + "," + e.nodeB + "):" + e.getLength()), index, 0);
             index++;
         }
         //set the padding between cells
