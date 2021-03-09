@@ -3,6 +3,8 @@ package menu;
 import maths.Vector;
 import viewport.Camera;
 
+import model.algorithm.RootNodeAlgorithm;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
@@ -52,44 +54,46 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	*    and asks the mainWindow to set the start node to the selected node when selected
 	**/
     private void createStartNodeSection(){
+        if(MainWindow.get().containsAlgorithmOfType(RootNodeAlgorithm.class)){
+			Tooltip tooltip = new Tooltip("Select a start node for the algorithm");
+	        HBox section = new HBox();
+			section.setAlignment(Pos.BASELINE_CENTER);
+	        Tooltip.install(section, tooltip);
 
-        Tooltip tooltip = new Tooltip("Select a start node for the algorithm");
-        HBox section = new HBox();
-		section.setAlignment(Pos.BASELINE_CENTER);
-        Tooltip.install(section, tooltip);
-
-        Label label = new Label("Start node:");
-        section.getChildren().add(label);
-        Tooltip.install(label, tooltip);
+	        Label label = new Label("Start node:");
+	        section.getChildren().add(label);
+	        Tooltip.install(label, tooltip);
 
 
-        int startNodeIndex = -1;
-        ComboBox selection = new ComboBox();
-        for(VisualGraphNode n : VisualGraphNode.getNodes()){
-            selection.getItems().add(n.getNode().getName());
-			if(n.getNode().equals(MainWindow.get().getStartNode())){
-				startNodeIndex = VisualGraphNode.getNodes().indexOf(n);
+	        int startNodeIndex = -1;
+	        ComboBox selection = new ComboBox();
+			selection.setFocusTraversable(false);
+	        for(VisualGraphNode n : VisualGraphNode.getNodes()){
+	            selection.getItems().add(n.getNode().getName());
+				if(n.getNode().equals(MainWindow.get().getStartNode())){
+					startNodeIndex = VisualGraphNode.getNodes().indexOf(n);
+				}
+	        }
+			if(startNodeIndex != -1){
+				selection.getSelectionModel().select(startNodeIndex);
 			}
-        }
-		if(startNodeIndex != -1){
-			selection.getSelectionModel().select(startNodeIndex);
+	        Tooltip.install(selection, tooltip);
+	        section.getChildren().add(selection);
+
+	        selection.setOnAction((event) -> {
+	            MainWindow.get().setStartNode(VisualGraphNode.getNodes().get(selection.getSelectionModel().getSelectedIndex()).getNode());
+				MainWindow.get().updateAlgorithmDetails();
+				//MainWindow.get().initialiseAlgorithms();
+				if(MainWindow.get().canRunAlgorithms()){
+					MainWindow.get().displayMessage("Algorithms initialised!", "You may now run the algorithms in each viewport");
+				}
+				else{
+					MainWindow.get().displayWarningMessage("Algorithms incorrectly set up", "Please select an algorithm to run in all viewports");
+				}
+	        });
+
+	        getChildren().add(section);
 		}
-        Tooltip.install(selection, tooltip);
-        section.getChildren().add(selection);
-
-        selection.setOnAction((event) -> {
-            MainWindow.get().setStartNode(VisualGraphNode.getNodes().get(selection.getSelectionModel().getSelectedIndex()).getNode());
-			MainWindow.get().updateAlgorithmDetails();
-			//MainWindow.get().initialiseAlgorithms();
-			if(MainWindow.get().canRunAlgorithms()){
-				MainWindow.get().displayMessage("Algorithms initialised!", "You may now run the algorithms in each viewport");
-			}
-			else{
-				MainWindow.get().displayWarningMessage("Algorithms incorrectly set up", "Please select an algorithm to run in all viewports");
-			}
-        });
-
-        getChildren().add(section);
     }
 
     /**
@@ -99,6 +103,7 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	private void createRunButton(){
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, step by step");
 		Button button = new Button("RUN");
+		button.setFocusTraversable(false);
 		Tooltip.install(button, tooltip);
         if(MainWindow.get() != null && MainWindow.get().canRunAlgorithms()){
             button.setOnAction(new EventHandler<ActionEvent>() {

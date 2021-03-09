@@ -97,7 +97,7 @@ public class GraphNode extends GraphComponent{
 	*    @return the edge list
 	**/
 	public ArrayList<GraphEdge> getEdges(){
-		return edges;
+		return new ArrayList<>(edges);
 	}
 
 

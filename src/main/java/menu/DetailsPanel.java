@@ -3,6 +3,7 @@ package menu;
 import javafx.scene.control.TextField;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.application.Platform;
 
 import java.util.ArrayList;
 
@@ -28,13 +29,18 @@ public abstract class DetailsPanel extends DetailsComponent{
 	*    Select and highlight the first textfield in the panel
 	**/
 	public void highlightFirstAttribute(){
-		for(Node n : getAllChildren(this)){
-			if(n instanceof TextField){
-				n.requestFocus();
-				((TextField) n).selectAll();
-				return;
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run(){
+        		for(Node n : getAllChildren(DetailsPanel.this)){
+        			if(n instanceof TextField){
+	        			n.requestFocus();
+		        		((TextField) n).selectAll();
+        				return;
+	        		}
+		        }
 			}
-		}
+		});
 	}
 
     /**

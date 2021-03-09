@@ -13,16 +13,16 @@ import java.util.ArrayList;
 *    @Author Harrison Boyle-Thomas
 *    @Date 01/02/21
 **/
-public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
+public abstract class ShortestPathAlgorithm extends GraphAlgorithm implements RootNodeAlgorithm{
     //the node to find the distance from
 	protected GraphNode startNode;
 
 	//maps nodes to their distances from the start node
-	protected HashMap<GraphNode, Integer> distances;
+	protected HashMap<GraphNode, Double> distances = new HashMap<>();
 
 	//maps nodes to their predecessor along the route for their current shortest path
 	//e.g: A->B->C->D, the predecessor for D is C, predecessor for C is B, and so on
-	protected HashMap<GraphNode, GraphNode> predecessors;
+	protected HashMap<GraphNode, GraphNode> predecessors = new HashMap<>();
 
 	//the current node the algorithm is expanding
 	protected GraphNode currentNode;
@@ -56,7 +56,7 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
     /**
 	*    @Return a map of distances
 	**/
-	public HashMap<GraphNode, Integer> getDistances(){
+	public HashMap<GraphNode, Double> getDistances(){
 		return distances;
 	}
 
@@ -80,7 +80,7 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 	*    @Return -1 if the distance list is not initialised(ie distance between nodes is unknown)
 	*    If called when DSP.finished == true, this will return the shortest distance
 	**/
-	public int getDistance(GraphNode node){
+	public double getDistance(GraphNode node){
 		if(distances == null){
 			return -1;
 		}
@@ -132,7 +132,7 @@ public abstract class ShortestPathAlgorithm extends GraphAlgorithm{
 		}
 		return output;
 	}
-	
+
     public boolean canRun(){
         return (startNode != null);
 	}

@@ -172,7 +172,9 @@ public class MainWindow extends BorderPane{
 	    GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
 			if(((Viewport) n).getAlgorithm() != null){
-		        ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+				if(((Viewport) n).getAlgorithm() instanceof RootNodeAlgorithm){
+		            ((RootNodeAlgorithm) ((Viewport) n).getAlgorithm()).setStartNode(newNode);
+				}
 			}
 			else{
 				if(newNode != null){
@@ -187,14 +189,41 @@ public class MainWindow extends BorderPane{
     }
 
     /**
+	*    @return an array of size 4 with the specified algorithm for each corresponding viewport
+	**/
+	protected GraphAlgorithm[] getAlgorithms(){
+		GraphAlgorithm[] output = new GraphAlgorithm[]{null, null, null, null};
+		int index = 0;
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+			Viewport v = ((Viewport) n);
+			output[index] = v.getAlgorithm();
+		}
+		return output;
+	}
+
+    /**
+	*    @param inputClass the class to search for
+	*    @return true if there exists an algorithm of the supplied class
+	**/
+	protected boolean containsAlgorithmOfType(Class inputClass){
+		for(GraphAlgorithm a : getAlgorithms()){
+			if(inputClass.isInstance(a)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+    /**
 	*    If the algorithms have a start node, return the start node
 	*    This method will be incorrect if a non-shortest path algorithm is implemented
 	**/
 	public GraphNode getStartNode(){
 		GridPane view = (GridPane) getCenter();
 		for(Node n : view.getChildren()){
-			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof ShortestPathAlgorithm){
-		        return ((ShortestPathAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
+			if(((Viewport) n).getAlgorithm() != null && ((Viewport) n).getAlgorithm() instanceof RootNodeAlgorithm){
+				return ((RootNodeAlgorithm) ((Viewport) n).getAlgorithm()).getStartNode();
 			}
 		}
 		return null;
@@ -392,7 +421,7 @@ public class MainWindow extends BorderPane{
     /**
 	*    Refresh the algorithmDetails panel, so that it displays valid operations
 	**/
-	protected void updateAlgorithmDetails(){
+	public void updateAlgorithmDetails(){
 		if(((ScrollPane) getRight()) == null){
 			return;
 		}
@@ -886,7 +915,7 @@ public class MainWindow extends BorderPane{
 			    startAlgorithms();
 			}
 			state = MainWindowState.RUNNING;
-			initialiseAlgorithms();
+			//initialiseAlgorithms();
 			GridPane view = (GridPane) getCenter();
 			for(Node n : view.getChildren()){
 				((Viewport) n).executeAlgorithm();

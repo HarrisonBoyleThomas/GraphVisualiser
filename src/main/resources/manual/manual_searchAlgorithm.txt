@@ -1,0 +1,13 @@
+SEARCH ALGORITHM
+
+•INPUT
+    -Graph G, Startnode S
+
+•GOAL
+    -Explore G from s, generating a tree
+
+•SAMPLE ALGORITHMS
+    -Depth-first search
+        :Use a stack to select new nodes to explore
+    -Breadth-first search
+        :Use a FIFO queue to select new nodes to explore

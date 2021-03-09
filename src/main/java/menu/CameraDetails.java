@@ -74,6 +74,7 @@ public class CameraDetails extends DetailsPanel{
 		section.getChildren().add(title);
 
 		Slider slider = new Slider(10, 200, camera.getMaxDrawDistance());
+		slider.setFocusTraversable(false);
 		Tooltip.install(slider, tooltip);
 
 		slider.valueProperty().addListener(new ChangeListener<Number>() {

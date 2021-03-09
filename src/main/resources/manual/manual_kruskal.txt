@@ -1,0 +1,25 @@
+KRUSKAL'S ALGORITHM
+
+•INPUT
+    -Undirected graph G
+
+•GOAL
+    -Compute a minimum spanning tree for G
+
+•PSEUDOCODE
+
+    Kruskal(G, w)
+        T <- ∅
+        while edges.length > 0
+            currentEdge <- edges.dequeue()
+            if no cycle exists in T U currentEdge:
+                T <- T U currentEdge
+
+•IMPLEMENTATION DETAILS
+    -Kruskal's algorithm is intended for use ONLY on undirected graphs
+    -Assumes all edges are bidirectional with equal weight in both directions
+    -If edges are not matching, then incorrect results are yielded
+    -If running this algorithm, one of two conditions MUST be satisfied for reliable results:
+         :If there are two edges between any pair of nodes, they MUST have equal weight
+         :OR
+         :There is ONLY 1 edge between each pair of nodes

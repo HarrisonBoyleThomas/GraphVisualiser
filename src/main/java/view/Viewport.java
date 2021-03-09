@@ -172,12 +172,33 @@ public class Viewport extends Pane{
 	*    to copy the start node from other existing shortest path algorithms to save the user time
 	**/
 	public void setAlgorithm(GraphAlgorithm algorithmIn){
-		//Copy the old start node to be the start node of the replacement algorithm
+		GraphNode oldStartNode = null;
 		if(algorithm != null){
-		    ((ShortestPathAlgorithm) algorithmIn).setStartNode(((ShortestPathAlgorithm) algorithm).getStartNode());
+			if(algorithm instanceof ShortestPathAlgorithm){
+				oldStartNode = ((ShortestPathAlgorithm) algorithm).getStartNode();
+			}
+			else if(algorithm instanceof SearchAlgorithm){
+				oldStartNode = ((SearchAlgorithm) algorithm).getStartNode();
+			}
+			else if(algorithm instanceof PrimsAlgorithm){
+				oldStartNode = ((PrimsAlgorithm) algorithm).getStartNode();
+			}
+		}
+		//Copy the old start node to be the start node of the replacement algorithm
+		if(oldStartNode != null){
+			if(algorithmIn instanceof ShortestPathAlgorithm){
+		        ((ShortestPathAlgorithm) algorithmIn).setStartNode(oldStartNode);
+			}
+			else if(algorithmIn instanceof SearchAlgorithm){
+		        ((SearchAlgorithm) algorithmIn).setStartNode(oldStartNode);
+			}
+			else if(algorithmIn instanceof PrimsAlgorithm){
+				((PrimsAlgorithm) algorithmIn).setStartNode(oldStartNode);
+			}
 		}
 		algorithm = algorithmIn;
 		viewportDetails.update(this);
+		MainWindow.get().updateAlgorithmDetails();
 	}
 
     /**
@@ -390,6 +411,7 @@ public class Viewport extends Pane{
 	**/
 	private void createCloseButton(){
 		Button close = new Button("X");
+		close.setFocusTraversable(false);
 		close.setId("closeButton");
 		close.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -413,7 +435,7 @@ public class Viewport extends Pane{
 	*    the algorithm
 	**/
 	public void executeAlgorithm(){
-		terminateAlgorithm();
+		//terminateAlgorithm();
 		algorithmRunner = new AlgorithmRunner(algorithm, 100);
 		//Extract the algorithm speed
 		updateAlgorithmSpeed();
@@ -482,6 +504,9 @@ public class Viewport extends Pane{
 			}
 			System.out.println("Algorithm terminated!");
 			algorithmRunner = null;
+		}
+		else{
+			algorithm.terminate();
 		}
 	}
 

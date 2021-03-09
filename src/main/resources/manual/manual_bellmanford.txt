@@ -1,0 +1,26 @@
+BELLMAN-FORD ALGORITHM
+
+•INPUT
+    -Graph G, start node S
+
+•GOAL
+    -find the shortest path from s to all other nodes in G
+
+•PSEUDOCODE
+
+    Bellman-Ford(G, s)
+        initialise()
+        for i <- 1 to |nodes|
+            for each edge
+                relax(edge)
+        for each edge
+            if(distances[edge.nodeB] > distances[edge.nodeA] + edge.weight)
+                return false //negative cycle
+        //valid output
+        return true
+
+
+•IMPLEMENTATION DETAILS
+    -Bellman-Ford yields unreliable results if there are negative cycles in G
+     The standard implementation simply prints to the output log if a negative cycle
+     is discovered or not.

@@ -110,6 +110,16 @@ public class ManualPanel extends VBox{
         });
         content.getChildren().add(performanceConsiderations);
 
+        Tooltip algorithmTooltip = new Tooltip("View a list of included algorithms and their instructions");
+        Button algorithm = new Button("Algorithms");
+        Tooltip.install(algorithm, algorithmTooltip);
+        algorithm.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createAlgorithmPage();
+            }
+        });
+        content.getChildren().add(algorithm);
+
         Tooltip tutorialTooltip = new Tooltip("View a tutorial video explaining how to use GraphVisualiser");
         Button tutorial = new Button("Tutorial");
         Tooltip.install(tutorial, tutorialTooltip);
@@ -357,6 +367,166 @@ public class ManualPanel extends VBox{
                     players.get(0).stop();
                 }
                 createContentsPage();
+            }
+        });
+        getChildren().add(back);
+    }
+
+    private void createAlgorithmPage(){
+        getChildren().clear();
+        ScrollPane sp = new ScrollPane();
+        VBox selection = new VBox(3);
+
+
+        Button dijkstra = new Button("Dijkstra's algorithm");
+        dijkstra.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createDijkstraPage();
+            }
+        });
+        selection.getChildren().add(dijkstra);
+
+        Button bf = new Button("Bellman-Ford algorithm");
+        bf.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createBellmanFordPage();
+            }
+        });
+        selection.getChildren().add(bf);
+
+        Button searchAlgorithm = new Button("Search algorithms");
+        searchAlgorithm.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createSearchAlgorithmPage();
+            }
+        });
+        selection.getChildren().add(searchAlgorithm);
+
+        Button kruskal = new Button("Kruskal's algorithm");
+        kruskal.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createKruskalPage();
+            }
+        });
+        selection.getChildren().add(kruskal);
+
+        Button prim = new Button("Prim's algorithm");
+        prim.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                createPrimPage();
+            }
+        });
+        selection.getChildren().add(prim);
+
+        sp.setContent(selection);
+        getChildren().add(sp);
+
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
+                createContentsPage();
+            }
+        });
+        getChildren().add(back);
+
+    }
+
+    private void createDijkstraPage(){
+        getChildren().clear();
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(createPage("/manual/manual_dijkstra.txt"));
+        sp.prefViewportHeightProperty().bind(((VBox) sp.getContent()).heightProperty());
+        getChildren().add(sp);
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
+                createAlgorithmPage();
+            }
+        });
+        getChildren().add(back);
+
+    }
+
+    private void createBellmanFordPage(){
+        getChildren().clear();
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(createPage("/manual/manual_bellmanford.txt"));
+        sp.prefViewportHeightProperty().bind(((VBox) sp.getContent()).heightProperty());
+        getChildren().add(sp);
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
+                createAlgorithmPage();
+            }
+        });
+        getChildren().add(back);
+
+    }
+
+    private void createSearchAlgorithmPage(){
+        getChildren().clear();
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(createPage("/manual/manual_searchAlgorithm.txt"));
+        sp.prefViewportHeightProperty().bind(((VBox) sp.getContent()).heightProperty());
+        getChildren().add(sp);
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
+                createAlgorithmPage();
+            }
+        });
+        getChildren().add(back);
+    }
+
+    private void createKruskalPage(){
+        getChildren().clear();
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(createPage("/manual/manual_kruskal.txt"));
+        sp.prefViewportHeightProperty().bind(((VBox) sp.getContent()).heightProperty());
+        getChildren().add(sp);
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
+                createAlgorithmPage();
+            }
+        });
+        getChildren().add(back);
+    }
+
+    private void createPrimPage(){
+        getChildren().clear();
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(createPage("/manual/manual_prim.txt"));
+        sp.prefViewportHeightProperty().bind(((VBox) sp.getContent()).heightProperty());
+        getChildren().add(sp);
+
+        Button back = new Button("Back");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(players.size() > 0){
+                    players.get(0).stop();
+                }
+                createAlgorithmPage();
             }
         });
         getChildren().add(back);

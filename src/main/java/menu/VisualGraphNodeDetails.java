@@ -48,9 +48,14 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		return node;
 	}
 	public void highlightFirstAttribute(){
-		if(getChildren().size() > 0){
-			((DetailsPanel) getChildren().get(1)).highlightFirstAttribute();
-		}
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run(){
+				if(getChildren().size() > 0){
+					((DetailsPanel) getChildren().get(1)).highlightFirstAttribute();
+				}
+			}
+		});
 	}
 
 	public void update(){

@@ -1,0 +1,26 @@
+DIJKSTRA'S ALGORITHM
+
+•INPUT
+    -Graph G, start node S with no negative edge weights
+
+•GOAL
+    -find the shortest path from s to all other nodes in G
+
+•PSEUDOCODE
+
+    Dijkstra(G, w, s)
+        initialise()
+        while nextStates.length > 0
+            current <- EXTRACTMIN(nextStates)
+            visited.add(current)
+            for each edge from current
+                RELAX(edge)
+
+•SAMPLE IMPLEMENTATIONS:
+    -Array-based dijkstra
+        :Uses a FIFO queue to expand new nodes, so is quite inefficient
+    -Heap-based dijkstra
+        :Uses a heap to expand new nodes, standard DSP implementation
+
+•IMPLEMENTATION DETAILS
+    -DSP produces incorrect and unreliable results if there are any negative edges in G

@@ -110,10 +110,10 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 				//add the node to the distance list
 				if(distances.get(currentNode) == null){
 					nodes.add(currentNode);
-					distances.put(currentNode, -1);
+					distances.put(currentNode, -1.0);
 					predecessors.put(currentNode, startNode);
 				}
-				int newLength = edge.getLength() + distances.get(currentNode);
+				double newLength = edge.getLength() + distances.get(currentNode);
 				if((newLength < (distances.get(edge.nodeB))) || (distances.get(edge.nodeB) == -1)){
 					distances.put(edge.nodeB, newLength);
 					predecessors.put(edge.nodeB, currentNode);
@@ -147,10 +147,10 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 		//the initial predecessors for all nodes is the start node
 		for(GraphNode node: nodes){
 			if(node.equals(startNode)){
-				distances.put(node, 0);
+				distances.put(node, 0.0);
 			}
 			else{
-			    distances.put(node, -1);
+			    distances.put(node, -1.0);
 			}
 			predecessors.put(node, null);
 			nodeStates.put(node, GraphComponentState.UNVISITED);
@@ -231,7 +231,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 		String distanceString = "{";
 		for(GraphNode n : distances.keySet()){
 			distanceString += (n.getName() + "=");
-			int distance = distances.get(n);
+			double distance = distances.get(n);
 			if(distance < 0){
 			    distanceString += '\u221e';
 			}

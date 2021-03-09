@@ -1,0 +1,35 @@
+PRIM'S ALGORITHM
+
+•INPUT
+    -Undirected graph G
+
+•GOAL
+    -Compute a minimum spanning tree for G
+
+•PSEUDOCODE
+
+    Prims(G, w, startNode)
+        T <- ∅
+        Q <- priorityQueue()
+        for each edge from startNode
+            Q.add(edge)
+        while Q.length > 0
+            edge <- Q.dequeue()
+            if edge.nodeA and edge.nodeB disconnected in T
+                T <- T U edge
+                Q.addUnique(a.edges())
+                Q.addUnique(b.edges())
+
+•IMPLEMENTATION DETAILS
+    -Prim's algorithm is intended for use ONLY on undirected graphs
+    -Assumes all edges are bidirectional with equal weight in both directions
+    -If edges are not matching, then incorrect results are yielded
+    -If running this algorithm, the following condition MUST be satisfied for reliable results
+         :If there are two edges between any pair of nodes, they MUST have equal weight
+
+
+•NOTES
+    -Unfortunately, due to the nature of Prim's algorithm, attempting to achieve
+     a more convenient setup requiring just 1 edge will be inefficient to implement, or
+     will require a complete redesign of GraphVisualiser, so this workaround will have
+     to do for now.

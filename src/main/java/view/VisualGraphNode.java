@@ -225,9 +225,9 @@ public class VisualGraphNode extends VisualGraphComponent{
         if(icon == null || algorithm == null){
 			return;
 		}
-        int distance = algorithm.getDistance(node);
+        double distance = algorithm.getDistance(node);
 		String number = "" + distance;
-		if(distance < 0){
+		if(distance < 0 || distance == Double.POSITIVE_INFINITY){
             number = "" + '\u221e';
 		}
 
