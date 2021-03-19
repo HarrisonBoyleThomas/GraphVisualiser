@@ -11,5 +11,6 @@ public enum GraphComponentState{
 	IN_OPEN_LIST,
 	CURRENT,
 	IN_TREE,
-	INVALID
+	INVALID,
+	SELECTED
 }

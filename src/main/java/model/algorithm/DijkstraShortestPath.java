@@ -81,6 +81,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 				    nodeStates.put(n, GraphComponentState.IN_TREE);
 					edgeStates.put(predecessors.get(n).getEdge(n), GraphComponentState.IN_TREE);
 				}
+				nodeStates.put(startNode, GraphComponentState.CURRENT);
 			}
 			currentPseudocodeLines = new int[0];
 		}

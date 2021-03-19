@@ -2,6 +2,8 @@ package data;
 
 import maths.Functions;
 
+import javafx.scene.paint.Color;
+
 import java.io.*;
 import java.nio.file.Paths;
 
@@ -21,6 +23,8 @@ public class Data{
     private static long DELTA_TIME;
 
     public static final CameraControlData CAMERA_CONTROLS = new CameraControlData();
+
+    public static final ColourCodeData COLOUR_CODE_DATA = new ColourCodeData();
 
     public static void updateSleepDelay(int newValue){
         EXECUTION_SLEEP_DELAY = (int) Functions.clamp(newValue, 0, 1000);
@@ -43,5 +47,21 @@ public class Data{
             return 0;
         }
         return (int) (1000000000.0/DELTA_TIME) ;
+    }
+
+    public static String formatColourToRGBA(Color colour){
+        if(colour == null){
+            return null;
+        }
+        String output = "rgba(";
+        output += ((int) (colour.getRed() * 255));
+        output += ", ";
+        output += ((int) (colour.getGreen() * 255));
+        output += ", ";
+        output += ((int) (colour.getBlue() * 255));
+        output += ", ";
+        output += colour.getOpacity();
+        output += ")";
+        return output;
     }
 }

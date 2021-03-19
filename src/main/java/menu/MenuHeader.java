@@ -83,6 +83,26 @@ public class MenuHeader extends MenuBar{
 
 		file.getItems().add(theme);
 
+		String preferenceInstructions = "Edit the preferences for Graph Visualiser";
+		Tooltip preferenceTooltip = new Tooltip(preferenceInstructions);
+		Label preferencesLabel = new Label("Preferences");
+		Tooltip.install(preferencesLabel, preferenceTooltip);
+		CustomMenuItem preferences = new CustomMenuItem(preferencesLabel);
+		preferences.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent e){
+				System.out.println("make popup");
+				Stage popup = new Stage();
+				popup.initOwner(MenuHeader.this.getScene().getWindow());
+				popup.setResizable(false);
+				popup.setTitle("Preferences");
+				Scene scene = new Scene(new PreferencesPanel(), 600, 450);
+				popup.setScene(scene);
+				popup.show();
+			}
+		});
+
+		file.getItems().add(preferences);
+
 
 
 		getMenus().add(file);

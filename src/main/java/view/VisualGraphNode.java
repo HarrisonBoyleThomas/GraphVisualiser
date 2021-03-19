@@ -3,6 +3,7 @@ package viewport;
 import maths.Vector;
 import maths.Rotator;
 import maths.Functions;
+import data.Data;
 
 import model.GraphNode;
 import model.GraphEdge;
@@ -161,15 +162,25 @@ public class VisualGraphNode extends VisualGraphComponent{
 		//background.setStroke(Color.BLACK);
 		background.setStrokeWidth(3);
 		if(selected){
-			background.setFill(Color.ORANGE);
-			background.setStyle("-fillColour: rgba(255, 140, 0, 1)");
-			setColour = Color.web("rgba(255, 140, 0, 1)");
+			String colourString = Data.formatColourToRGBA(Data.COLOUR_CODE_DATA.getColourForState(GraphComponentState.SELECTED));
+			//background.setFill(Color.ORANGE);
+			background.setStyle("-fillColour: " + colourString);
+			setColour = Color.web(colourString);
 		}
 		else{
 			if(algorithm == null){
 
 			}
 			else{
+				Color colour = Data.COLOUR_CODE_DATA.getColourForState(algorithm.getNodeState(node));
+				if(colour != GraphComponentState.UNVISITED){
+		    		String colourString = Data.formatColourToRGBA(colour);
+                    if(colourString != null){
+			    		background.setStyle("-fillColour: " + colourString);
+				    	setColour = Color.web(colourString);
+				    }
+				}
+				/*
 				if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
 					//LIME colour
 					background.setStyle("-fillColour: rgba(0, 255, 0, 1)");
@@ -190,6 +201,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 					background.setStyle("-fillColour: rgba(100, 149, 237, 1)");
 					setColour = Color.web("rgba(100, 149, 237, 1)");
 				}
+				*/
 			}
 		}
 		pane.getChildren().add(background);

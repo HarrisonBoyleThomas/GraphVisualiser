@@ -3,6 +3,7 @@ package viewport;
 import maths.Vector;
 import maths.Rotator;
 import maths.Functions;
+import data.Data;
 
 import model.GraphNode;
 import model.GraphEdge;
@@ -245,6 +246,11 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		}
 		else{
 			if(algorithm != null){
+				String colourString = Data.formatColourToRGBA(Data.COLOUR_CODE_DATA.getColourForState(algorithm.getEdgeState(edge)));
+				if(colourString != null){
+					fillColour = Color.web(colourString);
+				}
+				/*
 				if(algorithm.getEdgeState(edge) == GraphComponentState.IN_TREE){
                     fillColour = Color.CORNFLOWERBLUE;
 				}
@@ -272,6 +278,8 @@ public class VisualGraphEdge extends VisualGraphComponent{
     				    fillColour = Color.RED;
     			    }
     		    }
+				*/
+
 			}
 		}
 		//Override the css color property if the edge must be coloured differently
