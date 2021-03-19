@@ -143,6 +143,7 @@ public class AlgorithmControlPanel extends AlgorithmDetailsPanel{
 	private void createSpeedDial(){
 		Tooltip tooltip = new Tooltip("Set the execution speed of algorithms(milliseconds)");
 		Slider slider = new Slider(0, 1000, Data.getExecutionSleepDelay());
+		slider.setId("speed");
 		Tooltip.install(slider, tooltip);
 
 		slider.valueProperty().addListener(new ChangeListener<Number>() {

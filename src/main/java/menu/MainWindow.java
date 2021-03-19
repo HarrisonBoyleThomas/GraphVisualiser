@@ -483,10 +483,15 @@ public class MainWindow extends BorderPane{
 	*    @param message the message of the alert
 	**/
     public void displayMessage(String title, String message){
-        Alert alert = new Alert(AlertType.INFORMATION, message);
-		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
-		alert.setHeaderText(title);
-		alert.showAndWait();
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+                Alert alert = new Alert(AlertType.INFORMATION, message);
+        		alert.getDialogPane().getStylesheets().add(getStylesheets().get(0));
+        		alert.setHeaderText(title);
+	    	    alert.showAndWait();
+			}
+		});
 	}
 
     /**

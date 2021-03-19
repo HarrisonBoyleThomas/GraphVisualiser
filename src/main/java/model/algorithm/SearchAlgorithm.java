@@ -57,6 +57,7 @@ public abstract class SearchAlgorithm extends GraphAlgorithm  implements RootNod
     public void initialise(ArrayList<GraphNode> nodesIn){
         currentPseudocodeLines = new int[] {1,2};
         nodeStates.clear();
+        edgeStates.clear();
         currentNode = startNode;
         for(GraphNode n : nodesIn){
             nodeStates.put(n, GraphComponentState.UNVISITED);
@@ -88,6 +89,11 @@ public abstract class SearchAlgorithm extends GraphAlgorithm  implements RootNod
                 for(GraphNode n : nodeStates.keySet()){
                     nodeStates.put(n, GraphComponentState.IN_TREE);
                 }
+                for(GraphEdge e : edgeStates.keySet()){
+                    if(edgeStates.get(e) != GraphComponentState.IN_TREE){
+                        edgeStates.put(e, GraphComponentState.UNVISITED);
+                    }
+                }
                 nodeStates.put(startNode, GraphComponentState.CURRENT);
                 return "Finished";
             }
@@ -98,13 +104,16 @@ public abstract class SearchAlgorithm extends GraphAlgorithm  implements RootNod
         }
         else{
             currentPseudocodeLines = new int[] {6,7,8};
-            GraphNode nextNode = currentNodeEdges.remove(0).nodeB;
+            GraphEdge edge = currentNodeEdges.remove(0);
+            GraphNode nextNode = edge.nodeB;
             if(!closedList.contains(nextNode) && !openList.contains(nextNode)){
+                edgeStates.put(edge, GraphComponentState.IN_TREE);
                 openList.add(nextNode);
                 nodeStates.put(nextNode, GraphComponentState.IN_OPEN_LIST);
                 return "Added " + nextNode.getName() + " to the open list";
             }
             else{
+                edgeStates.put(edge, GraphComponentState.VISITED);
                 return nextNode.getName() + " already discovered, skipping";
             }
         }

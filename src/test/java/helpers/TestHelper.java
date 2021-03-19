@@ -5,6 +5,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.Parent;
 
+import javafx.application.Platform;
+
 import javafx.event.Event;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -27,7 +29,12 @@ public class TestHelper{
     }
 
     public static void comboBoxSelect(ComboBox cb, int index){
-        cb.getSelectionModel().select(index);
+        Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+                cb.getSelectionModel().select(index);
+            }
+        });
     }
 
     /**

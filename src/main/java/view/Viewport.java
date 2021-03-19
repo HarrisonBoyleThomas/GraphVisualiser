@@ -305,6 +305,14 @@ public class Viewport extends Pane{
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
+								//Sometimes the render task fails to render components in the correct position,
+								//which causes icons to hover at around (0,0)
+								//This seems to be a threading issue, so render components off-screen initially
+								//so that they can be correctly rendered later on. This prevents
+								for(Node n : newIcons){
+									n.setLayoutX(-10000);
+									n.setLayoutY(-10000);
+								}
 								//Clear foreign elements from the screen, to ensure only up-t-date components
 								//are rendered
 								for(Node n : foreignComponents){
@@ -506,7 +514,9 @@ public class Viewport extends Pane{
 			algorithmRunner = null;
 		}
 		else{
-			algorithm.terminate();
+			if(algorithm != null){
+			    algorithm.terminate();
+			}
 		}
 	}
 

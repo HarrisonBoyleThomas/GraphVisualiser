@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.geometry.Pos;
 
+import javafx.application.Platform;
+
 import viewport.VisualGraphNode;
 import viewport.VisualGraphEdge;
 import javafx.scene.control.Tooltip;
@@ -33,19 +35,24 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	}
 
 	public void update(){
-		getChildren().clear();
-		Tooltip tooltip = new Tooltip("Use this panel to control running algorithms");
-		Label title = new Label("ALGORITHM CONTROLS");
-		Tooltip.install(title, tooltip);
-		getChildren().add(title);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				getChildren().clear();
+				Tooltip tooltip = new Tooltip("Use this panel to control running algorithms");
+				Label title = new Label("ALGORITHM CONTROLS");
+				Tooltip.install(title, tooltip);
+				getChildren().add(title);
 
-		if(MainWindow.get() != null){
-			createStartNodeSection();
-    		createRunButton();
-		}
-		else{
-			getChildren().add(new Label("Algorithm setup dirty"));
-		}
+				if(MainWindow.get() != null){
+					createStartNodeSection();
+		    		createRunButton();
+				}
+				else{
+					getChildren().add(new Label("Algorithm setup dirty"));
+				}
+			}
+		});
 	}
 
     /**
@@ -67,7 +74,8 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 
 	        int startNodeIndex = -1;
 	        ComboBox selection = new ComboBox();
-			selection.setFocusTraversable(false);
+			selection.setId("selection");
+			//selection.setFocusTraversable(false);
 	        for(VisualGraphNode n : VisualGraphNode.getNodes()){
 	            selection.getItems().add(n.getNode().getName());
 				if(n.getNode().equals(MainWindow.get().getStartNode())){
@@ -80,7 +88,7 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	        Tooltip.install(selection, tooltip);
 	        section.getChildren().add(selection);
 
-	        selection.setOnAction((event) -> {
+	        selection.valueProperty().addListener((event) -> {
 	            MainWindow.get().setStartNode(VisualGraphNode.getNodes().get(selection.getSelectionModel().getSelectedIndex()).getNode());
 				MainWindow.get().updateAlgorithmDetails();
 				//MainWindow.get().initialiseAlgorithms();
@@ -103,7 +111,8 @@ public class AlgorithmSetupPanel extends AlgorithmDetailsPanel{
 	private void createRunButton(){
 		Tooltip tooltip = new Tooltip("Run all algorithms on the current graph, step by step");
 		Button button = new Button("RUN");
-		button.setFocusTraversable(false);
+		button.setId("run");
+		//button.setFocusTraversable(false);
 		Tooltip.install(button, tooltip);
         if(MainWindow.get() != null && MainWindow.get().canRunAlgorithms()){
             button.setOnAction(new EventHandler<ActionEvent>() {
