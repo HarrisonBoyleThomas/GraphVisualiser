@@ -75,6 +75,7 @@ public class ColourCodePanel extends VBox{
                     public void handle(Event t) {
                         System.out.println("Colour set to " + Data.formatColourToRGBA(picker.getValue()) + " for " + state.name());
                         Data.COLOUR_CODE_DATA.setColourForState(state, picker.getValue());
+                        MainWindow.get().updateViewport();
                         update();
                     }
                 });
@@ -91,6 +92,7 @@ public class ColourCodePanel extends VBox{
         reset.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 Data.COLOUR_CODE_DATA.reset();
+                MainWindow.get().updateViewport();
                 update();
                 System.out.println("Colour codes reset");
             }

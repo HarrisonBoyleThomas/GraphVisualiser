@@ -173,35 +173,13 @@ public class VisualGraphNode extends VisualGraphComponent{
 			}
 			else{
 				Color colour = Data.COLOUR_CODE_DATA.getColourForState(algorithm.getNodeState(node));
-				if(colour != GraphComponentState.UNVISITED){
+				if(colour != Data.COLOUR_CODE_DATA.getColourForState(GraphComponentState.UNVISITED)){
 		    		String colourString = Data.formatColourToRGBA(colour);
                     if(colourString != null){
 			    		background.setStyle("-fillColour: " + colourString);
 				    	setColour = Color.web(colourString);
 				    }
 				}
-				/*
-				if(algorithm.getNodeState(node) == GraphComponentState.VISITED){
-					//LIME colour
-					background.setStyle("-fillColour: rgba(0, 255, 0, 1)");
-					setColour = Color.web("rgba(0, 255, 0, 1)");
-        		}
-        		else if(algorithm.getNodeState(node) == GraphComponentState.IN_OPEN_LIST){
-        			//RED colour
-					background.setStyle("-fillColour: rgba(255, 0, 0, 1)");
-					setColour = Color.web("rgba(255, 0, 0, 1)");
-	        	}
-	        	else if(algorithm.getNodeState(node) == GraphComponentState.CURRENT){
-	        		//CYAN colour
-					background.setStyle("-fillColour: rgba(0, 255, 255, 1)");
-					setColour = Color.web("rgba(0, 255, 255, 1)");
-	        	}
-				else if(algorithm.getNodeState(node) == GraphComponentState.IN_TREE){
-					//CORNFLOWERBLUE colour
-					background.setStyle("-fillColour: rgba(100, 149, 237, 1)");
-					setColour = Color.web("rgba(100, 149, 237, 1)");
-				}
-				*/
 			}
 		}
 		pane.getChildren().add(background);
