@@ -113,7 +113,7 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
             }
             else{
                 nodeACopy = new GraphNode(0);
-                nodeACopy.setName("copynode" + e.nodeA.getName());
+                nodeACopy.setName("copynode" + e.nodeA.getName(), false);
                 nodeCopyMap.put(e.nodeA, nodeACopy);
                 nodeCopies.add(nodeACopy);
             }
@@ -123,7 +123,7 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
             }
             else{
                 nodeBCopy = new GraphNode(0);
-                nodeBCopy.setName("copynode:" + e.nodeB.getName());
+                nodeBCopy.setName("copynode:" + e.nodeB.getName(), false);
                 nodeCopyMap.put(e.nodeB, nodeBCopy);
                 nodeCopies.add(nodeBCopy);
             }

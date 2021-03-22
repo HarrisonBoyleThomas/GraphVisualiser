@@ -28,7 +28,7 @@ public abstract class MinimumSpanningTreeAlgorithm extends GraphAlgorithm {
             }
             else{
                 nodeACopy = new GraphNode(0);
-                nodeACopy.setName("copyname");
+                nodeACopy.setName("copyname", false);
                 nodeCopyMap.put(e.nodeA, nodeACopy);
                 nodeCopies.add(nodeACopy);
             }
@@ -38,7 +38,7 @@ public abstract class MinimumSpanningTreeAlgorithm extends GraphAlgorithm {
             }
             else{
                 nodeBCopy = new GraphNode(0);
-                nodeBCopy.setName("copynodeb");
+                nodeBCopy.setName("copynodeb", false);
                 nodeCopyMap.put(e.nodeB, nodeBCopy);
                 nodeCopies.add(nodeBCopy);
             }

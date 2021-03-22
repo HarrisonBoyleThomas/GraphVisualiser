@@ -1,4 +1,5 @@
 package model;
+import data.UndoRedoController;
 
 import java.io.*;
 
@@ -54,8 +55,12 @@ abstract class GraphComponent implements Serializable{
 	*    @param nameIn the new name of the component
 	*    @return the new name
 	**/
-	public String setName(String nameIn){
+	public String setName(String nameIn, boolean saveToUndoStack){
 		name = nameIn;
+		if(saveToUndoStack){
+			System.out.println("set name push");
+		    UndoRedoController.pushToUndoStack();
+		}
 		return name;
 	}
 

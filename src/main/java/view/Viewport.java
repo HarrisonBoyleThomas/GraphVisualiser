@@ -222,7 +222,6 @@ public class Viewport extends Pane{
 						VisualGraphNode.updateNodes(camera, 500,500);
 						//get copies of VGCs that need to be rendered
 						ArrayList<VisualGraphComponent> components = new ArrayList<>(VisualGraphComponent.getComponents());
-
 						//create a list of icons that were removed from the viewport
 						ArrayList<Group> invalidIcons = new ArrayList<>();
 						//Create a list of VGCs that are invalid. ic[i] -> ii[i], implicitly
@@ -242,11 +241,18 @@ public class Viewport extends Pane{
 							else{
 								if(c instanceof VisualGraphEdge){
 									invalidIcons.add(drawnComponents.get(c));
+									invalidComponents.add(c);
 								}
 							}
 						}
 						//list of icons to add to the viewport
 						ArrayList<Group> newIcons = new ArrayList<>();
+
+                        //hashmap contains() method will not work here
+						ArrayList<VisualGraphComponent> keys = new ArrayList<>();
+						for(VisualGraphComponent c : drawnComponents.keySet()){
+							keys.add(c);
+						}
 						//Go through each no component, and add icons to the newIcons list
 					    //if the component's appearance has changed since the last frame
 						//or if the component was just created by the user
@@ -270,14 +276,15 @@ public class Viewport extends Pane{
 								newIcons.add(newComp.getIcon());
 							}
 							else{
-								//Add newly detected nodes
-								if(!drawnComponents.keySet().contains(c)){
+								//Add newly detected node
+								if(!keys.contains(c)){
 									drawnComponents.put(c, newComp.getIcon());
 									newIcons.add(newComp.getIcon());
 								}
 								else{
+									VisualGraphComponent comp = keys.get(keys.indexOf(c));
 									//Update the icon if the VGN's appearance has changed
-									if(!newComp.iconsEqual(drawnComponents.get(c))){
+									if(!newComp.iconsEqual(drawnComponents.get(comp))){
 										Group old = drawnComponents.put(c, newComp.getIcon());
 										newIcons.add(newComp.getIcon());
 										invalidIcons.add(old);
@@ -290,7 +297,7 @@ public class Viewport extends Pane{
 						//Removing invalid icons
 						ArrayList<Node> foreignComponents = new ArrayList<>(getChildren());
 						foreignComponents.removeAll(drawnComponents.values());
-						foreignComponents.removeAll(invalidIcons);
+						//foreignComponents.removeAll(invalidIcons);
 						foreignComponents.remove(viewportDetails);
 
 						HashMap<Node, VisualGraphComponent> iconMap = new HashMap<>();
@@ -321,41 +328,51 @@ public class Viewport extends Pane{
 								//add the close button
 								createCloseButton();
 
+
+								//hashmap contains() method will not work here
+								keys.clear();
+								for(VisualGraphComponent c : drawnComponents.keySet()){
+									keys.add(c);
+								}
 								//Update the drawn position of all VGC icons
 								//Unfortunately, this MUST be done here in the main thread
 								for(VisualGraphComponent c : components){
-									if(c instanceof VisualGraphEdge){
-										VisualGraphEdge edge = (VisualGraphEdge) c;
-										VisualGraphNode nodeA = VisualGraphNode.getNode(edge.getEdge().nodeA);
-										VisualGraphNode nodeB = VisualGraphNode.getNode(edge.getEdge().nodeB);
-										if(edge != null && edge.getRenderLocation() != null){
-								    		if(nodeA !=  null && nodeB != null){
-									    	    if(camera.isInFront(nodeA)  || camera.isInFront(nodeB)){
-													if(drawnComponents.get(c) != null){
-									    	        	drawnComponents.get(c).setLayoutX((int) edge.getRenderLocation().x);
-									    	    	    drawnComponents.get(c).setLayoutY((int) edge.getRenderLocation().y);
-                                                    }
-												}
-										    }
+									if(keys.contains(c)){
+										VisualGraphComponent comp = keys.get(keys.indexOf(c));
+										if(c instanceof VisualGraphEdge){
+											VisualGraphEdge edge = (VisualGraphEdge) c;
+											VisualGraphNode nodeA = VisualGraphNode.getNode(edge.getEdge().nodeA);
+											VisualGraphNode nodeB = VisualGraphNode.getNode(edge.getEdge().nodeB);
+											if(edge != null && edge.getRenderLocation() != null){
+									    		if(nodeA !=  null && nodeB != null){
+										    	    if(camera.isInFront(nodeA)  || camera.isInFront(nodeB)){
+														if(drawnComponents.get(comp) != null){
+										    	        	drawnComponents.get(comp).setLayoutX((int) edge.getRenderLocation().x);
+										    	    	    drawnComponents.get(comp).setLayoutY((int) edge.getRenderLocation().y);
+	                                                    }
+													}
+											    }
+											}
 										}
-									}
-									else if (c instanceof VisualGraphNode){
-										VisualGraphNode node = (VisualGraphNode) c;
-										drawnComponents.get(c).setLayoutX((int) node.getRenderLocation().x);
-										drawnComponents.get(c).setLayoutY((int) node.getRenderLocation().y);
-										//Scale about the top right corner of the node, instead of it's default scale center
-										Scale scale = new Scale();
-										scale.setPivotX(0.0);
-										scale.setPivotY(0.0);
-										scale.setX(node.getRenderScale());
-										scale.setY(node.getRenderScale());
-										drawnComponents.get(c).getTransforms().clear();
-										drawnComponents.get(c).getTransforms().add(scale);
+										else if (c instanceof VisualGraphNode){
+											VisualGraphNode node = (VisualGraphNode) c;
+											drawnComponents.get(comp).setLayoutX((int) node.getRenderLocation().x);
+											drawnComponents.get(comp).setLayoutY((int) node.getRenderLocation().y);
+											//Scale about the top right corner of the node, instead of it's default scale center
+											Scale scale = new Scale();
+											scale.setPivotX(0.0);
+											scale.setPivotY(0.0);
+											scale.setX(node.getRenderScale());
+											scale.setY(node.getRenderScale());
+											drawnComponents.get(comp).getTransforms().clear();
+											drawnComponents.get(comp).getTransforms().add(scale);
+										}
 									}
 								}
 								//Clear invalid icons from the viewport, and
 								//remove all references to deleted components
 								if(invalidIcons.size() > 0){
+									getChildren().removeAll(invalidIcons);
 							    	for(Group icon : invalidIcons){
 							    		getChildren().remove(icon);
 								    }
@@ -366,7 +383,6 @@ public class Viewport extends Pane{
 								//Draw all new VGC icons to the screen
 								if(newIcons.size() > 0){
 								    getChildren().addAll(newIcons);
-									//System.out.println("adding ndmoes");
 								}
 								if(iconMap.size() > 0){
 							    	FXCollections.sort(getChildren(), new ComponentDistanceComparator(camera, iconMap));

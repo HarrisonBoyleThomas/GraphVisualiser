@@ -24,6 +24,8 @@ import javafx.scene.Group;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
+import java.io.*;
+
 /**
 *    A VGC stores the common features of a graph component that can be drawn on a JavaFX canvas
 *    Due to the complexity of calculating renderLocation, the render location of a VGC is stored
@@ -139,6 +141,40 @@ public abstract class VisualGraphComponent extends Actor{
 
 	public Color getSetColour(){
 		return setColour;
+	}
+    /**
+	*    Create a deep copy of the VGC
+	**/
+	public synchronized VisualGraphComponent deepCopy(){
+		VisualGraphComponent toReturn = null;
+		ObjectOutputStream objectOutputStream = null;
+		ObjectInputStream objectInputStream = null;
+		try{
+	    	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    	objectOutputStream = new ObjectOutputStream(out);
+            objectOutputStream.writeObject(this);
+	    	objectOutputStream.flush();
+	    	ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+	    	objectInputStream = new ObjectInputStream(in);
+		    toReturn = (VisualGraphComponent) objectInputStream.readObject();
+		}
+		catch(Exception e){
+
+		}
+		finally{
+			try{
+			    if(objectOutputStream != null){
+                    objectOutputStream.close();
+	    		}
+	    		if(objectInputStream != null){
+	        	    objectInputStream.close();
+			    }
+			}
+			catch(Exception error){
+
+			}
+		}
+		return toReturn;
 	}
 
 }

@@ -85,7 +85,7 @@ public class NodeDetails extends DetailsPanel{
 		getChildren().add(nameSection);
 
 		name.textProperty().addListener((observable, oldName, newName) -> {
-			node.setName(newName);
+			node.setName(newName, true);
 			MainWindow.get().updateViewport();
         });
 	}
@@ -110,7 +110,7 @@ public class NodeDetails extends DetailsPanel{
 
 		value.textProperty().addListener((observable, oldValue, newValue) -> {
 			if(newValue.matches("-?\\d+")){
-			    node.setValue(Integer.parseInt(newValue));
+			    node.setValue(Integer.parseInt(newValue), true);
 				MainWindow.get().updateViewport();
 			}
 			else{

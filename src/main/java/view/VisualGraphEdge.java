@@ -4,6 +4,7 @@ import maths.Vector;
 import maths.Rotator;
 import maths.Functions;
 import data.Data;
+import data.UndoRedoController;
 
 import model.GraphNode;
 import model.GraphEdge;
@@ -149,6 +150,12 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		}
 		return found;
 	}
+    /**
+	*    Used for undo and redo
+	**/
+	public static synchronized void setEdges(ArrayList<VisualGraphEdge> edgesIn){
+		edges = new ArrayList<VisualGraphEdge>(edgesIn);
+	}
 
 	/**
 	*    Update the positions of all icons
@@ -234,7 +241,6 @@ public class VisualGraphEdge extends VisualGraphComponent{
 			Math.cos(lineAngle+0.1)*lineLength, Math.sin(lineAngle+0.1)*lineLength,
 			Math.cos(lineAngle-0.1)*lineLength, Math.sin(lineAngle-0.1)*lineLength
 		});
-
 		line.setStrokeWidth(4);
 
 
@@ -309,6 +315,7 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	/**
 	*    @Return true if the other VGE represents the same edge, false otherwise
 	**/
+	@Override
 	public boolean equals(Object otherObject){
 		if(otherObject instanceof VisualGraphEdge){
 		    VisualGraphEdge other = (VisualGraphEdge) otherObject;

@@ -104,7 +104,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 		name.textProperty().addListener((observable, oldName, newName) -> {
 			if(newName.length() < 15){
-	    		edge.getEdge().setName(newName);
+	    		edge.getEdge().setName(newName, true);
 				//update();
 		    	MainWindow.get().updateViewport();
 			}
@@ -136,7 +136,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 
 			}
 			if(value > 0 && value < 10000000){
-			    edge.getEdge().setLength(value);
+			    edge.getEdge().setLength(value, true);
 				//update();
 			    MainWindow.get().updateViewport();
 			}

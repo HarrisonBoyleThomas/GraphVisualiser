@@ -1,4 +1,6 @@
 package model;
+import data.UndoRedoController;
+
 import java.util.ArrayList;
 
 
@@ -14,25 +16,39 @@ import java.util.ArrayList;
 public class GraphNode extends GraphComponent{
 	private int value;
 	private ArrayList<GraphEdge> edges;
+	private int uniqueId = hashCode();
 
 	public GraphNode(){
 		value = 0;
 		edges = new ArrayList<>();
+		setName("New node", false);
 	}
 
 	public GraphNode(int valueIn){
-		value = setValue(valueIn);
+		value = valueIn;
 		edges = new ArrayList<>();
+		setName("New node", false);
 	}
 
+	public int getUniqueId(){
+		return uniqueId;
+	}
+
+    public void updateId(){
+		uniqueId = hashCode();
+	}
 
 	/**
 	*    update the value of the node to the new value
 	*    @valueIn: the new value
 	*    @return the new value
 	**/
-	public int setValue(int valueIn){
+	public int setValue(int valueIn, boolean saveToUndoStack){
 		value = valueIn;
+		System.out.println("set value push");
+		if(saveToUndoStack){
+	    	UndoRedoController.pushToUndoStack();
+		}
 		return value;
 	}
 
@@ -147,5 +163,13 @@ public class GraphNode extends GraphComponent{
 			edge.nodeB.removeEdge(this, false);
 		}
 		edges.clear();
+	}
+
+    @Override
+	public boolean equals(Object other){
+		if(other instanceof GraphNode){
+			return uniqueId == ((GraphNode) other).getUniqueId();
+		}
+		return false;
 	}
 }

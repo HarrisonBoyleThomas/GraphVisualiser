@@ -4,6 +4,7 @@ import maths.Vector;
 import maths.Rotator;
 import maths.Functions;
 import data.Data;
+import data.UndoRedoController;
 
 import model.GraphNode;
 import model.GraphEdge;
@@ -42,8 +43,8 @@ import javafx.scene.input.MouseEvent;
 *    Date: 20/11/2020
 **/
 public class VisualGraphNode extends VisualGraphComponent{
-	//List of all created icons
-	private static ArrayList<VisualGraphNode> icons = new ArrayList<>();
+	//List of all created nodes
+	private static ArrayList<VisualGraphNode> nodes = new ArrayList<>();
 
 	//The node the GNI represents
 	private final GraphNode node;
@@ -84,7 +85,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static synchronized VisualGraphNode create(Vector location, GraphNode node){
 		VisualGraphNode newIcon = new VisualGraphNode(location, node);
-		icons.add(newIcon);
+		nodes.add(newIcon);
 		return newIcon;
 	}
 
@@ -95,7 +96,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static synchronized boolean delete(VisualGraphNode toDelete){
 		VisualGraphEdge.delete(toDelete.getNode());
-	    return icons.remove(toDelete);
+	    return nodes.remove(toDelete);
 	}
 
 	/**
@@ -110,8 +111,8 @@ public class VisualGraphNode extends VisualGraphComponent{
 	*    @Return the icon that represents the given node
 	**/
 	public static VisualGraphNode getNode(GraphNode node){
-		for(VisualGraphNode icon : icons){
-			if(icon.getNode() == node){
+		for(VisualGraphNode icon : nodes){
+			if(icon.getNode().equals(node)){
 				//VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
 				//VisualGraphEdge.delete(VisualGraphEdge.getEdge(node));
 				return icon;
@@ -121,10 +122,10 @@ public class VisualGraphNode extends VisualGraphComponent{
 	}
 
 	/**
-	*    Update the positions of all icons
+	*    Update the positions of all nodes
 	**/
 	public static synchronized void updateNodes(Camera camera, int width, int height){
-		for(VisualGraphNode icon : icons){
+		for(VisualGraphNode icon : nodes){
 			Vector loc = camera.project(icon.getLocation(), width, height);
 			icon.updateRenderLocation(loc);
 			icon.updateRenderScale(1 - (Vector.distance(camera.getLocation(), icon.getLocation())/50.0));
@@ -132,15 +133,21 @@ public class VisualGraphNode extends VisualGraphComponent{
 	}
 
 	/**
-	*    @Return a copy of the icons
+	*    @Return a copy of the nodes
 	**/
 	public static ArrayList<VisualGraphNode> getNodes(){
-		return new ArrayList<VisualGraphNode>(icons);
+		return new ArrayList<VisualGraphNode>(nodes);
+	}
+    /**
+	*    set the nodes list to the new list. Used to undoing and redoing
+	**/
+	public static synchronized void setNodes(ArrayList<VisualGraphNode> nodesIn){
+		nodes = new ArrayList<VisualGraphNode>(nodesIn);
 	}
 
 	public static ArrayList<VisualGraphNode> copyNodes(){
 		ArrayList<VisualGraphNode> output = new ArrayList<>();
-		for(VisualGraphNode node : icons){
+		for(VisualGraphNode node : nodes){
 			output.add(new VisualGraphNode(node));
 		}
 		return output;
@@ -270,10 +277,11 @@ public class VisualGraphNode extends VisualGraphComponent{
 	/**
 	*    @Return true if the other icon represents the same node, false otherwise
 	**/
-	public boolean equals(Object otherObject){
-		if(otherObject instanceof VisualGraphNode){
-		    VisualGraphNode other = (VisualGraphNode) otherObject;
-			return node.equals(other.getNode());
+	@Override
+    public boolean equals(Object other) {
+		if(other instanceof VisualGraphNode){
+		    VisualGraphNode o = (VisualGraphNode) other;
+			return node.equals(o.getNode());
 		}
 		return false;
 	}
@@ -284,8 +292,7 @@ public class VisualGraphNode extends VisualGraphComponent{
 		}
 		StackPane root = (StackPane) other.getChildren().get(0);
 		StackPane myRoot = (StackPane) icon.getChildren().get(0);
-		//System.out.println(((Circle) root.getChildren().get(0)).getFill());
-		//System.out.println(setColour);
+
 		Color circleCol = (Color) ((Circle) root.getChildren().get(0)).getFill();
 		Boolean blankColourCheck = (setColour == null && ((Color.web("rgba(37,37,37, 255)").equals(circleCol) || Color.web("rgba(255, 255, 255, 255)").equals(circleCol))));
 		if(blankColourCheck){

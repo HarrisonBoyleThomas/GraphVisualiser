@@ -1,4 +1,5 @@
 package model;
+import data.UndoRedoController;
 
 /**
 *    A GraphEdge represents an edge between two nodes
@@ -16,7 +17,7 @@ public class GraphEdge extends GraphComponent{
 	public GraphEdge(GraphNode nodeAIn, GraphNode nodeBIn, int lengthIn){
 		nodeA = nodeAIn;
 		nodeB = nodeBIn;
-		length = setLength(lengthIn);
+		length = setLength(lengthIn, false);
 	}
 
 	/**
@@ -24,7 +25,7 @@ public class GraphEdge extends GraphComponent{
 	*    @param lengthIn: the new length
 	*    @return the new length
 	**/
-	public int setLength(int lengthIn){
+	public int setLength(int lengthIn, boolean saveToUndoStack){
 		if(lengthIn < 0){
 			length = 0;
 		}
@@ -33,6 +34,10 @@ public class GraphEdge extends GraphComponent{
 		}
 		else{
 			length = lengthIn;
+		}
+		if(saveToUndoStack){
+			System.out.println("set length push");
+		    UndoRedoController.pushToUndoStack();
 		}
 		return length;
 	}
