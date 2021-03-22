@@ -35,6 +35,12 @@ import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+/**
+*    The colour code panel creates a table containing the stored
+*    colour mappings for each graph component state, stored in
+*    ColourCodeData. The panel allows the user to edit these colours
+*    by using a colour selection box
+**/
 public class ColourCodePanel extends VBox{
     private PreferencesPanel parent;
     public ColourCodePanel(PreferencesPanel parentIn){
@@ -46,7 +52,7 @@ public class ColourCodePanel extends VBox{
         update();
         parent = parentIn;
     }
-
+    //copy the style from the MainWindow
     private void updateStyle(){
 		List<Window> windows = Stage.getWindows().stream().filter(Window::isShowing).collect(Collectors.toList());
         getStylesheets().clear();
@@ -66,6 +72,7 @@ public class ColourCodePanel extends VBox{
         GridPane grid = new GridPane();
         grid.setGridLinesVisible(true);
         int index = 0;
+        //create a row for each state containing the state's name and colour code
         for(GraphComponentState state : GraphComponentState.values()){
             Color initialValue = Data.COLOUR_CODE_DATA.getColourForState(state);
             if(initialValue != null){
