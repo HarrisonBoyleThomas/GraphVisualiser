@@ -137,6 +137,28 @@ public class MenuHeader extends MenuBar{
 		});
         edit.getItems().add(paste);
 
+		Tooltip undoTooltip = new Tooltip("Undo the last operation");
+		Label undoLabel = new Label("Undo");
+		Tooltip.install(undoLabel, undoTooltip);
+		CustomMenuItem undo = new CustomMenuItem(undoLabel);
+		undo.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent e){
+				MainWindow.get().undo();
+			}
+		});
+        edit.getItems().add(undo);
+
+		Tooltip redoTooltip = new Tooltip("Redo the last undone operation");
+		Label redoLabel = new Label("Redo");
+		Tooltip.install(redoLabel, redoTooltip);
+		CustomMenuItem redo = new CustomMenuItem(redoLabel);
+		redo.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent e){
+				MainWindow.get().redo();
+			}
+		});
+        edit.getItems().add(redo);
+
 
 		getMenus().add(edit);
 	}

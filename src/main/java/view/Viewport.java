@@ -204,7 +204,7 @@ public class Viewport extends Pane{
 	}
 
     /**
-	*    Removes all drawnn graphs from the screen. This helps to reduce the chance of errors
+	*    Removes all drawn graphs from the screen. This helps to reduce the chance of errors.
 	**/
 	public void reset(){
 		//Apply changes in the JavaFX Application thread
@@ -223,6 +223,7 @@ public class Viewport extends Pane{
 					getChildren().remove(n);
 				}
 	      	    createCloseButton();
+				draw();
 			}
 		});
 	}

@@ -118,7 +118,7 @@ public class MainWindow extends BorderPane{
 		if(state == MainWindowState.EDIT){
 			//ensure algorithms are reset
 			setStartNode(null);
-			terminateAlgorithms();
+			//terminateAlgorithms();
 		    Viewport v = new Viewport(camera, null);
 		    return addViewport(v);
 		}
@@ -709,7 +709,6 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean createNode(){
 		if(state == MainWindowState.EDIT){
-			System.out.println("create node push");
 			UndoRedoController.pushToUndoStack();
 			System.out.println("New node created\n");
 		    GraphNode node = new GraphNode(0);
@@ -732,7 +731,6 @@ public class MainWindow extends BorderPane{
 	public boolean createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge created between " + nodeA.getNode().getName() + " and " + nodeB.getNode().getName() + "\n");
-			System.out.println("create edge push");
 			UndoRedoController.pushToUndoStack();
 			GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
 			if(edge == null){
@@ -758,7 +756,6 @@ public class MainWindow extends BorderPane{
 	public boolean deleteNode(VisualGraphNode toDelete){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Node " + toDelete.getNode().getName() + " deleted\n");
-			System.out.println("delete node push");
 			UndoRedoController.pushToUndoStack();
 			setStartNode(null);
 		    VisualGraphNode.delete(toDelete);
@@ -782,7 +779,6 @@ public class MainWindow extends BorderPane{
 	public boolean deleteEdge(VisualGraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge deleted from " + toDelete.getEdge().nodeA.getName() + " to + " + toDelete.getEdge().nodeB.getName() + "\n");
-			System.out.println("delete edge push");
 			UndoRedoController.pushToUndoStack();
 			VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
 		    clearClickedEdges();
@@ -804,7 +800,6 @@ public class MainWindow extends BorderPane{
 	public boolean deleteEdge(GraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge deleted from " + toDelete.nodeA.getName() + " to + " + toDelete.nodeB.getName() + "\n");
-			System.out.println("delete edge push");
 			UndoRedoController.pushToUndoStack();
 			VisualGraphEdge.delete(toDelete);
 		    clearClickedEdges();
@@ -825,7 +820,6 @@ public class MainWindow extends BorderPane{
 	private boolean deleteAllSelected(){
 		if(state == MainWindowState.EDIT){
 			System.out.println("deleted all selected components (" + clickedNodes.size() + "nodes, " + clickedEdges.size() + "edges)\n");
-			System.out.println("delete all push");
 			UndoRedoController.pushToUndoStack();
 			setStartNode(null);
     		for(VisualGraphNode n : clickedNodes){
@@ -856,7 +850,6 @@ public class MainWindow extends BorderPane{
 	private boolean addPathBetweenSelected(){
 		if(state == MainWindowState.EDIT){
 			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
-				System.out.println("add path push");
 				UndoRedoController.pushToUndoStack();
 				int originIndex = 0;
 				int destinationIndex = 1;
@@ -1199,6 +1192,7 @@ public class MainWindow extends BorderPane{
     			objectStream.close();
     			fileStream.close();
     			System.out.println("    -Successful read. Creating nodes");
+				UndoRedoController.pushToUndoStack();
     			ArrayList<GraphNode> createdNodes = new ArrayList<>();
     			//Create nodes in front of the camera, instead of their original position
     			Vector basePosition = camera.getLocation().add(camera.getForwardVector().multiply(10));
@@ -1362,16 +1356,14 @@ public class MainWindow extends BorderPane{
                 displayErrorMessage("Undo error", "Nothing to undo", null);
     		}
     		else{
-	    		System.out.println("Undo");
+	    		System.out.println("Undo\n");
 	    	}
-			System.out.println("edges to draw: " + VisualGraphEdge.getEdges().size());
-			//setStartNode(null);
-			//terminateAlgorithms();
+			setStartNode(null);
 			resetViewport();
 	    	updateViewport();
 			updateViewport();
-	    	//updateDetailsPanel();
-		    //updateAlgorithmDetails();
+	    	updateDetailsPanel();
+		    updateAlgorithmDetails();
 		}
 		else{
 			displayErrorMessage("Undo error", "Unable to undo when not in edit mode", null);
@@ -1384,10 +1376,9 @@ public class MainWindow extends BorderPane{
 		    	displayErrorMessage("Redo error", "Nothing to redo", null);
 		    }
     		else{
-	    		System.out.println("Redo");
+	    		System.out.println("Redo\n");
 	    	}
-			//setStartNode(null);
-			//terminateAlgorithms();
+			setStartNode(null);
 			resetViewport();
 	    	updateViewport();
 			updateViewport();

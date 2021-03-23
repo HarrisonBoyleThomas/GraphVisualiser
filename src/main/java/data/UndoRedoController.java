@@ -11,7 +11,6 @@ public class UndoRedoController{
     private static final ArrayList<ArrayList<VisualGraphNode>> nodeRedoStack = new ArrayList<>();
 
     public static boolean undo(){
-        System.out.println("can undo " + nodeUndoStack.size() + " times");
         boolean output = true;
         if(nodeUndoStack.size() == 0){
             return false;
@@ -27,7 +26,7 @@ public class UndoRedoController{
             ArrayList<GraphEdge> oldEdges = n.getNode().getEdges();
             while(n.getNode().getEdges().size() > 0){
                 GraphEdge e = n.getNode().getEdges().get(0);
-                System.out.println(n.getNode().removeEdge(e, false));
+                n.getNode().removeEdge(e, false);
             }
 
             for(GraphEdge e : oldEdges){
@@ -62,7 +61,7 @@ public class UndoRedoController{
             ArrayList<GraphEdge> oldEdges = n.getNode().getEdges();
             while(n.getNode().getEdges().size() > 0){
                 GraphEdge e = n.getNode().getEdges().get(0);
-                System.out.println(n.getNode().removeEdge(e, false));
+                n.getNode().removeEdge(e, false);
             }
 
             for(GraphEdge e : oldEdges){

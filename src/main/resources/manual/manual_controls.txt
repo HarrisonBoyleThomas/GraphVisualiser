@@ -21,3 +21,5 @@ CLICK,SELECT:Select a single component
 CLICK+CTRL,MULTI SELECT:Add the chosen componet to a list of selected components to apply future operations on the seleted components
 CTRL+C,COPY:Copy selected components to a buffer. ONLY the selected components are copied
 CTRL+V,PASTE:Paste the copied components. Pasted nodes are pasted at their original positions but are all selected
+CTRL+SHIFT+U, UNDO: Undo the most recent operation
+CTRL+SHIFT+Y, REDO: Redo the most recently undone operation

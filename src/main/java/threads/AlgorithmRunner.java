@@ -4,6 +4,9 @@ import data.Data;
 
 import model.algorithm.GraphAlgorithm;
 import maths.Functions;
+import menu.MainWindow;
+
+import javafx.application.Platform;
 
 /**
 *    The AlgorithmRunner keeps callinng the step() function of algorithms
@@ -54,6 +57,26 @@ public class AlgorithmRunner extends Thread{
         }
         running = false;
         System.out.println("runner thread completed");
+        //The draw() function in the Viewport is known to sometimes mis-draw edges
+        //due to threading, so ensure the viewport redraws to ensure the graph is
+        //fully rendered
+        try{
+            sleep(100);
+        }
+        catch(Exception e){
+            Platform.runLater(new Runnable() {
+    			@Override
+    			public void run() {
+                    MainWindow.get().updateViewport();
+                }
+            });
+        }
+        Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+                MainWindow.get().updateViewport();
+            }
+        });
     }
     /**
     *    Set the running flag to false, so that the thread terminates
