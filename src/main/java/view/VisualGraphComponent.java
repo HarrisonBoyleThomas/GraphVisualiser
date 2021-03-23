@@ -96,7 +96,7 @@ public abstract class VisualGraphComponent extends Actor{
 	**/
 	public abstract void updateIcon(GraphAlgorithm algorithm);
 
-	protected void addEvents(){
+	public void addEvents(){
 		clickEvent = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -104,6 +104,10 @@ public abstract class VisualGraphComponent extends Actor{
                 handleClick(null, e.getClickCount() == 2);
             }
         };
+	}
+
+	public EventHandler<MouseEvent> getClickEvent(){
+		return clickEvent;
 	}
 
 

@@ -403,6 +403,19 @@ public class MainWindow extends BorderPane{
 		graphDetails.update();
 	}
 
+	private void resetViewport(){
+		VisualGraphNode.updateNodes(camera, 500,500);
+		VisualGraphEdge.updateEdges();
+		GridPane view = (GridPane) getCenter();
+		for(Node n : view.getChildren()){
+		    Viewport v = (Viewport) n;
+			v.reset();
+		}
+		updateCameraDetails();
+		updateAlgorithmDetails();
+		graphDetails.update();
+	}
+
 	public void updateAppDetails(){
 		appDetails.update();
 	}
@@ -696,14 +709,14 @@ public class MainWindow extends BorderPane{
 	**/
 	public boolean createNode(){
 		if(state == MainWindowState.EDIT){
+			System.out.println("create node push");
+			UndoRedoController.pushToUndoStack();
 			System.out.println("New node created\n");
 		    GraphNode node = new GraphNode(0);
 		    //node.setName("New node", false);
 		    Vector spawnLocation = camera.getLocation().add(camera.getForwardVector().multiply(10));
 		    VisualGraphNode vgn = VisualGraphNode.create(spawnLocation, node);
 		    updateViewport();
-			System.out.println("create node push");
-			UndoRedoController.pushToUndoStack();
 			return true;
 		}
 		return false;
@@ -719,14 +732,14 @@ public class MainWindow extends BorderPane{
 	public boolean createEdge(VisualGraphNode nodeA, VisualGraphNode nodeB){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge created between " + nodeA.getNode().getName() + " and " + nodeB.getNode().getName() + "\n");
-            GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
+			System.out.println("create edge push");
+			UndoRedoController.pushToUndoStack();
+			GraphEdge edge = nodeA.getNode().addEdge(nodeB.getNode(), false);
 			if(edge == null){
 				return false;
 			}
             //edge.setName("");
             VisualGraphEdge.create(edge);
-			System.out.println("create edge push");
-			UndoRedoController.pushToUndoStack();
             updateDetailsPanel();
             updateViewport();
 			return true;
@@ -745,12 +758,12 @@ public class MainWindow extends BorderPane{
 	public boolean deleteNode(VisualGraphNode toDelete){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Node " + toDelete.getNode().getName() + " deleted\n");
+			System.out.println("delete node push");
+			UndoRedoController.pushToUndoStack();
 			setStartNode(null);
 		    VisualGraphNode.delete(toDelete);
 		    clearClickedNodes();
 		    clearClickedEdges();
-			System.out.println("delete node push");
-			UndoRedoController.pushToUndoStack();
 		    updateDetailsPanel();
 		    updateViewport();
 			return true;
@@ -769,10 +782,10 @@ public class MainWindow extends BorderPane{
 	public boolean deleteEdge(VisualGraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge deleted from " + toDelete.getEdge().nodeA.getName() + " to + " + toDelete.getEdge().nodeB.getName() + "\n");
-		    VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
-		    clearClickedEdges();
 			System.out.println("delete edge push");
 			UndoRedoController.pushToUndoStack();
+			VisualGraphEdge.delete(VisualGraphEdge.getEdge(toDelete.getEdge()));
+		    clearClickedEdges();
 		    updateDetailsPanel();
 		    updateViewport();
 			return true;
@@ -791,10 +804,10 @@ public class MainWindow extends BorderPane{
 	public boolean deleteEdge(GraphEdge toDelete){
 		if(state == MainWindowState.EDIT){
 			System.out.println("Edge deleted from " + toDelete.nodeA.getName() + " to + " + toDelete.nodeB.getName() + "\n");
-		    VisualGraphEdge.delete(toDelete);
-		    clearClickedEdges();
 			System.out.println("delete edge push");
 			UndoRedoController.pushToUndoStack();
+			VisualGraphEdge.delete(toDelete);
+		    clearClickedEdges();
 		    updateDetailsPanel();
 		    updateViewport();
 			return true;
@@ -812,6 +825,8 @@ public class MainWindow extends BorderPane{
 	private boolean deleteAllSelected(){
 		if(state == MainWindowState.EDIT){
 			System.out.println("deleted all selected components (" + clickedNodes.size() + "nodes, " + clickedEdges.size() + "edges)\n");
+			System.out.println("delete all push");
+			UndoRedoController.pushToUndoStack();
 			setStartNode(null);
     		for(VisualGraphNode n : clickedNodes){
     			VisualGraphNode.delete(n);
@@ -821,8 +836,6 @@ public class MainWindow extends BorderPane{
     		}
     		clearClickedNodes();
     		clearClickedEdges();
-			System.out.println("delete all push");
-			UndoRedoController.pushToUndoStack();
     		updateViewport();
     		updateDetailsPanel();
 			return true;
@@ -843,6 +856,8 @@ public class MainWindow extends BorderPane{
 	private boolean addPathBetweenSelected(){
 		if(state == MainWindowState.EDIT){
 			if(clickedNodes.size() > 1 && clickedEdges.size() == 0){
+				System.out.println("add path push");
+				UndoRedoController.pushToUndoStack();
 				int originIndex = 0;
 				int destinationIndex = 1;
 				while(destinationIndex < clickedNodes.size()){
@@ -856,8 +871,6 @@ public class MainWindow extends BorderPane{
 				}
 				updateDetailsPanel();
 				updateViewport();
-				System.out.println("add path push");
-				UndoRedoController.pushToUndoStack();
 				return true;
 			}
 		}
@@ -1352,7 +1365,11 @@ public class MainWindow extends BorderPane{
 	    		System.out.println("Undo");
 	    	}
 			System.out.println("edges to draw: " + VisualGraphEdge.getEdges().size());
+			//setStartNode(null);
+			//terminateAlgorithms();
+			resetViewport();
 	    	updateViewport();
+			updateViewport();
 	    	//updateDetailsPanel();
 		    //updateAlgorithmDetails();
 		}
@@ -1369,7 +1386,11 @@ public class MainWindow extends BorderPane{
     		else{
 	    		System.out.println("Redo");
 	    	}
+			//setStartNode(null);
+			//terminateAlgorithms();
+			resetViewport();
 	    	updateViewport();
+			updateViewport();
 	    	updateDetailsPanel();
 	    	updateAlgorithmDetails();
 		}

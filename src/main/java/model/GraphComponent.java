@@ -56,11 +56,11 @@ abstract class GraphComponent implements Serializable{
 	*    @return the new name
 	**/
 	public String setName(String nameIn, boolean saveToUndoStack){
-		name = nameIn;
 		if(saveToUndoStack){
 			System.out.println("set name push");
 		    UndoRedoController.pushToUndoStack();
 		}
+		name = nameIn;
 		return name;
 	}
 

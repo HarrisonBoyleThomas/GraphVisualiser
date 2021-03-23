@@ -1,6 +1,7 @@
 package menu;
 
 import maths.Vector;
+import data.UndoRedoController;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -117,7 +118,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 				xCoord.setText("" + node.getLocation().x);
 				newX = node.getLocation().x;
 			}
-
+            UndoRedoController.pushToUndoStack();
 			node.setLocation(new Vector(newX, node.getLocation().y, node.getLocation().z));
 			MainWindow.get().updateViewport();
         });
@@ -148,7 +149,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 				yCoord.setText("" + node.getLocation().y);
 				newY = node.getLocation().y;
 			}
-
+            UndoRedoController.pushToUndoStack();
 			node.setLocation(new Vector(node.getLocation().x, newY, node.getLocation().z));
 			MainWindow.get().updateViewport();
         });
@@ -179,7 +180,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 				zCoord.setText("" + node.getLocation().z);
 				newZ = node.getLocation().z;
 			}
-
+            UndoRedoController.pushToUndoStack();
 			node.setLocation(new Vector(node.getLocation().x, node.getLocation().y, newZ));
 			MainWindow.get().updateViewport();
         });

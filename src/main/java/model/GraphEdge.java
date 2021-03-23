@@ -26,6 +26,10 @@ public class GraphEdge extends GraphComponent{
 	*    @return the new length
 	**/
 	public int setLength(int lengthIn, boolean saveToUndoStack){
+		if(saveToUndoStack){
+			System.out.println("set length push");
+		    UndoRedoController.pushToUndoStack();
+		}
 		if(lengthIn < 0){
 			length = 0;
 		}
@@ -34,10 +38,6 @@ public class GraphEdge extends GraphComponent{
 		}
 		else{
 			length = lengthIn;
-		}
-		if(saveToUndoStack){
-			System.out.println("set length push");
-		    UndoRedoController.pushToUndoStack();
 		}
 		return length;
 	}

@@ -11,53 +11,86 @@ public class UndoRedoController{
     private static final ArrayList<ArrayList<VisualGraphNode>> nodeRedoStack = new ArrayList<>();
 
     public static boolean undo(){
+        System.out.println("can undo " + nodeUndoStack.size() + " times");
         boolean output = true;
-        ArrayList<VisualGraphNode> oldState = nodeUndoStack.remove(nodeUndoStack.size()-1);
-        nodeRedoStack.add(VisualGraphNode.getNodes());
         if(nodeUndoStack.size() == 0){
-            output = false;
-			nodeUndoStack.add(new ArrayList<VisualGraphNode>());
+            return false;
 		}
-        ArrayList<VisualGraphNode> nodeToUndo = nodeUndoStack.get(nodeUndoStack.size()-1);
+        nodeRedoStack.add(copy(VisualGraphNode.getNodes()));
+        ArrayList<VisualGraphNode> nodeToUndo = nodeUndoStack.remove(nodeUndoStack.size()-1);
         VisualGraphNode.setNodes(nodeToUndo);
 
         VisualGraphEdge.setEdges(new ArrayList<>());
         int edgeCount = 0;
         for(VisualGraphNode n : nodeToUndo){
-            for(GraphEdge e : n.getNode().getEdges()){
-                VisualGraphEdge.create(e);
+            n.addEvents();
+            ArrayList<GraphEdge> oldEdges = n.getNode().getEdges();
+            while(n.getNode().getEdges().size() > 0){
+                GraphEdge e = n.getNode().getEdges().get(0);
+                System.out.println(n.getNode().removeEdge(e, false));
+            }
+
+            for(GraphEdge e : oldEdges){
+                GraphNode nodeB = null;
+                for(VisualGraphNode node : nodeToUndo){
+                    if(node.getNode().equals(e.nodeB)){
+                        nodeB = node.getNode();
+                        break;
+                    }
+                }
+                GraphEdge newEdge = n.getNode().addEdge(nodeB, false);
+                VisualGraphEdge.create(newEdge).addEvents();
                 edgeCount++;
             }
         }
-        return output;
+
+        return true;
 	}
 
 	public static boolean redo(){
 		if(nodeRedoStack.size() == 0){
 			return false;
 		}
-        System.out.println("redo size: " + nodeRedoStack.size());
 		ArrayList<VisualGraphNode> nodeToRedo = nodeRedoStack.remove(nodeRedoStack.size()-1);
+        nodeUndoStack.add(copy(VisualGraphNode.getNodes()));
         VisualGraphNode.setNodes(nodeToRedo);
 
         VisualGraphEdge.setEdges(new ArrayList<>());
+        int edgeCount = 0;
         for(VisualGraphNode n : nodeToRedo){
-            for(GraphEdge e : n.getNode().getEdges()){
-                VisualGraphEdge.create(e);
+            n.addEvents();
+            ArrayList<GraphEdge> oldEdges = n.getNode().getEdges();
+            while(n.getNode().getEdges().size() > 0){
+                GraphEdge e = n.getNode().getEdges().get(0);
+                System.out.println(n.getNode().removeEdge(e, false));
+            }
+
+            for(GraphEdge e : oldEdges){
+                GraphNode nodeB = null;
+                for(VisualGraphNode node : nodeToRedo){
+                    if(node.getNode().equals(e.nodeB)){
+                        nodeB = node.getNode();
+                        break;
+                    }
+                }
+                GraphEdge newEdge = n.getNode().addEdge(nodeB, false);
+                VisualGraphEdge.create(newEdge).addEvents();
+                edgeCount++;
             }
         }
-        nodeUndoStack.add(VisualGraphNode.getNodes());
 		return true;
 	}
 
 	public static void pushToUndoStack(){
 		nodeRedoStack.clear();
+		nodeUndoStack.add(copy(VisualGraphNode.getNodes()));
+	}
 
-        ArrayList<VisualGraphNode> nodesCopy = VisualGraphNode.getNodes();
+    private static ArrayList<VisualGraphNode> copy(ArrayList<VisualGraphNode> toCopy){
         ArrayList<VisualGraphNode> nodes = new ArrayList<>();
-        for(VisualGraphNode n : nodesCopy){
+        for(VisualGraphNode n : toCopy){
             nodes.add((VisualGraphNode) n.deepCopy());
         }
-		nodeUndoStack.add(nodes);
-	}
+		return nodes;
+    }
 }

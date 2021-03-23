@@ -44,11 +44,11 @@ public class GraphNode extends GraphComponent{
 	*    @return the new value
 	**/
 	public int setValue(int valueIn, boolean saveToUndoStack){
-		value = valueIn;
-		System.out.println("set value push");
 		if(saveToUndoStack){
 	    	UndoRedoController.pushToUndoStack();
 		}
+		value = valueIn;
+		System.out.println("set value push");
 		return value;
 	}
 

@@ -5,6 +5,7 @@ import maths.Rotator;
 import maths.Functions;
 
 import data.Data;
+import data.UndoRedoController;
 
 import model.GraphNode;
 import model.GraphEdge;
@@ -141,6 +142,7 @@ public class Viewport extends Pane{
 					Point mouse =java.awt.MouseInfo.getPointerInfo().getLocation();
 					Vector mousePosition = new Vector(e.getX(), e.getY(), 0);
 					if(MainWindow.get().getClickedNodes().size() > 0){
+						UndoRedoController.pushToUndoStack();
 						System.out.println("Move selected subgraph (" + MainWindow.get().getClickedNodes().size() + " nodes) about "+ MainWindow.get().getClickedNodes().get(0).getNode().getName());
     					Vector differenceFromMouse = mousePosition.subtract(MainWindow.get().getClickedNodes().get(0).getRenderLocation());
     					double xChange = differenceFromMouse.x / width;
@@ -199,6 +201,30 @@ public class Viewport extends Pane{
 		algorithm = algorithmIn;
 		viewportDetails.update(this);
 		MainWindow.get().updateAlgorithmDetails();
+	}
+
+    /**
+	*    Removes all drawnn graphs from the screen. This helps to reduce the chance of errors
+	**/
+	public void reset(){
+		//Apply changes in the JavaFX Application thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				//Remove any previous services to prevent deadlock
+				while(renderTasks.size() > 0){
+					Service<Void> task = renderTasks.remove(0);
+					task.cancel();
+				}
+				drawnComponents.clear();
+        		ArrayList<Node> foreignComponents = new ArrayList<>(getChildren());
+        		foreignComponents.remove(viewportDetails);
+				for(Node n : foreignComponents){
+					getChildren().remove(n);
+				}
+	      	    createCloseButton();
+			}
+		});
 	}
 
     /**
