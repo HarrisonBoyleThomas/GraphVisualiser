@@ -123,6 +123,17 @@ public class Vector implements Serializable{
         return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	}
 
+	public Vector cross(Vector other){
+		double i = (y*other.z) - (z*other.y);
+		double j = (z*other.x) - (x*other.z);
+		double k = (x*other.y) - (y*other.x);
+		return new Vector(i, j, k);
+	}
+
+	public static Vector cross(Vector a, Vector b){
+		return a.cross(b);
+	}
+
 	/**
 	*    Scales the current vector by the given multiplier
 	*    @param multiplier the amount to scale by
@@ -147,7 +158,7 @@ public class Vector implements Serializable{
 	*    @param divident the amount to divide by
 	*    @Return a Vector of the result
 	**/
-	public Vector divide(int dividend) throws ArithmeticException{
+	public Vector divide(double dividend) throws ArithmeticException{
 		if(dividend == 0){
 			throw new ArithmeticException("Attempt to divide vector by zero");
 		}
