@@ -117,6 +117,7 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 				double newLength = edge.getLength() + distances.get(currentNode);
 				if((newLength < (distances.get(edge.nodeB))) || (distances.get(edge.nodeB) == -1)){
 					distances.put(edge.nodeB, newLength);
+					handleDistances(edge.nodeB, newLength);
 					predecessors.put(edge.nodeB, currentNode);
 					outputString = outputString + "Shorter path to " + edge.nodeB + " found from " + currentNode + ". ";
 				}
@@ -192,6 +193,10 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 	*    @Return the next node from the open list
 	**/
 	protected abstract GraphNode removeMinimum();
+
+	protected void handleDistances(GraphNode node, double newDistance){
+
+	}
 
     /**
 	*    Add a newly-discovered node to the open list

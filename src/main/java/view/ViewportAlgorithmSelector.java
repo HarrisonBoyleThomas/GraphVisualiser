@@ -21,6 +21,7 @@ public class ViewportAlgorithmSelector extends ComboBox{
 	//It MUST be added here to be choosabkle within the app
 	private static Class[] algorithmList = {ArrayBasedDijkstra.class,
 	                                        HeapBasedDijkstra.class,
+											BucketQueueDijkstra.class,
 										    BreadthFirstSearch.class,
 										    DepthFirstSearch.class,
 										    BellmanFord.class,
