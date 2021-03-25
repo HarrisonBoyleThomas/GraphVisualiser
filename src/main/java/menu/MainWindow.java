@@ -115,7 +115,7 @@ public class MainWindow extends BorderPane{
 		if(state == MainWindowState.EDIT){
 			//ensure algorithms are reset
 			setStartNode(null);
-			terminateAlgorithms();
+			//terminateAlgorithms();
 		    Viewport v = new Viewport(camera, null);
 		    return addViewport(v);
 		}
@@ -198,6 +198,7 @@ public class MainWindow extends BorderPane{
 		for(Node n : view.getChildren()){
 			Viewport v = ((Viewport) n);
 			output[index] = v.getAlgorithm();
+			index++;
 		}
 		return output;
 	}

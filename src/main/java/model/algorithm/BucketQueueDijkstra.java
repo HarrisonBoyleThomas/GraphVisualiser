@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 /**
-*    ArrayBasedDijkstra implements DSP by using a Heap-based prority queue
+*    BucketQueueDijkstra implements DSP by using a bucket queue to store the open list
 *    @Author Harrison Boyle-Thomas
 *    @Date 01/02/21
 **/

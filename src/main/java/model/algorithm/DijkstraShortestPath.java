@@ -194,6 +194,13 @@ public abstract class DijkstraShortestPath extends ShortestPathAlgorithm{
 	**/
 	protected abstract GraphNode removeMinimum();
 
+    /**
+	*    Allows for the optional updating of the open list, incase the concrete implementation
+	*    needs to. For example, in a bucket queue the element near the front should have the smallest
+	*    distance, so this method can be used to update the queue after a change to the distance map
+	*    @param node the node that had it's distance changed
+	*    @param newDistance the new distance the node was set to
+	**/
 	protected void handleDistances(GraphNode node, double newDistance){
 
 	}

@@ -7,6 +7,11 @@ import java.util.Iterator;
 
 import java.lang.IndexOutOfBoundsException;
 
+/**
+*    A BucketQueue is a collection that can efficiently add and remove elements
+*    from itself. The size of the bucket queue doubles when out of space, or
+*    expands to fit the desired index if this is not enough
+**/
 public class BucketQueue<T> extends AbstractCollection{
     Bucket<T>[] data;
     HashMap<T, Integer> indexMap = new HashMap<>();
@@ -16,13 +21,22 @@ public class BucketQueue<T> extends AbstractCollection{
         data = new Bucket[1];
     }
 
+    /**
+    *    Create a BucketQueue with the desired initial size
+    **/
     public BucketQueue(int initialSize){
         if(initialSize < 1){
             initialSize = 1;
         }
         data = new Bucket[initialSize];
     }
-
+    /**
+    *    Add the supplied object at the desired index
+    *    worstCase = O(n) if the queue needs to be expanded,
+    *    constant time on average
+    *    @param toAdd the object to add to the BucketQueue
+    *    @param index the index to insert the element at
+    **/
     public void add(T toAdd, int index){
         if(index < 0){
             throw new IndexOutOfBoundsException("Invalid index. Must be more than 0");
@@ -49,6 +63,11 @@ public class BucketQueue<T> extends AbstractCollection{
         }
     }
 
+    /**
+    *    Update the index of the supplied item to the new index if the queue contains the item
+    *    @param item the item to move
+    *    @param newIndex the new index to move to
+    **/
     public void updateIndex(T item, int newIndex){
         if(!indexMap.keySet().contains(item)){
             return;
@@ -58,11 +77,20 @@ public class BucketQueue<T> extends AbstractCollection{
         if(newIndex < minIndex && index == minIndex){
             minIndex = newIndex;
         }
+        else if(index == minIndex && data[index].size() == 0){
+            minIndex = -1;
+        }
         numElems--;
         add(item, newIndex);
 
     }
 
+    /**
+    *    Remove the next element stored in the bucket at the supplied index
+    *    @param index the index to remove
+    *    @return the removed object, or null if it was not found
+    *    @throws IndexOutOfBounds error if the supplied index is invalid
+    **/
     public T remove(int index){
         if(index < 0 || index >= data.length){
             throw new IndexOutOfBoundsException("Invalid index(" + index + "). Must be more than 0 and below " + data.length);
@@ -77,6 +105,10 @@ public class BucketQueue<T> extends AbstractCollection{
         return data[index].removeMin();
     }
 
+    /**
+    *    @param the index to search for
+    *    @return the element found at the index, or null if it was not found
+    **/
     public T get(int index){
         if(index < 0 || index >= data.length){
             return null;
@@ -87,6 +119,10 @@ public class BucketQueue<T> extends AbstractCollection{
         return data[index].getNext();
     }
 
+    /**
+    *    O(n)
+    *    @return the index of the minimum element
+    **/
     public int getMinIndex(){
         if(minIndex != -1){
             return minIndex;
@@ -118,7 +154,10 @@ public class BucketQueue<T> extends AbstractCollection{
         return elements.iterator();
     }
 
-
+    /**
+    *    A list of Buckets are stored by the BucketQueue. Each Bucket stores a queue
+    *    of elements that have been added ot it
+    **/
     private class Bucket<T>{
         private ArrayList<T> elements = null;
 
