@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 
 import menu.*;
 import data.Data;
+import viewport.VisualGraphNode;
+import viewport.VisualGraphEdge;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.input.KeyEvent;
@@ -22,6 +24,10 @@ public class GraphVisualiser extends Application{
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
 
 	private long lastFrameTime;
+
+	private int totalCount = 0;
+
+	private int frames = 0;
 
 	public static void main(String[] args){
 		launch(args);
@@ -40,9 +46,20 @@ public class GraphVisualiser extends Application{
 		new AnimationTimer() {
 			public void handle(long currentNanoTime) {
 				Data.setDeltaTime(currentNanoTime - lastFrameTime);
+				totalCount += (int) (1000000000.0/(currentNanoTime - lastFrameTime));
 				handleMovementInput();
 				MainWindow.get().updateAppDetails();
 				lastFrameTime = currentNanoTime;
+				frames++;
+				if(frames > 1000){
+					int average = 0;
+					if(frames > 0){
+						average = totalCount / frames;
+					}
+					System.out.println("(N:" + VisualGraphNode.getNodes().size() + ", E:" + VisualGraphEdge.getEdges().size() + "), " + average);
+					frames = 0;
+					totalCount = 0;
+				}
 
 			    //try{
 				//    Thread.sleep(1);
@@ -85,6 +102,11 @@ public class GraphVisualiser extends Application{
 				}
 				if(!heldDownKeys.contains(e.getCode())){
 					heldDownKeys.add(e.getCode());
+				}
+				if(e.getCode() == KeyCode.F){
+					totalCount = 0;
+					frames = 0;
+					System.out.println("\n\n\n");
 				}
 				//Prevent focus traversal
 				e.consume();

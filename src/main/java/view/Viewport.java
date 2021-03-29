@@ -394,6 +394,10 @@ public class Viewport extends Pane{
                 };
             }
 	    };
+		while(renderTasks.size() > 0){
+			Service<Void> task = renderTasks.remove(0);
+			task.cancel();
+		}
 		renderTasks.add(renderTask);
 		renderTask.start();
 	}
