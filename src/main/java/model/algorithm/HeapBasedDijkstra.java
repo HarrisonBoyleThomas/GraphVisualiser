@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
 import java.util.ArrayList;
 
 /**
-*    ArrayBasedDijkstra implements DSP by using a Heap-based prority queue
+*    HeapBasedDijkstra implements DSP by using a Heap-based prority queue
 *    @Author Harrison Boyle-Thomas
 *    @Date 01/02/21
 **/

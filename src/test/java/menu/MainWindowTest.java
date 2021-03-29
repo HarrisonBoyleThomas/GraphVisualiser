@@ -140,11 +140,13 @@ public class MainWindowTest extends ApplicationTest{
             ViewportAlgorithmSelector selector = (ViewportAlgorithmSelector) v.getViewportDetails().getAlgorithmDetails().getChildren().get(0);
             TestHelper.comboBoxSelect(selector, selector.getItems().indexOf("" + HeapBasedDijkstra.class.getSimpleName()));
         }
+        sleep(100);
         mw.createNode();
         GraphNode node = VisualGraphNode.getNodes().get(0).getNode();
         mw.setStartNode(node);
         Viewport v = (Viewport) view.getChildren().get(0);
         ShortestPathAlgorithm algorithm = (ShortestPathAlgorithm) v.getAlgorithm();
+        System.out.println(algorithm);
         assertEquals(node, algorithm.getStartNode());
         //delete the created node
         mw.deleteNode(VisualGraphNode.getNode(node));
@@ -168,6 +170,7 @@ public class MainWindowTest extends ApplicationTest{
             ViewportAlgorithmSelector selector = (ViewportAlgorithmSelector) v.getViewportDetails().getAlgorithmDetails().getChildren().get(0);
             TestHelper.comboBoxSelect(selector, selector.getItems().indexOf("" + HeapBasedDijkstra.class.getSimpleName()));
         }
+        sleep(100);
         mw.createNode();
         GraphNode node = VisualGraphNode.getNodes().get(0).getNode();
         mw.setStartNode(node);

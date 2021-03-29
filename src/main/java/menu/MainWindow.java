@@ -201,6 +201,7 @@ public class MainWindow extends BorderPane{
 		for(Node n : view.getChildren()){
 			Viewport v = ((Viewport) n);
 			output[index] = v.getAlgorithm();
+			index++;
 		}
 		return output;
 	}
