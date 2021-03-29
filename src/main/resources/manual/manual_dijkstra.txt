@@ -21,6 +21,10 @@ DIJKSTRA'S ALGORITHM
         :Uses a FIFO queue to expand new nodes, so is quite inefficient
     -Heap-based dijkstra
         :Uses a heap to expand new nodes, standard DSP implementation
+    -Bucket queue-based dijkstra
+        :Uses a bucket queue to efficiently execute DSP. This implementation is
+         very fast, but will use a lot of memory if using graphs with heavy edge
+         weights.
 
 •IMPLEMENTATION DETAILS
     -DSP produces incorrect and unreliable results if there are any negative edges in G

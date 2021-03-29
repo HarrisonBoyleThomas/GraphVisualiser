@@ -437,6 +437,11 @@ public class Viewport extends Pane{
                 };
             }
 	    };
+		//Remove any previous services to prevent deadlock
+		while(renderTasks.size() > 0){
+			Service<Void> task = renderTasks.remove(0);
+			task.cancel();
+		}
 		renderTasks.add(renderTask);
 		renderTask.start();
 	}

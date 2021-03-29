@@ -22,6 +22,8 @@ import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.Group;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 
 import javafx.application.Platform;
 
@@ -1350,6 +1352,9 @@ public class MainWindow extends BorderPane{
 		return new ArrayList<VisualGraphNode>(copiedNodes);
 	}
 
+    /**
+	*    Undo the last done operation, or display an error message if an undo was not possible
+	**/
 	public void undo(){
 		System.out.println();
 		if(state == MainWindowState.EDIT){
@@ -1361,8 +1366,21 @@ public class MainWindow extends BorderPane{
 	    	}
 			setStartNode(null);
 			resetViewport();
-	    	updateViewport();
 			updateViewport();
+			//Ensure that the viewport updates correctly by asking it to draw twice
+			new Service<Void>() {
+	            @Override
+	            protected Task<Void> createTask() {
+	    			return new Task<Void>() {
+		    			@Override
+	                    protected Void call() throws Exception {
+							Thread.sleep(100);
+							updateViewport();
+							return null;
+						}
+					};
+				}
+			}.start();
 	    	updateDetailsPanel();
 		    updateAlgorithmDetails();
 		}
@@ -1371,6 +1389,9 @@ public class MainWindow extends BorderPane{
 		}
 	}
 
+    /**
+	*    Redo the last undone operation, or display an error message if this was not possible
+	**/
 	public void redo(){
 		if(state == MainWindowState.EDIT){
             if(!UndoRedoController.redo()){
@@ -1382,7 +1403,20 @@ public class MainWindow extends BorderPane{
 			setStartNode(null);
 			resetViewport();
 	    	updateViewport();
-			updateViewport();
+			//Ensure that the viewport updates correctly by asking it to draw twice
+			new Service<Void>() {
+	            @Override
+	            protected Task<Void> createTask() {
+	    			return new Task<Void>() {
+		    			@Override
+	                    protected Void call() throws Exception {
+							Thread.sleep(100);
+							updateViewport();
+							return null;
+						}
+					};
+				}
+			}.start();
 	    	updateDetailsPanel();
 	    	updateAlgorithmDetails();
 		}
