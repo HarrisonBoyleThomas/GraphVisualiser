@@ -1136,7 +1136,11 @@ public class MainWindow extends BorderPane{
 		    dialog.setInitialDirectory(new File(getClass().getResource(initialPath).toURI()));
 		}
 		catch(Exception e){
-			dialog.setInitialDirectory(new File(""));
+			File targetFolder = new File(System.getProperty("user.home"), "graphvisualiser/savedGraphs");
+			if(!targetFolder.exists()) {
+				targetFolder.mkdirs();
+			}
+			dialog.setInitialDirectory(targetFolder);
 		}
 		dialog.setInitialFileName("newGraph.graph");
 		File saveFile = dialog.showSaveDialog(getScene().getWindow());
@@ -1153,6 +1157,17 @@ public class MainWindow extends BorderPane{
 	**/
 	public void loadGraph(){
 		FileChooser dialog = new FileChooser();
+		String initialPath = "/savedGraphs";
+		try{
+		    dialog.setInitialDirectory(new File(getClass().getResource(initialPath).toURI()));
+		}
+		catch(Exception e){
+			File targetFolder = new File(System.getProperty("user.home"), "graphvisualiser/savedGraphs");
+			if(!targetFolder.exists()) {
+				targetFolder.mkdirs();
+			}
+			dialog.setInitialDirectory(targetFolder);
+		}
 		//Restrict file search type
 		FileChooser.ExtensionFilter extensions = new FileChooser.ExtensionFilter("GRAPH files (*.graph)", "*.graph");
         dialog.getExtensionFilters().add(extensions);
