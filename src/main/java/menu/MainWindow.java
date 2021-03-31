@@ -1319,13 +1319,23 @@ public class MainWindow extends BorderPane{
 	private void initialiseTheme(){
 		ThemeState themeIn = ThemeState.LIGHT;
 		try{
-    		ObjectInputStream objectStream = new ObjectInputStream(getClass().getResourceAsStream(Data.THEME_CONFIG_PATH));
+			File configFolder = new File(getClass().getResource("/config/").toURI());
+			if(!configFolder.exists()) {
+				configFolder.mkdirs();
+			}
+            File config = new File(configFolder, "theme");
+			if(!config.exists()) {
+				config.createNewFile();
+			}
+			FileInputStream fileStream = new FileInputStream(config);
+    		ObjectInputStream objectStream = new ObjectInputStream(fileStream);
     		themeIn = (ThemeState) objectStream.readObject();
+			fileStream.close();
     		objectStream.close();
 			setTheme(themeIn);
 		}
 		catch(Exception e){
-            setTheme(ThemeState.LIGHT);
+            setTheme(ThemeState.DARK);
 		}
 	}
 
@@ -1339,7 +1349,13 @@ public class MainWindow extends BorderPane{
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
 		try{
 			File configFolder = new File(getClass().getResource("/config/").toURI());
+			if(!configFolder.exists()) {
+				configFolder.mkdirs();
+			}
             File config = new File(configFolder, "theme");
+			if(!config.exists()) {
+				config.createNewFile();
+			}
 		    FileOutputStream fileOutputStream = new FileOutputStream(config);
     		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
     		objectOutputStream.writeObject(theme);
