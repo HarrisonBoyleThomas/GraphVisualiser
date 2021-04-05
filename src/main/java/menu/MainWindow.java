@@ -397,7 +397,7 @@ public class MainWindow extends BorderPane{
 		VisualGraphNode.updateNodes(camera, 500,500);
 		VisualGraphEdge.updateEdges();
 		GridPane view = (GridPane) getCenter();
-		for(Node n : view.getChildren()){
+		for(Node n : view.getChildrenUnmodifiable()){
 		    Viewport v = (Viewport) n;
 			v.draw();
 		}

@@ -33,7 +33,7 @@ public class VisualGraphEdgeDetailsTest extends ApplicationTest{
 
     private VisualGraphEdge edge = VisualGraphEdge.create(nodeA.getNode().addEdge(nodeB.getNode(), false));
     {
-        edge.getEdge().setName("test");
+        edge.getEdge().setName("test", false);
     }
     @Override
     public void start(Stage stage){

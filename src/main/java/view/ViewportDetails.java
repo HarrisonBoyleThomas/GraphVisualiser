@@ -5,6 +5,7 @@ import maths.Rotator;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.application.Platform;
 /**
 *    The viewportDetails displays details about the viewport
 *    Currently, this just includes it's algorithm details
@@ -18,12 +19,17 @@ public class ViewportDetails extends VBox{
 	}
 
 	public void update(Viewport viewport){
-		getChildren().clear();
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+        		getChildren().clear();
 
-		algorithmDetails.update(viewport);
-		if(!getChildren().contains(algorithmDetails)){
-		    getChildren().add(algorithmDetails);
-		}
+        		algorithmDetails.update(viewport);
+        		if(!getChildren().contains(algorithmDetails)){
+        		    getChildren().add(algorithmDetails);
+        		}
+			}
+		});
 	}
 
 	public AlgorithmDetails getAlgorithmDetails(){

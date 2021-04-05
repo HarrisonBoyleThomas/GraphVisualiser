@@ -86,6 +86,9 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	*    @Return true if an edge was deleted
 	**/
 	public static synchronized boolean delete(VisualGraphEdge toRemove){
+		if(toRemove == null){
+			return false;
+		}
 		toRemove.getEdge().nodeA.removeEdge(toRemove.getEdge(), false);
 		return edges.remove(toRemove);
 	}
@@ -96,6 +99,9 @@ public class VisualGraphEdge extends VisualGraphComponent{
 	**/
 	public static synchronized boolean delete(GraphEdge edgeToDelete){
 		VisualGraphEdge e = getEdge(edgeToDelete);
+		if(edgeToDelete == null){
+			return false;
+		}
 		return delete(e);
 	}
 

@@ -43,7 +43,7 @@ public class VisualGraphNodeDetailsTest extends ApplicationTest{
     public void setNodeTest(){
         VisualGraphNode oldNode = details.getNode();
         VisualGraphNode node = VisualGraphNode.create(new Vector(), new GraphNode(0));
-        node.getNode().setName("testNode");
+        node.getNode().setName("testNode", false);
         details.setNode(node);
         assertEquals(node, details.getNode(), "Should be set to the new node");
 

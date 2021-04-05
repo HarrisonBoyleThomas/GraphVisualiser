@@ -95,6 +95,9 @@ public class VisualGraphNode extends VisualGraphComponent{
 	*    given node must further be deleted
 	**/
 	public static synchronized boolean delete(VisualGraphNode toDelete){
+		if(toDelete == null){
+			return false;
+		}
 		VisualGraphEdge.delete(toDelete.getNode());
 	    return nodes.remove(toDelete);
 	}
@@ -104,6 +107,9 @@ public class VisualGraphNode extends VisualGraphComponent{
 	**/
 	public static synchronized boolean delete(GraphNode toDelete){
 		VisualGraphNode iconToDelete = getNode(toDelete);
+		if(iconToDelete == null){
+			return false;
+		}
 		return delete((VisualGraphNode) iconToDelete);
 	}
 

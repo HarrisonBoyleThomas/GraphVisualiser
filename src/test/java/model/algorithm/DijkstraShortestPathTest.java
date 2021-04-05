@@ -43,7 +43,7 @@ public class DijkstraShortestPathTest{
 				GraphNode nodeA = new GraphNode();
 				GraphNode nodeB = new GraphNode();
 				GraphEdge edge = nodeA.addEdge(nodeB, false);
-				edge.setLength(12);
+				edge.setLength(12, false);
 
 
 				ArrayList<GraphNode> nodes = new ArrayList<>();
@@ -60,7 +60,7 @@ public class DijkstraShortestPathTest{
 
 
 				edge = nodeB.addEdge(nodeA, false);
-				edge.setLength(1);
+				edge.setLength(1, false);
 
 				dsp.setStartNode(nodeB);
 				dsp.initialise(nodes);
@@ -99,16 +99,16 @@ public class DijkstraShortestPathTest{
 
 
 				GraphEdge edge = nodeA.addEdge(nodeB, false);
-				edge.setLength(5);
+				edge.setLength(5, false);
 
 				edge = nodeB.addEdge(nodeD, false);
-				edge.setLength(10);
+				edge.setLength(10, false);
 
 				edge = nodeA.addEdge(nodeC, false);
-				edge.setLength(2);
+				edge.setLength(2, false);
 
 				edge = nodeC.addEdge(nodeD, false);
-				edge.setLength(12);
+				edge.setLength(12, false);
 
 				dsp.setStartNode(nodeA);
 				dsp.initialise(nodes);
@@ -125,7 +125,7 @@ public class DijkstraShortestPathTest{
 				//the new edge should be the shortest path from A to D
 
 				edge = nodeA.addEdge(nodeD, false);
-				edge.setLength(1);
+				edge.setLength(1, false);
 
 				dsp.setStartNode(nodeA);
 				dsp.initialise(nodes);
@@ -167,17 +167,17 @@ public class DijkstraShortestPathTest{
 
 				GraphNode prev = root;
 
-				root.setName("root");
+				root.setName("root", false);
 
 				ArrayList<GraphNode> nodes = new ArrayList<>();
 				nodes.add(root);
 				for(int i = 1; i<20; i ++){
 					GraphNode node = new GraphNode();
 					//cost of cheap route doubles i
-					prev.addEdge(node, false).setLength(i*2);
+					prev.addEdge(node, false).setLength(i*2, false);
 					prev = node;
 					nodes.add(node);
-					node.setName("" + (i));
+					node.setName("" + (i), false);
 				}
 
 				GraphNode target = nodes.get(nodes.size()-1);
@@ -189,13 +189,13 @@ public class DijkstraShortestPathTest{
 				//cost of expensive route start expensive, but becomes cheaper
 				for(int i = 1; i < 19; i++){
 					GraphNode node = new GraphNode();
-					prev.addEdge(node, false).setLength(20-i);
+					prev.addEdge(node, false).setLength(20-i, false);
 					prev = node;
 					nodes.add(node);
-					node.setName("" + (i+20));
+					node.setName("" + (i+20), false);
 					shortestPath.add(node);
 				}
-				prev.addEdge(target, false).setLength(1);
+				prev.addEdge(target, false).setLength(1, false);
 
 				dsp.setStartNode(root);
 				dsp.initialise(nodes);

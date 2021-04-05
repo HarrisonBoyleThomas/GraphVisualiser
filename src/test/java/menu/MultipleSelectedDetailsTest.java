@@ -38,7 +38,7 @@ public class MultipleSelectedDetailsTest extends ApplicationTest{
     public void start(Stage stage){
         for(int i = 0; i < 10; i++){
             GraphNode node = new GraphNode(0);
-            node.setName("node:" + i);
+            node.setName("node:" + i, false);
             nodes.add(VisualGraphNode.create(new Vector(i, i, i), node));
         }
         MainWindow.get().createEdge(nodes.get(0), nodes.get(1));
