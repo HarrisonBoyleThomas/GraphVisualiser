@@ -6,6 +6,11 @@ import viewport.VisualGraphEdge;
 
 import java.util.ArrayList;
 
+/**
+*    This class stores the state of the app in two stacks, and handles
+*    undo and redo operations.
+*    @Author Harrison Boyle-Thomas
+**/
 public class UndoRedoController{
     private static final ArrayList<ArrayList<VisualGraphNode>> nodeUndoStack = new ArrayList<>();
     private static final ArrayList<ArrayList<VisualGraphNode>> nodeRedoStack = new ArrayList<>();
@@ -21,6 +26,8 @@ public class UndoRedoController{
 
         VisualGraphEdge.setEdges(new ArrayList<>());
         int edgeCount = 0;
+        //The stored nodes store edges that reference the "real" nodes. Replace these references
+        //with references to the copies of the real nodes
         for(VisualGraphNode n : nodeToUndo){
             n.addEvents();
             ArrayList<GraphEdge> oldEdges = n.getNode().getEdges();
@@ -28,7 +35,8 @@ public class UndoRedoController{
                 GraphEdge e = n.getNode().getEdges().get(0);
                 n.getNode().removeEdge(e, false);
             }
-
+            //search for a matching node from the remove edge list and the copied nodes
+            //identical node share a uniqueId, and will be classed as equal
             for(GraphEdge e : oldEdges){
                 GraphNode nodeB = null;
                 for(VisualGraphNode node : nodeToUndo){
@@ -47,6 +55,7 @@ public class UndoRedoController{
 	}
 
 	public static boolean redo(){
+        //Essentially the same as undo(), but using a different stack
 		if(nodeRedoStack.size() == 0){
 			return false;
 		}
@@ -85,6 +94,11 @@ public class UndoRedoController{
 		nodeUndoStack.add(copy(VisualGraphNode.getNodes()));
 	}
 
+    /**
+    *    Copy the input list of VGNs by taking deep copies of the nodes. One limitation
+    *    is that edges store references to the nodes in the input list, rather than the
+    *    new copied nodes, which must be resolved elsewhere
+    **/
     private static ArrayList<VisualGraphNode> copy(ArrayList<VisualGraphNode> toCopy){
         ArrayList<VisualGraphNode> nodes = new ArrayList<>();
         for(VisualGraphNode n : toCopy){

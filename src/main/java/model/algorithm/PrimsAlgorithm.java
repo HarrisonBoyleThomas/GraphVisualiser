@@ -101,6 +101,9 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
         return output;
     }
 
+    /**
+    *    @return true if A and B are connected in the current tree
+    **/
     private boolean areConnected(GraphNode a, GraphNode b){
         //construct an mst copy out of the current mst
         HashMap<GraphNode, GraphNode> nodeCopyMap = new HashMap<>();
@@ -144,6 +147,10 @@ public class PrimsAlgorithm extends MinimumSpanningTreeAlgorithm implements Root
         return (find(nodeA, nodeB) || find(nodeB, nodeA));
     }
 
+    /**
+    *    Perform a BFS on the current tree from startNode
+    *    @return true if targetNode found
+    **/
     private boolean find(GraphNode startNode, GraphNode targetNode){
         if(startNode.equals(targetNode)){
             return true;

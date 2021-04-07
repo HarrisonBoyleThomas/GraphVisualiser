@@ -8,9 +8,9 @@ import java.io.*;
 *    Rotators represent 3D rotation
 *
 *    z
-*    |    /y
+*    |       /y
+*    |     /
 *    |   /
-*    |  /
 *    | /
 *    |_________x
 *

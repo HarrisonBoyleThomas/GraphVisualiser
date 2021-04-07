@@ -1397,6 +1397,9 @@ public class MainWindow extends BorderPane{
 		return getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm();
 	}
 
+    /**
+	*    @return true if the multiselect button is held down
+	**/
 	public boolean getMultiSelect(){
 		return multiSelect;
 	}

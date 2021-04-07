@@ -42,6 +42,8 @@ public class BellmanFord extends ShortestPathAlgorithm{
         setStartNode(initialStateIn);
     }
 
+    //BF is split into two parts- the part which finds the shortest paths, and the
+    //part which checks for negative cycles, indicated by the firstStage variable
     public synchronized String step(){
         String output = "";
         if(firstStage){

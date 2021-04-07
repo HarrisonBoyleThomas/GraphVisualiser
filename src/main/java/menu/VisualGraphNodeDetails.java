@@ -97,7 +97,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		Tooltip.install(title, tooltip);
 		locationSection.getChildren().add(title);
 
-
+        //Create a small section for editing the x coordinate of the node
 		HBox xSection = new HBox();
 		Tooltip xTooltip = new Tooltip("The x coordinate of the node");
 
@@ -107,6 +107,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 		xCoord.setMaxWidth(50);
 		xCoord.textProperty().addListener((observable, oldCoord, newCoord) -> {
 			double newX = 0.0;
+			//if there are any errors, just reset to the node's current position
 			try{
 			    newX = Double.valueOf(newCoord);
 			}
@@ -128,7 +129,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 		locationSection.getChildren().add(xSection);
 
-
+        //create a small section for editing the y coordinate of the node
 		HBox ySection = new HBox();
 		Tooltip yTooltip = new Tooltip("The y coordinate of the node");
 
@@ -159,7 +160,7 @@ public class VisualGraphNodeDetails extends DetailsPanel{
 
 		locationSection.getChildren().add(ySection);
 
-
+        //create a small section for editing the z coordinate of the node
 		HBox zSection = new HBox();
 		Tooltip zTooltip = new Tooltip("The z coordinate of the node");
 

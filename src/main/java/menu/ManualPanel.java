@@ -152,6 +152,13 @@ public class ManualPanel extends VBox{
         getChildren().add(back);
     }
 
+    /**
+    *    Create a page that allows the user to view the controls, and to
+    *    customise the camera controls of the app
+    *    manual_controls.txt has the format KEY,CONTROL_NAME:description
+    *    Customisable controls have the format KEY,CONTROL_NAME:description:VARIABLE_NAME_IN_CAMERACONTROLDATA
+    *    This function parses the txt file to extract the key information
+    **/
     private void createControlsPage(){
         updateStyle();
         getChildren().clear();
@@ -173,10 +180,12 @@ public class ManualPanel extends VBox{
                 //List of all possible keys
                 Object[] keys = KeyCode.values();
                 for(String line : data){
+                    //split line into {KEY} {CTRL_NAME:description:VAR_NAME}
                     String[] split = line.split(",");
+                    //only parse valid control lines
                     if(split.length == 2){
                         Tooltip keyTooltip = new Tooltip(split[0]);
-                        //If a control name is specified on this line, then the control binding
+                        //If a variable name is specified on this line, then the control binding
                         //can be changed - add a combobox to change the controls instead of a label
                         if(split[1].split(":").length > 2){
                             Field field = Data.CAMERA_CONTROLS.getClass().getField(split[1].split(":")[2]);
@@ -204,6 +213,8 @@ public class ManualPanel extends VBox{
                             Tooltip.install(keySelection, keyTooltip);
                         }
                         else{
+                            //if no variable name was specified, just write the key for the
+                            //control from the txt file
                             Label key = new Label(split[0]);
                             Tooltip.install(key, keyTooltip);
                             key.setId("manualLine");
@@ -212,7 +223,7 @@ public class ManualPanel extends VBox{
                             grid.add(key, 0, controlNumber);
                             grid.setMargin(key, keyInset);
                         }
-
+                        //add the control's name to the view
                         Tooltip nameTooltip = new Tooltip(split[1].split(":")[0]);
                         Label controlName = new Label(split[1].split(":")[0]);
                         Tooltip.install(controlName, nameTooltip);
@@ -222,6 +233,7 @@ public class ManualPanel extends VBox{
                         grid.setMargin(controlName, nameInset);
                         grid.add(controlName, 1, controlNumber);
 
+                        //add the control's description to the view
                         Tooltip descriptionTooltip = new Tooltip(split[1].split(":")[1]);
                         Label controlDescription = new Label(split[1].split(":")[1]);
                         Tooltip.install(controlDescription, descriptionTooltip);
@@ -231,6 +243,7 @@ public class ManualPanel extends VBox{
                         grid.add(controlDescription, 2, controlNumber);
                         controlNumber++;
                     }
+                    //Parse invalid lines as title or headers
                     else if(split.length == 1){
                         Label label = new Label(split[0]);
                         if(split[0].toUpperCase().equals(split[0])){
@@ -297,6 +310,9 @@ public class ManualPanel extends VBox{
         getChildren().add(back);
     }
 
+    /**
+    *    Create a media view which displays the tutorial video for graph visualiser
+    **/
     private void createTutorialPage(){
         updateStyle();
         getChildren().clear();
@@ -532,7 +548,9 @@ public class ManualPanel extends VBox{
         getChildren().add(back);
     }
 
-
+    /**
+    *    Read the file with the input name, and convert it's lines to an arraylist
+    **/
     private ArrayList<String> readFile(String fileName){
         ArrayList<String> output = new ArrayList<>();
         try{
@@ -549,6 +567,9 @@ public class ManualPanel extends VBox{
 
     }
 
+    /**
+    *    Parse the input file, and neatly dispay it's contents
+    **/
     private VBox createPage(String fileName){
         ArrayList<String> data = readFile(fileName);
 

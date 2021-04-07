@@ -17,6 +17,9 @@ import javafx.scene.Node;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+/**
+*    PrimDetails shows details specific to Prim's algorithm
+**/
 public class PrimDetails extends MinimumSpanningTreeAlgorithmDetails {
     public PrimDetails(GraphAlgorithm algorithmIn){
         super(algorithmIn);

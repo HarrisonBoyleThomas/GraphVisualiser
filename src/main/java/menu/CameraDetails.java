@@ -58,7 +58,8 @@ public class CameraDetails extends DetailsPanel{
                 rotation.setId("rotation");
         		getChildren().add(rotation);
 
-    	    	addViewDistanceDial();
+                //New rendering method does not use this feature
+    	    	//addViewDistanceDial();
 			}
 		});
 	}

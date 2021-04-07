@@ -17,7 +17,10 @@ import javafx.animation.AnimationTimer;
 
 import java.util.ArrayList;
 
-
+/**
+*    The GraphVisualiser class is the app itself, and controls and manages the
+*    whole execution of the app
+**/
 public class GraphVisualiser extends Application{
 	private ArrayList<KeyCode> heldDownKeys = new ArrayList<>();
 

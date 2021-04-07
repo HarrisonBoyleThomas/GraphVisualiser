@@ -16,6 +16,11 @@ public abstract class MinimumSpanningTreeAlgorithm extends GraphAlgorithm {
         return new ArrayList<GraphEdge>(spanningTree);
     }
 
+    /**
+    *    Since many MST algorithms rely on testing the current tree against adding
+    *    a new edge to it, this function creates a virtual tree by duplicating the
+    *    input list of nodes
+    **/
     protected ArrayList<GraphNode> getVirtualMinimumSpanningTreeGraph(ArrayList<GraphEdge> treeIn){
         //construct an mst copy out of the current mst
         HashMap<GraphNode, GraphNode> nodeCopyMap = new HashMap<>();

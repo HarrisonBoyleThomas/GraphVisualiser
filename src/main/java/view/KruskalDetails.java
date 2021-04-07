@@ -16,6 +16,9 @@ import javafx.scene.Node;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+/**
+*    Kruskal details shows details specific to Kruskal's algorithm
+**/
 public class KruskalDetails extends MinimumSpanningTreeAlgorithmDetails {
     public KruskalDetails(GraphAlgorithm algorithmIn){
         super(algorithmIn);

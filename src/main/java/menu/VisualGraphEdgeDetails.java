@@ -88,7 +88,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		Tooltip.install(title, tooltip);
 		edgeSection.getChildren().add(title);
 
-
+        //Create a textbox for the edge's name
 		Tooltip nameTooltip = new Tooltip("The name of the selected edge. An edge's name can contain a maximum of 15 characters");
 		HBox nameSection = new HBox();
 		nameSection.setAlignment(Pos.TOP_CENTER);
@@ -113,7 +113,7 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 			}
         });
 
-
+        //Create a textbox for the edge's weight
 		Tooltip lengthTooltip = new Tooltip("The weight of the selected edge. Edges cannot have a negative weight.");
 		HBox lengthSection = new HBox();
 		lengthSection.setAlignment(Pos.TOP_CENTER);
@@ -146,7 +146,8 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		});
 
 
-
+        //Create a section for representing node A, which includes a header and
+		//a button
 		VBox nodeA = new VBox(3);
 		nodeA.setAlignment(Pos.TOP_CENTER);
 		Tooltip nodeATooltip = new Tooltip("The origin node of the edge");
@@ -164,7 +165,8 @@ public class VisualGraphEdgeDetails extends DetailsPanel{
 		nodeA.getChildren().add(nodeALabel);
 		nodeA.getChildren().add(nodeAButton);
 
-
+        //Create a section for representing node B, which includes a header and
+		//a button. Very similar code to the small section above for node A
 		VBox nodeB = new VBox(3);
 		nodeB.setAlignment(Pos.TOP_CENTER);
 		Tooltip nodeBTooltip = new Tooltip("The end node of the edge");

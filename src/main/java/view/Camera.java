@@ -312,7 +312,9 @@ public class Camera extends Actor{
 		return new Vector(x, y, 0);
 	}
 
-
+    /**
+	*    Perspective projection. This method does not work, and is not used
+	**/
 	public Vector projectPerspective(Vector target, int width, int height){
 		double aspectRatio = width / height;
 		int nearClip = 1;

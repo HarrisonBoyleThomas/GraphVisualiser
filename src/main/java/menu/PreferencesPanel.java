@@ -29,6 +29,10 @@ import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+/**
+*    The preferences panel can be displayed on a popup window to allow the user
+*    to access menus to edit the preferences of particular parts of the app
+**/
 public class PreferencesPanel extends VBox{
     public PreferencesPanel(){
         super(20);

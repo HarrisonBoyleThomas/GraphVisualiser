@@ -16,6 +16,9 @@ import javafx.scene.Node;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+/**
+*    MSTADetails displays details specific to MST algorithms
+**/
 public class MinimumSpanningTreeAlgorithmDetails extends AlgorithmDetailsWindow {
     public MinimumSpanningTreeAlgorithmDetails(GraphAlgorithm algorithmIn){
         update(algorithmIn);
