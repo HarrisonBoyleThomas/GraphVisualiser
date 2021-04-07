@@ -406,6 +406,28 @@ public class MainWindow extends BorderPane{
 		graphDetails.update();
 	}
 
+    /**
+	*    Calls updateViewport() in the main thread, and spawns an additional runner thread to
+	*    call updateViewport() a few milliseconds after, to ensure the viewport is updated
+	*    correctly
+	**/
+	private void doubleUpdateViewport(){
+		updateViewport();
+		new Service<Void>() {
+			@Override
+			protected Task<Void> createTask() {
+				return new Task<Void>() {
+					@Override
+					protected Void call() throws Exception {
+						Thread.sleep(100);
+						updateViewport();
+						return null;
+					}
+				};
+			}
+		}.start();
+	}
+
 	private void resetViewport(){
 		VisualGraphNode.updateNodes(camera, 500,500);
 		VisualGraphEdge.updateEdges();
@@ -1397,21 +1419,8 @@ public class MainWindow extends BorderPane{
 	    	}
 			setStartNode(null);
 			resetViewport();
-			updateViewport();
 			//Ensure that the viewport updates correctly by asking it to draw twice
-			new Service<Void>() {
-	            @Override
-	            protected Task<Void> createTask() {
-	    			return new Task<Void>() {
-		    			@Override
-	                    protected Void call() throws Exception {
-							Thread.sleep(100);
-							updateViewport();
-							return null;
-						}
-					};
-				}
-			}.start();
+			doubleUpdateViewport();
 	    	updateDetailsPanel();
 		    updateAlgorithmDetails();
 		}
@@ -1433,21 +1442,8 @@ public class MainWindow extends BorderPane{
 	    	}
 			setStartNode(null);
 			resetViewport();
-	    	updateViewport();
 			//Ensure that the viewport updates correctly by asking it to draw twice
-			new Service<Void>() {
-	            @Override
-	            protected Task<Void> createTask() {
-	    			return new Task<Void>() {
-		    			@Override
-	                    protected Void call() throws Exception {
-							Thread.sleep(100);
-							updateViewport();
-							return null;
-						}
-					};
-				}
-			}.start();
+			doubleUpdateViewport();
 	    	updateDetailsPanel();
 	    	updateAlgorithmDetails();
 		}
