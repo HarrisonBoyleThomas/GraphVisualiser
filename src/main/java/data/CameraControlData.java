@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 **/
 public class CameraControlData implements Serializable{
 
-    public static final String CONFIG_FOLDER = "/config/";
+    public static final String CONFIG_FOLDER = "config/";
 
     public static final String CONFIG_NAME = "cameraControls";
 
@@ -64,7 +64,7 @@ public class CameraControlData implements Serializable{
     public boolean save(){
         boolean successful = false;
         try{
-			File configFolder = new File(getClass().getResource(CONFIG_FOLDER).toURI());
+			File configFolder = new File(CONFIG_FOLDER);
             File config = new File(configFolder, CONFIG_NAME);
 		    FileOutputStream fileOutputStream = new FileOutputStream(config);
     		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -83,7 +83,7 @@ public class CameraControlData implements Serializable{
         boolean successful = false;
         CameraControlData dataIn = null;
         try{
-            File configFolder = new File(getClass().getResource(CONFIG_FOLDER).toURI());
+            File configFolder = new File(CONFIG_FOLDER);
             File config = new File(configFolder, CONFIG_NAME);
     		FileInputStream fileStream = new FileInputStream(config);
     		ObjectInputStream objectStream = new ObjectInputStream(fileStream);

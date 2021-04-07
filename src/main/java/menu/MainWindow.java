@@ -1341,7 +1341,7 @@ public class MainWindow extends BorderPane{
 	private void initialiseTheme(){
 		ThemeState themeIn = ThemeState.LIGHT;
 		try{
-			File configFolder = new File(getClass().getResource("/config/").toURI());
+			File configFolder = new File("config/");
 			if(!configFolder.exists()) {
 				configFolder.mkdirs();
 			}
@@ -1370,7 +1370,7 @@ public class MainWindow extends BorderPane{
 		getStylesheets().clear();
 		getStylesheets().add(getClass().getResource("/themes/" + theme.name().toLowerCase() + ".css").toExternalForm());
 		try{
-			File configFolder = new File(getClass().getResource("/config/").toURI());
+			File configFolder = new File("config/");
 			if(!configFolder.exists()) {
 				configFolder.mkdirs();
 			}
@@ -1385,6 +1385,7 @@ public class MainWindow extends BorderPane{
     		fileOutputStream.close();
 		}
 		catch(Exception e){
+			e.printStackTrace();
             displayErrorMessage("Theme set error", "Unable to save the theme of the app", e);
 		}
 		GridPane view = (GridPane) getCenter();
