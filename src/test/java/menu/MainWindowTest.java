@@ -967,6 +967,7 @@ public class MainWindowTest extends ApplicationTest{
         while(view.getChildren().size() > 0){
             mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
         }
+        sleep(500);
         mw.createViewport();
         //Viewports update in their own threads, give them time to update
         sleep(500);
@@ -993,6 +994,7 @@ public class MainWindowTest extends ApplicationTest{
         while(view.getChildren().size() > 0){
             mw.deleteViewport((Viewport) view.getChildren().get(view.getChildren().size()-1));
         }
+        sleep(100);
 
     }
 

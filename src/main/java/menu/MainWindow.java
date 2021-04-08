@@ -304,11 +304,11 @@ public class MainWindow extends BorderPane{
 				moved = true;
 			}
 			if(k == Data.CAMERA_CONTROLS.MOVE_UP_KEY){
-				camera.moveUpwards(0.1);
+				camera.moveUpwards(-0.1);
 				moved = true;
 			}
 			if(k == Data.CAMERA_CONTROLS.MOVE_DOWN_KEY){
-				camera.moveUpwards(-0.1);
+				camera.moveUpwards(0.1);
 				moved = true;
 			}
 			if(k == Data.CAMERA_CONTROLS.ROLL_LEFT_KEY){
