@@ -229,6 +229,12 @@ public class VisualGraphEdge extends VisualGraphComponent{
 		VisualGraphNode nodeB = VisualGraphNode.getNode(edge.nodeB);
 		Vector nodeBLoc = nodeB.getRenderLocation();
 		Vector difference = nodeBLoc.subtract(nodeALoc);
+		System.out.println(difference);
+		//Icons that share the same location should have no edge drawn
+		if(difference.equals(new Vector())){
+			icon = new Group();
+			return;
+		}
 		Vector nodeASize = difference.normalise().multiply(nodeA.getRenderScale()*26);
 		//How much space nodeB's circle radius takes up along the edge line
 		Vector nodeBSize = difference.normalise().multiply(nodeB.getRenderScale()*23);
